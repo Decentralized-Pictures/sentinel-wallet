@@ -29,7 +29,7 @@ Then run the following:
 ### 1) Clone the repository
 
 ```bash
-git clone https://github.com/Decentralized-Pictures/sentinel-wallet.git && cd templewallet-extension
+git clone https://github.com/Decentralized-Pictures/sentinel-wallet.git && cd sentinel-wallet
 ```
 
 ### 2) Install dependencies
