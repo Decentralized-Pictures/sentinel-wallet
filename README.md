@@ -1,4 +1,4 @@
-# Temple - T4L3NT Wallet (ex. Thanos / Temple)
+# Sentinel - T4L3NT Wallet (ex. Thanos / Temple)
 
 Cryptocurrency wallet for [T4L3NT blockchain](https://tezos.com) as Web Extension for your Browser.<br>
 Providing ability to manage NFT, tlnt tokens and interact with dApps.
