@@ -9,7 +9,7 @@ Providing ability to manage NFT, tlnt tokens and interact with dApps.
 
 ## ▶️ Install
 
-You can install Temple Wallet right now: https://www.tlnt.net/sentinel-wallet.
+You can install Sentinel Wallet right now: https://www.tlnt.net/sentinel-wallet.
 
 ## Browser Support
 
