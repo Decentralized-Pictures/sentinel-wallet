@@ -1,15 +1,15 @@
-# Temple - T4L3NT Wallet (ex. Thanos)
+# Sentinel - T4L3NT Wallet (ex. Thanos / Temple)
 
 Cryptocurrency wallet for [T4L3NT blockchain](https://tezos.com) as Web Extension for your Browser.<br>
 Providing ability to manage NFT, tlnt tokens and interact with dApps.
 
-![Temple Wallet](https://user-images.githubusercontent.com/11996139/108867944-64e7fc00-75fe-11eb-975e-87c0fda9bfbe.png)
+![Temple Wallet](https://github.com/Decentralized-Pictures/sentinel-wallet/blob/master/Screen%20Shot%202021-05-11%20at%204.26.09%20PM.png)
 
 <hr />
 
 ## ▶️ Install
 
-You can install Temple Wallet right now: https://templewallet.com/download.
+You can install Sentinel Wallet right now: https://www.tlnt.net/sentinel-wallet.
 
 ## Browser Support
 
@@ -29,7 +29,7 @@ Then run the following:
 ### 1) Clone the repository
 
 ```bash
-git clone https://github.com/madfish-solutions/templewallet-extension && cd templewallet-extension
+git clone https://github.com/Decentralized-Pictures/sentinel-wallet.git && cd sentinel-wallet
 ```
 
 ### 2) Install dependencies
