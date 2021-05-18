@@ -158,7 +158,7 @@
     }
   },
   "minDelegationAmountDescription": {
-    "message": "Votre solde actuel est inférieur au montant minimum de délégation de ce baker. Cela signifie que tant que le solde est inférieur à $minAmount$, il n'y aura pas de dividendes.",
+    "message": "Votre solde actuel est inférieur au montant minimum de délégation de ce producer. Cela signifie que tant que le solde est inférieur à $minAmount$, il n'y aura pas de dividendes.",
     "placeholders": {
       "minAmount": {
         "content": "$1"
@@ -166,7 +166,7 @@
     }
   },
   "clickOnBakerPrompt": {
-    "message": "Cliquez sur le Baker auquel vous voulez déléguer des fonds. Cette liste est alimentée par $link$.",
+    "message": "Cliquez sur le producer auquel vous voulez déléguer des fonds. Cette liste est alimentée par $link$.",
     "placeholders": {
       "link": {
         "content": "$1"
@@ -205,7 +205,7 @@
     "message": "Délégué à :"
   },
   "delegatingMotivation": {
-    "message": "Déléguer vos fonds à des bakers est un excellent moyen de gagner des intérêts sur votre solde"
+    "message": "Déléguer vos fonds à des producers est un excellent moyen de gagner des intérêts sur votre solde"
   },
   "reDelegate": {
     "message": "Redéléguer"
@@ -846,10 +846,10 @@
     "message": "Délégation"
   },
   "baker": {
-    "message": "Baker"
+    "message": "Producer"
   },
   "bakerInputDescription": {
-    "message": "Adresse d'un baker inscrit."
+    "message": "Adresse d'un producer inscrit."
   },
   "bakerInputPlaceholder": {
     "message": "p. ex. tz1a9w1S7hN5s…"
@@ -858,13 +858,13 @@
     "message": "Montant minimum de délégation"
   },
   "unknownBakerTitle": {
-    "message": "Baker inconnu"
+    "message": "Producer inconnu"
   },
   "unknownBakerDescription": {
-    "message": "Nous ne connaissons pas l'adresse fournie en tant que baker ! Ne lui déléguez vos fonds qu'à vos risques et périls."
+    "message": "Nous ne connaissons pas l'adresse fournie en tant que Producer ! Ne lui déléguez vos fonds qu'à vos risques et périls."
   },
   "delegateToRecommendedBakers": {
-    "message": "Déléguer aux bakers recommandés"
+    "message": "Déléguer aux Producers recommandés"
   },
   "sortBy": {
     "message": "Trier par"
@@ -909,13 +909,13 @@
     "message": "Les frais minimaux pour cette transaction sont supérieurs à votre solde."
   },
   "alreadyDelegatedFundsToBaker": {
-    "message": "Vous avez déjà délégué des fonds à ce baker. Impossible de déléguer de nouveau."
+    "message": "Vous avez déjà délégué des fonds à ce Producer. Impossible de déléguer de nouveau."
   },
   "bakerNotRegistered": {
-    "message": "Le baker spécifié n'est pas inscrit."
+    "message": "Le Producer spécifié n'est pas inscrit."
   },
   "unableToPerformActionToBaker": {
-    "message": "Impossible de $action$ au Baker fourni.",
+    "message": "Impossible de $action$ au Producer fourni.",
     "placeholders": {
       "action": {
         "content": "$1"

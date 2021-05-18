@@ -158,7 +158,7 @@
     }
   },
   "minDelegationAmountDescription": {
-    "message": "Your current balance is less than a minimal delegation amount of this baker. That means while the balance is less than $minAmount$ - there will be no payouts.",
+    "message": "Your current balance is less than a minimal delegation amount of this producer. That means while the balance is less than $minAmount$ - there will be no payouts.",
     "placeholders": {
       "minAmount": {
         "content": "$1"
@@ -166,7 +166,7 @@
     }
   },
   "clickOnBakerPrompt": {
-    "message": "Click on the Baker you want to delegate funds to. This list is powered by $link$.",
+    "message": "List of known delegates coming soon.",
     "placeholders": {
       "link": {
         "content": "$1"
@@ -205,7 +205,7 @@
     "message": "Delegated to:"
   },
   "delegatingMotivation": {
-    "message": "Delegating your funds to bakers is a great way of earning interest on your balance"
+    "message": "Delegating your funds to producers is a great way of earning interest on your balance"
   },
   "reDelegate": {
     "message": "Re-delegate"
@@ -849,10 +849,10 @@
     "message": "Delegation"
   },
   "baker": {
-    "message": "Baker"
+    "message": "Producer"
   },
   "bakerInputDescription": {
-    "message": "Address of a registered baker."
+    "message": "Address of a registered producer."
   },
   "bakerInputPlaceholder": {
     "message": "e.g. tz1a9w1S7hN5s..."
@@ -861,13 +861,13 @@
     "message": "Minimal delegation amount"
   },
   "unknownBakerTitle": {
-    "message": "Unknown baker"
+    "message": "Unknown producer"
   },
   "unknownBakerDescription": {
-    "message": "Provided address is not known to us as a baker! Only delegate funds to it at your own risk."
+    "message": "Provided address is not known to us as a produder! Only delegate funds to it at your own risk."
   },
   "delegateToRecommendedBakers": {
-    "message": "Delegate to Recommended Bakers"
+    "message": "Delegate to Recommended Producers"
   },
   "sortBy": {
     "message": "Sort by"
@@ -912,13 +912,13 @@
     "message": "Minimal fee for this transaction is greater than your balance."
   },
   "alreadyDelegatedFundsToBaker": {
-    "message": "Already delegated funds to this baker. Re-delegation is not possible."
+    "message": "Already delegated funds to this producer. Re-delegation is not possible."
   },
   "bakerNotRegistered": {
-    "message": "Specified baker is not registered."
+    "message": "Specified producer is not registered."
   },
   "unableToPerformActionToBaker": {
-    "message": "Unable to $action$ to the provided Baker.",
+    "message": "Unable to $action$ to the provided Producer.",
     "placeholders": {
       "action": {
         "content": "$1"
