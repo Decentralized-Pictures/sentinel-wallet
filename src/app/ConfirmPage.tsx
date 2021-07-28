@@ -1,43 +1,59 @@
-import * as React from "react";
+import React, {
+  FC,
+  Fragment,
+  memo,
+  Suspense,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+
 import classNames from "clsx";
-import { useLocation } from "lib/woozie";
+
+import AccountTypeBadge from "app/atoms/AccountTypeBadge";
+import Alert from "app/atoms/Alert";
+import ConfirmLedgerOverlay from "app/atoms/ConfirmLedgerOverlay";
+import FormSecondaryButton from "app/atoms/FormSecondaryButton";
+import FormSubmitButton from "app/atoms/FormSubmitButton";
+import HashShortView from "app/atoms/HashShortView";
+import Identicon from "app/atoms/Identicon";
+import Money from "app/atoms/Money";
+import Name from "app/atoms/Name";
+import Spinner from "app/atoms/Spinner";
+import SubTitle from "app/atoms/SubTitle";
+import ErrorBoundary from "app/ErrorBoundary";
+import ContentContainer from "app/layouts/ContentContainer";
+import Unlock from "app/pages/Unlock";
+import AccountBanner from "app/templates/AccountBanner";
+import Balance from "app/templates/Balance";
+import ConnectBanner from "app/templates/ConnectBanner";
+import CustomSelect, { OptionRenderProps } from "app/templates/CustomSelect";
+import DAppLogo from "app/templates/DAppLogo";
+import ModifyStorageLimitSection from "app/templates/ModifyStorageLimitSection";
+import NetworkBanner from "app/templates/NetworkBanner";
+import OperationView from "app/templates/OperationView";
+import { CustomRpsContext } from "lib/analytics";
+import { T, t } from "lib/i18n/react";
+import { useRetryableSWR } from "lib/swr";
 import {
   useTempleClient,
   useAccount,
   useRelevantAccounts,
+  useCustomChainId,
   TempleAccountType,
   TempleDAppPayload,
   TempleAccount,
+  TempleChainId,
 } from "lib/temple/front";
-import { useRetryableSWR } from "lib/swr";
 import useSafeState from "lib/ui/useSafeState";
-import { T, t } from "lib/i18n/react";
-import ErrorBoundary from "app/ErrorBoundary";
-import Unlock from "app/pages/Unlock";
-import ContentContainer from "app/layouts/ContentContainer";
-import AccountBanner from "app/templates/AccountBanner";
-import NetworkBanner from "app/templates/NetworkBanner";
-import Balance from "app/templates/Balance";
-import CustomSelect, { OptionRenderProps } from "app/templates/CustomSelect";
-import Identicon from "app/atoms/Identicon";
-import Name from "app/atoms/Name";
-import AccountTypeBadge from "app/atoms/AccountTypeBadge";
-import Alert from "app/atoms/Alert";
-import Money from "app/atoms/Money";
-import Spinner from "app/atoms/Spinner";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import FormSecondaryButton from "app/atoms/FormSecondaryButton";
-import ConfirmLedgerOverlay from "app/atoms/ConfirmLedgerOverlay";
-import HashShortView from "app/atoms/HashShortView";
-import SubTitle from "app/atoms/SubTitle";
-import DAppLogo from "app/templates/DAppLogo";
-import OperationView from "app/templates/OperationView";
-import ConnectBanner from "app/templates/ConnectBanner";
+import { useLocation } from "lib/woozie";
 
-const ConfirmPage: React.FC = () => {
+import { ConfirmPageSelectors } from "./ConfirmPage.selectors";
+
+const ConfirmPage: FC = () => {
   const { ready } = useTempleClient();
 
-  return React.useMemo(
+  return useMemo(
     () =>
       ready ? (
         <ContentContainer
@@ -48,7 +64,7 @@ const ConfirmPage: React.FC = () => {
           )}
         >
           <ErrorBoundary whileMessage={t("fetchingConfirmationDetails")}>
-            <React.Suspense
+            <Suspense
               fallback={
                 <div className="flex items-center justify-center h-screen">
                   <div>
@@ -58,7 +74,7 @@ const ConfirmPage: React.FC = () => {
               }
             >
               <ConfirmDAppForm />
-            </React.Suspense>
+            </Suspense>
           </ErrorBoundary>
         </ContentContainer>
       ) : (
@@ -72,7 +88,7 @@ export default ConfirmPage;
 
 const getPkh = (account: TempleAccount) => account.publicKeyHash;
 
-const ConfirmDAppForm: React.FC = () => {
+const ConfirmDAppForm: FC = () => {
   const {
     getDAppPayload,
     confirmDAppPermission,
@@ -82,12 +98,12 @@ const ConfirmDAppForm: React.FC = () => {
   const allAccounts = useRelevantAccounts(false);
   const account = useAccount();
 
-  const [accountPkhToConnect, setAccountPkhToConnect] = React.useState(
+  const [accountPkhToConnect, setAccountPkhToConnect] = useState(
     account.publicKeyHash
   );
 
   const loc = useLocation();
-  const id = React.useMemo(() => {
+  const id = useMemo(() => {
     const usp = new URLSearchParams(loc.search);
     const id = usp.get("id");
     if (!id) {
@@ -104,7 +120,10 @@ const ConfirmDAppForm: React.FC = () => {
   });
   const payload = data!;
 
-  const connectedAccount = React.useMemo(
+  const chainId = useCustomChainId(payload.networkRpc, true)!;
+  const mainnet = chainId === TempleChainId.Mainnet;
+
+  const connectedAccount = useMemo(
     () =>
       allAccounts.find(
         (a) =>
@@ -114,19 +133,19 @@ const ConfirmDAppForm: React.FC = () => {
     [payload, allAccounts, accountPkhToConnect]
   );
 
-  const AccountOptionContent = React.useMemo(
+  const AccountOptionContent = useMemo(
     () => AccountOptionContentHOC(payload.networkRpc),
     [payload.networkRpc]
   );
 
-  const onConfirm = React.useCallback(
-    async (confimed: boolean) => {
+  const onConfirm = useCallback(
+    async (confimed: boolean, modifiedStorageLimit?: number) => {
       switch (payload.type) {
         case "connect":
           return confirmDAppPermission(id, confimed, accountPkhToConnect);
 
         case "confirm_operations":
-          return confirmDAppOperation(id, confimed);
+          return confirmDAppOperation(id, confimed, modifiedStorageLimit);
 
         case "sign":
           return confirmDAppSign(id, confimed);
@@ -145,12 +164,18 @@ const ConfirmDAppForm: React.FC = () => {
   const [error, setError] = useSafeState<any>(null);
   const [confirming, setConfirming] = useSafeState(false);
   const [declining, setDeclining] = useSafeState(false);
+  const [modifiedStorageLimitValue, setModifiedStorageLimitValue] =
+    useSafeState(
+      (payload.type === "confirm_operations" &&
+        payload.estimates?.[0].storageLimit) ||
+        0
+    );
 
-  const confirm = React.useCallback(
+  const confirm = useCallback(
     async (confirmed: boolean) => {
       setError(null);
       try {
-        await onConfirm(confirmed);
+        await onConfirm(confirmed, modifiedStorageLimitValue);
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
           console.error(err);
@@ -161,10 +186,10 @@ const ConfirmDAppForm: React.FC = () => {
         setError(err);
       }
     },
-    [onConfirm, setError]
+    [onConfirm, setError, modifiedStorageLimitValue]
   );
 
-  const handleConfirmClick = React.useCallback(async () => {
+  const handleConfirmClick = useCallback(async () => {
     if (confirming || declining) return;
 
     setConfirming(true);
@@ -172,7 +197,7 @@ const ConfirmDAppForm: React.FC = () => {
     setConfirming(false);
   }, [confirming, declining, setConfirming, confirm]);
 
-  const handleDeclineClick = React.useCallback(async () => {
+  const handleDeclineClick = useCallback(async () => {
     if (confirming || declining) return;
 
     setDeclining(true);
@@ -180,25 +205,27 @@ const ConfirmDAppForm: React.FC = () => {
     setDeclining(false);
   }, [confirming, declining, setDeclining, confirm]);
 
-  const handleErrorAlertClose = React.useCallback(() => setError(null), [
-    setError,
-  ]);
+  const handleErrorAlertClose = useCallback(() => setError(null), [setError]);
 
-  const content = React.useMemo(() => {
+  const content = useMemo(() => {
     switch (payload.type) {
       case "connect":
         return {
           title: t("confirmAction", t("connection").toLowerCase()),
           declineActionTitle: t("cancel"),
+          declineActionTestID: ConfirmPageSelectors.ConnectAction_CancelButton,
           confirmActionTitle: error ? t("retry") : t("connect"),
+          confirmActionTestID: error
+            ? ConfirmPageSelectors.ConnectAction_RetryButton
+            : ConfirmPageSelectors.ConnectAction_ConnectButton,
           want: (
             <T
               id="appWouldLikeToConnectToYourWallet"
               substitutions={[
-                <React.Fragment key="appName">
+                <Fragment key="appName">
                   <span className="font-semibold">{payload.origin}</span>
                   <br />
-                </React.Fragment>,
+                </Fragment>,
               ]}
             >
               {(message) => (
@@ -214,7 +241,12 @@ const ConfirmDAppForm: React.FC = () => {
         return {
           title: t("confirmAction", t("operations").toLowerCase()),
           declineActionTitle: t("reject"),
+          declineActionTestID:
+            ConfirmPageSelectors.ConfirmOperationsAction_RejectButton,
           confirmActionTitle: error ? t("retry") : t("confirm"),
+          confirmActionTestID: error
+            ? ConfirmPageSelectors.ConfirmOperationsAction_RetryButton
+            : ConfirmPageSelectors.ConfirmOperationsAction_ConfirmButton,
           want: (
             <div
               className={classNames(
@@ -244,7 +276,9 @@ const ConfirmDAppForm: React.FC = () => {
         return {
           title: t("confirmAction", t("signAction").toLowerCase()),
           declineActionTitle: t("reject"),
+          declineActionTestID: ConfirmPageSelectors.SignAction_RejectButton,
           confirmActionTitle: t("signAction"),
+          confirmActionTestID: ConfirmPageSelectors.SignAction_SignButton,
           want: (
             <div
               className={classNames(
@@ -272,165 +306,192 @@ const ConfirmDAppForm: React.FC = () => {
     }
   }, [payload.type, payload.origin, payload.appMeta.name, error]);
 
+  const modifiedStorageLimitDisplayed = useMemo(
+    () =>
+      payload.type === "confirm_operations" &&
+      payload.estimates &&
+      payload.estimates.length < 2,
+    [payload]
+  );
+
   return (
-    <div
-      className={classNames(
-        "relative bg-white rounded-md shadow-md overflow-y-auto",
-        "flex flex-col"
-      )}
-      style={{
-        width: 380,
-        height: 578,
-      }}
-    >
-      <div className="flex flex-col items-center px-4 py-2">
-        <SubTitle
-          className={payload.type === "connect" ? "mt-4 mb-6" : "mt-4 mb-2"}
-        >
-          {content.title}
-        </SubTitle>
-
-        {payload.type === "connect" && (
-          <ConnectBanner
-            type={payload.type}
-            origin={payload.origin}
-            appMeta={payload.appMeta}
-            className="mb-4"
-          />
-        )}
-
-        {content.want}
-
-        {payload.type === "connect" && (
-          <T id="viewAccountAddressWarning">
-            {(message) => (
-              <p className="mb-4 text-xs font-light text-center text-gray-700">
-                {message}
-              </p>
-            )}
-          </T>
-        )}
-
-        {error ? (
-          <Alert
-            closable
-            onClose={handleErrorAlertClose}
-            type="error"
-            title="Error"
-            description={error?.message ?? t("smthWentWrong")}
-            className="my-4"
-            autoFocus
-          />
-        ) : (
-          <>
-            {payload.type !== "connect" && connectedAccount && (
-              <AccountBanner
-                account={connectedAccount}
-                networkRpc={payload.networkRpc}
-                labelIndent="sm"
-                className="w-full mb-4"
-              />
-            )}
-
-            <NetworkBanner
-              rpc={payload.networkRpc}
-              narrow={payload.type === "connect"}
-            />
-
-            {payload.type === "connect" ? (
-              <div className={classNames("w-full", "flex flex-col")}>
-                <h2
-                  className={classNames(
-                    "mb-2",
-                    "leading-tight",
-                    "flex flex-col"
-                  )}
-                >
-                  <T id="account">
-                    {(message) => (
-                      <span className="text-base font-semibold text-gray-700">
-                        {message}
-                      </span>
-                    )}
-                  </T>
-
-                  <T id="toBeConnectedWithDApp">
-                    {(message) => (
-                      <span
-                        className={classNames(
-                          "mt-px",
-                          "text-xs font-light text-gray-600"
-                        )}
-                        style={{ maxWidth: "90%" }}
-                      >
-                        {message}
-                      </span>
-                    )}
-                  </T>
-                </h2>
-
-                <CustomSelect<TempleAccount, string>
-                  activeItemId={accountPkhToConnect}
-                  getItemId={getPkh}
-                  items={allAccounts}
-                  maxHeight="8rem"
-                  onSelect={setAccountPkhToConnect}
-                  OptionIcon={AccountIcon}
-                  OptionContent={AccountOptionContent}
-                  autoFocus
-                />
-              </div>
-            ) : (
-              <OperationView
-                payload={payload}
-                networkRpc={payload.networkRpc}
-              />
-            )}
-          </>
-        )}
-      </div>
-
-      <div className="flex-1" />
-
+    <CustomRpsContext.Provider value={payload.networkRpc}>
       <div
         className={classNames(
-          "sticky bottom-0 w-full",
-          "bg-white shadow-md",
-          "flex items-stretch",
-          "px-4 pt-2 pb-4"
+          "relative bg-white rounded-md shadow-md overflow-y-auto",
+          "flex flex-col"
         )}
+        style={{
+          width: 380,
+          height: 610,
+        }}
       >
-        <div className="w-1/2 pr-2">
-          <FormSecondaryButton
-            type="button"
-            className="justify-center w-full"
-            loading={declining}
-            onClick={handleDeclineClick}
+        <div className="flex flex-col items-center px-4 py-2">
+          <SubTitle
+            small
+            className={payload.type === "connect" ? "mt-4 mb-6" : "mt-4 mb-2"}
           >
-            {content.declineActionTitle}
-          </FormSecondaryButton>
+            {content.title}
+          </SubTitle>
+
+          {payload.type === "connect" && (
+            <ConnectBanner
+              type={payload.type}
+              origin={payload.origin}
+              appMeta={payload.appMeta}
+              className="mb-4"
+            />
+          )}
+
+          {content.want}
+
+          {payload.type === "connect" && (
+            <T id="viewAccountAddressWarning">
+              {(message) => (
+                <p className="mb-4 text-xs font-light text-center text-gray-700">
+                  {message}
+                </p>
+              )}
+            </T>
+          )}
+
+          {error ? (
+            <Alert
+              closable
+              onClose={handleErrorAlertClose}
+              type="error"
+              title="Error"
+              description={error?.message ?? t("smthWentWrong")}
+              className="my-4"
+              autoFocus
+            />
+          ) : (
+            <>
+              {payload.type !== "connect" && connectedAccount && (
+                <AccountBanner
+                  account={connectedAccount}
+                  networkRpc={payload.networkRpc}
+                  labelIndent="sm"
+                  className="w-full mb-4"
+                />
+              )}
+
+              <NetworkBanner
+                rpc={payload.networkRpc}
+                narrow={payload.type === "connect"}
+              />
+
+              {payload.type === "connect" ? (
+                <div className={classNames("w-full", "flex flex-col")}>
+                  <h2
+                    className={classNames(
+                      "mb-2",
+                      "leading-tight",
+                      "flex flex-col"
+                    )}
+                  >
+                    <T id="account">
+                      {(message) => (
+                        <span className="text-base font-semibold text-gray-700">
+                          {message}
+                        </span>
+                      )}
+                    </T>
+
+                    <T id="toBeConnectedWithDApp">
+                      {(message) => (
+                        <span
+                          className={classNames(
+                            "mt-px",
+                            "text-xs font-light text-gray-600"
+                          )}
+                          style={{ maxWidth: "90%" }}
+                        >
+                          {message}
+                        </span>
+                      )}
+                    </T>
+                  </h2>
+
+                  <CustomSelect<TempleAccount, string>
+                    activeItemId={accountPkhToConnect}
+                    getItemId={getPkh}
+                    items={allAccounts}
+                    maxHeight="8rem"
+                    onSelect={setAccountPkhToConnect}
+                    OptionIcon={AccountIcon}
+                    OptionContent={AccountOptionContent}
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <OperationView
+                  payload={payload}
+                  networkRpc={payload.networkRpc}
+                  mainnet={mainnet}
+                  modifiedStorageLimit={modifiedStorageLimitValue}
+                />
+              )}
+            </>
+          )}
+
+          {modifiedStorageLimitDisplayed && (
+            <div className="w-full mt-2">
+              <ModifyStorageLimitSection
+                value={modifiedStorageLimitValue}
+                onChange={setModifiedStorageLimitValue}
+                style={{ marginTop: 0 }}
+              />
+            </div>
+          )}
         </div>
 
-        <div className="w-1/2 pl-2">
-          <FormSubmitButton
-            type="button"
-            className="justify-center w-full"
-            loading={confirming}
-            onClick={handleConfirmClick}
-          >
-            {content.confirmActionTitle}
-          </FormSubmitButton>
+        <div className="flex-1" />
+
+        <div
+          className={classNames(
+            "sticky bottom-0 w-full",
+            "bg-white shadow-md",
+            "flex items-stretch",
+            "px-4 pt-2 pb-4"
+          )}
+        >
+          <div className="w-1/2 pr-2">
+            <FormSecondaryButton
+              type="button"
+              className="justify-center w-full"
+              loading={declining}
+              onClick={handleDeclineClick}
+              testID={content.declineActionTestID}
+            >
+              {content.declineActionTitle}
+            </FormSecondaryButton>
+          </div>
+
+          <div className="w-1/2 pl-2">
+            <FormSubmitButton
+              type="button"
+              className="justify-center w-full"
+              loading={confirming}
+              onClick={handleConfirmClick}
+              testID={content.confirmActionTestID}
+            >
+              {content.confirmActionTitle}
+            </FormSubmitButton>
+          </div>
         </div>
+
+        <ConfirmLedgerOverlay
+          displayed={
+            confirming && connectedAccount?.type === TempleAccountType.Ledger
+          }
+        />
       </div>
-
-      <ConfirmLedgerOverlay
-        displayed={confirming && account.type === TempleAccountType.Ledger}
-      />
-    </div>
+    </CustomRpsContext.Provider>
   );
 };
 
-const AccountIcon: React.FC<OptionRenderProps<TempleAccount>> = ({ item }) => (
+const AccountIcon: FC<OptionRenderProps<TempleAccount>> = ({ item }) => (
   <Identicon
     type="bottts"
     hash={item.publicKeyHash}
@@ -440,7 +501,7 @@ const AccountIcon: React.FC<OptionRenderProps<TempleAccount>> = ({ item }) => (
 );
 
 const AccountOptionContentHOC = (networkRpc: string) => {
-  return React.memo<OptionRenderProps<TempleAccount>>(({ item: acc }) => (
+  return memo<OptionRenderProps<TempleAccount>>(({ item: acc }) => (
     <>
       <div className="flex flex-wrap items-center">
         <Name className="text-sm font-medium leading-tight">{acc.name}</Name>

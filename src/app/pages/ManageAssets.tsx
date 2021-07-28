@@ -1,6 +1,14 @@
-import * as React from "react";
+import React, { FC, memo, useCallback, useMemo, useRef, useState } from "react";
+
 import classNames from "clsx";
-import { Link } from "lib/woozie";
+
+import Checkbox from "app/atoms/Checkbox";
+import { ReactComponent as AddIcon } from "app/icons/add-to-list.svg";
+import { ReactComponent as ControlCentreIcon } from "app/icons/control-centre.svg";
+import { ReactComponent as SearchIcon } from "app/icons/search.svg";
+import PageLayout from "app/layouts/PageLayout";
+import AssetIcon from "app/templates/AssetIcon";
+import SearchAssetField from "app/templates/SearchAssetField";
 import { T } from "lib/i18n/react";
 import {
   useTokens,
@@ -10,15 +18,11 @@ import {
   TempleAssetType,
   useNetwork,
 } from "lib/temple/front";
-import PageLayout from "app/layouts/PageLayout";
-import AssetIcon from "app/templates/AssetIcon";
-import SearchAssetField from "app/templates/SearchAssetField";
-import Checkbox from "app/atoms/Checkbox";
-import { ReactComponent as ControlCentreIcon } from "app/icons/control-centre.svg";
-import { ReactComponent as AddIcon } from "app/icons/add-to-list.svg";
-import { ReactComponent as SearchIcon } from "app/icons/search.svg";
+import { Link } from "lib/woozie";
 
-const ManageAssets: React.FC = () => (
+import { ManageAssetsSelectors } from "./ManageAssets.selectors";
+
+const ManageAssets: FC = () => (
   <PageLayout
     pageTitle={
       <>
@@ -33,14 +37,14 @@ const ManageAssets: React.FC = () => (
 
 export default ManageAssets;
 
-const ManageAssetsContent: React.FC = () => {
+const ManageAssetsContent: FC = () => {
   const network = useNetwork();
   const { displayedAndHiddenTokens, updateToken } = useTokens();
 
-  const netIdRef = React.useRef<string>();
-  const sortIndexes = React.useRef<Map<string, number>>();
+  const netIdRef = useRef<string>();
+  const sortIndexes = useRef<Map<string, number>>();
 
-  const checkableTokens = React.useMemo(() => {
+  const checkableTokens = useMemo(() => {
     const unsorted = displayedAndHiddenTokens.map((t) =>
       t.status === "displayed" ? toChecked(t) : toUnchecked(t)
     );
@@ -61,14 +65,14 @@ const ManageAssetsContent: React.FC = () => {
     );
   }
 
-  const [searchValue, setSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = useState("");
 
-  const filteredTokens = React.useMemo(
+  const filteredTokens = useMemo(
     () => searchAssets(checkableTokens, searchValue),
     [checkableTokens, searchValue]
   );
 
-  const handleAssetChecked = React.useCallback(
+  const handleAssetChecked = useCallback(
     (asset: CheckableAsset, checked: boolean) => {
       const plain = toPlain(asset);
 
@@ -96,6 +100,7 @@ const ManageAssetsContent: React.FC = () => {
             "hover:bg-gray-100",
             "opacity-75 hover:opacity-100 focus:opacity-100"
           )}
+          testID={ManageAssetsSelectors.AddTokenButton}
         >
           <AddIcon
             className={classNames("mr-1 h-5 w-auto stroke-current stroke-2")}
@@ -175,53 +180,51 @@ type ListItemProps = {
   onChecked: (asset: CheckableAsset, checked: boolean) => void;
 };
 
-const ListItem = React.memo<ListItemProps>(
-  ({ asset, last, checked, onChecked }) => {
-    const handleCheckboxChange = React.useCallback(
-      (evt) => {
-        onChecked(asset, evt.target.checked);
-      },
-      [asset, onChecked]
-    );
+const ListItem = memo<ListItemProps>(({ asset, last, checked, onChecked }) => {
+  const handleCheckboxChange = useCallback(
+    (evt) => {
+      onChecked(asset, evt.target.checked);
+    },
+    [asset, onChecked]
+  );
 
-    return (
-      <label
-        className={classNames(
-          "block w-full",
-          "overflow-hidden",
-          !last && "border-b border-gray-200",
-          checked ? "bg-gray-100" : "hover:bg-gray-100 focus:bg-gray-100",
-          "flex items-center py-2 px-3",
-          "text-gray-700",
-          "transition ease-in-out duration-200",
-          "focus:outline-none",
-          "cursor-pointer"
-        )}
-      >
-        <AssetIcon asset={asset} size={32} className="mr-3" />
+  return (
+    <label
+      className={classNames(
+        "block w-full",
+        "overflow-hidden",
+        !last && "border-b border-gray-200",
+        checked ? "bg-gray-100" : "hover:bg-gray-100 focus:bg-gray-100",
+        "flex items-center py-2 px-3",
+        "text-gray-700",
+        "transition ease-in-out duration-200",
+        "focus:outline-none",
+        "cursor-pointer"
+      )}
+    >
+      <AssetIcon asset={asset} size={32} className="mr-3 flex-shrink-0" />
 
-        <div className="flex items-center">
-          <div className="flex flex-col items-start">
-            <div
-              className={classNames("text-sm font-normal text-gray-700")}
-              style={{ marginBottom: "0.125rem" }}
-            >
-              {asset.name}
-            </div>
+      <div className="flex items-center">
+        <div className="flex flex-col items-start">
+          <div
+            className={classNames("text-sm font-normal text-gray-700")}
+            style={{ marginBottom: "0.125rem" }}
+          >
+            {asset.name}
+          </div>
 
-            <div className={classNames("text-xs font-light text-gray-600")}>
-              {asset.symbol}
-            </div>
+          <div className={classNames("text-xs font-light text-gray-600")}>
+            {asset.symbol}
           </div>
         </div>
+      </div>
 
-        <div className="flex-1" />
+      <div className="flex-1" />
 
-        <Checkbox checked={checked} onChange={handleCheckboxChange} />
-      </label>
-    );
-  }
-);
+      <Checkbox checked={checked} onChange={handleCheckboxChange} />
+    </label>
+  );
+});
 
 type CheckableAsset = TempleAsset & { checked: boolean };
 

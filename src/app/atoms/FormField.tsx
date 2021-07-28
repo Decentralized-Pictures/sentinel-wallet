@@ -1,29 +1,41 @@
-import * as React from "react";
+import React, {
+  forwardRef,
+  InputHTMLAttributes,
+  ReactNode,
+  TextareaHTMLAttributes,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import classNames from "clsx";
-import { T } from "lib/i18n/react";
+
 import CleanButton from "app/atoms/CleanButton";
 import { ReactComponent as LockAltIcon } from "app/icons/lock-alt.svg";
+import { T } from "lib/i18n/react";
 
 type FormFieldRef = HTMLInputElement | HTMLTextAreaElement;
-type FormFieldAttrs = React.InputHTMLAttributes<HTMLInputElement> &
-  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type FormFieldAttrs = InputHTMLAttributes<HTMLInputElement> &
+  TextareaHTMLAttributes<HTMLTextAreaElement>;
 interface FormFieldProps extends FormFieldAttrs {
-  extraSection?: React.ReactNode;
-  label?: React.ReactNode;
-  labelDescription?: React.ReactNode;
-  errorCaption?: React.ReactNode;
+  extraSection?: ReactNode;
+  label?: ReactNode;
+  labelDescription?: ReactNode;
+  errorCaption?: ReactNode;
   containerClassName?: string;
   textarea?: boolean;
   secret?: boolean;
   cleanable?: boolean;
-  extraButton?: React.ReactNode;
-  extraInner?: React.ReactNode;
+  extraButton?: ReactNode;
+  extraInner?: ReactNode;
   onClean?: () => void;
   fieldWrapperBottomMargin?: boolean;
   labelPaddingClassName?: string;
 }
 
-const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
+const FormField = forwardRef<FormFieldRef, FormFieldProps>(
   (
     {
       extraSection,
@@ -55,12 +67,10 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
     const secret = secretProp && textarea;
     const Field = textarea ? "textarea" : "input";
 
-    const [localValue, setLocalValue] = React.useState(
-      value ?? defaultValue ?? ""
-    );
-    const [focused, setFocused] = React.useState(false);
+    const [localValue, setLocalValue] = useState(value ?? defaultValue ?? "");
+    const [focused, setFocused] = useState(false);
 
-    const handleChange = React.useCallback(
+    const handleChange = useCallback(
       (evt) => {
         if (onChange) {
           onChange(evt);
@@ -74,7 +84,7 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
       [onChange, setLocalValue]
     );
 
-    const handleFocus = React.useCallback(
+    const handleFocus = useCallback(
       (evt) => {
         if (onFocus) {
           onFocus(evt);
@@ -88,7 +98,7 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
       [onFocus, setFocused]
     );
 
-    const handleBlur = React.useCallback(
+    const handleBlur = useCallback(
       (evt) => {
         if (onBlur) {
           onBlur(evt);
@@ -102,12 +112,12 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
       [onBlur, setFocused]
     );
 
-    const getFieldEl = React.useCallback(() => {
+    const getFieldEl = useCallback(() => {
       const selector = "input, textarea";
       return rootRef.current?.querySelector<HTMLFormElement>(selector);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (secret && focused) {
         const handleBlur = () => {
           getFieldEl()?.blur();
@@ -120,18 +130,18 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
       return;
     }, [secret, focused, getFieldEl]);
 
-    const secretBannerDisplayed = React.useMemo(
+    const secretBannerDisplayed = useMemo(
       () => Boolean(secret && localValue && !focused),
       [secret, localValue, focused]
     );
 
-    const rootRef = React.useRef<HTMLDivElement>(null);
+    const rootRef = useRef<HTMLDivElement>(null);
 
-    const handleSecretBannerClick = React.useCallback(() => {
+    const handleSecretBannerClick = useCallback(() => {
       getFieldEl()?.focus();
     }, [getFieldEl]);
 
-    const handleCleanClick = React.useCallback(() => {
+    const handleCleanClick = useCallback(() => {
       if (onClean) {
         onClean();
       }
@@ -184,7 +194,7 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
               "appearance-none",
               "w-full",
               "py-3 pl-4",
-              extraInner ? "pr-20" : "pr-4",
+              extraInner ? "pr-32" : "pr-4",
               "border-2",
               errorCaption ? "border-red-500" : "border-gray-300",
               "focus:border-primary-orange",
@@ -211,7 +221,7 @@ const FormField = React.forwardRef<FormFieldRef, FormFieldProps>(
             <div
               className={classNames(
                 "overflow-hidden",
-                "absolute inset-y-0 right-0 w-20",
+                "absolute inset-y-0 right-0 w-32",
                 "flex items-center justify-end",
                 "opacity-50",
                 "pointer-events-none"

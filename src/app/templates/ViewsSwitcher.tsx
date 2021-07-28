@@ -1,11 +1,15 @@
+import React, { FunctionComponent, memo, SVGProps } from "react";
+
 import classNames from "clsx";
-import React from "react";
+
+import { Button } from "app/atoms/Button";
+import { TestIDProps } from "lib/analytics";
 
 export type ViewsSwitcherItemProps = {
-  Icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  Icon: FunctionComponent<SVGProps<SVGSVGElement>>;
   key: string;
   name: string;
-};
+} & TestIDProps;
 
 export type ViewsSwitcherProps = {
   activeItem: ViewsSwitcherItemProps;
@@ -13,7 +17,7 @@ export type ViewsSwitcherProps = {
   onChange: (item: ViewsSwitcherItemProps) => void;
 };
 
-const ViewsSwitcher = React.memo(
+const ViewsSwitcher = memo(
   ({ activeItem, items, onChange }: ViewsSwitcherProps) => (
     <div className={classNames("flex items-center")}>
       {items.map((spf, i, arr) => {
@@ -23,7 +27,7 @@ const ViewsSwitcher = React.memo(
         const handleClick = () => onChange(spf);
 
         return (
-          <button
+          <Button
             key={spf.key}
             className={classNames(
               (() => {
@@ -47,12 +51,13 @@ const ViewsSwitcher = React.memo(
               "flex items-center"
             )}
             onClick={handleClick}
+            testID={spf.testID}
           >
             <spf.Icon
               className={classNames("h-4 w-auto mr-1", "stroke-current")}
             />
             {spf.name}
-          </button>
+          </Button>
         );
       })}
     </div>

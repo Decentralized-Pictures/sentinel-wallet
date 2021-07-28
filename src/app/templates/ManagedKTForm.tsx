@@ -1,6 +1,20 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from "react";
+
 import classNames from "clsx";
 import { Controller, useForm } from "react-hook-form";
+
+import AccountTypeBadge from "app/atoms/AccountTypeBadge";
+import Alert from "app/atoms/Alert";
+import FormSubmitButton from "app/atoms/FormSubmitButton";
+import Identicon from "app/atoms/Identicon";
+import Money from "app/atoms/Money";
+import Name from "app/atoms/Name";
+import NoSpaceField from "app/atoms/NoSpaceField";
+import Balance from "app/templates/Balance";
+import CustomSelect, { OptionRenderProps } from "app/templates/CustomSelect";
+import { useFormAnalytics } from "lib/analytics";
+import { T, t } from "lib/i18n/react";
+import { useRetryableSWR } from "lib/swr";
 import {
   TempleAccountType,
   isAddressValid,
@@ -10,19 +24,9 @@ import {
   useTempleClient,
   useChainId,
   isKnownChainId,
+  ImportAccountFormType,
 } from "lib/temple/front";
 import { getOneUserContracts, TzktRelatedContract } from "lib/tzkt";
-import { T, t } from "lib/i18n/react";
-import { useRetryableSWR } from "lib/swr";
-import CustomSelect, { OptionRenderProps } from "app/templates/CustomSelect";
-import Balance from "app/templates/Balance";
-import NoSpaceField from "app/atoms/NoSpaceField";
-import Identicon from "app/atoms/Identicon";
-import Name from "app/atoms/Name";
-import AccountTypeBadge from "app/atoms/AccountTypeBadge";
-import Money from "app/atoms/Money";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import Alert from "app/atoms/Alert";
 
 type ImportKTAccountFormData = {
   contractAddress: string;
@@ -30,13 +34,14 @@ type ImportKTAccountFormData = {
 
 const getContractAddress = (contract: TzktRelatedContract) => contract.address;
 
-const ManagedKTForm: React.FC = () => {
+const ManagedKTForm: FC = () => {
   const accounts = useRelevantAccounts();
   const tezos = useTezos();
   const { importKTManagedAccount } = useTempleClient();
+  const formAnalytics = useFormAnalytics(ImportAccountFormType.ManagedKT);
   const chainId = useChainId(true);
 
-  const [error, setError] = useState<React.ReactNode>(null);
+  const [error, setError] = useState<ReactNode>(null);
 
   const queryKey = useMemo(
     () => [
@@ -79,7 +84,7 @@ const ManagedKTForm: React.FC = () => {
     []
   );
 
-  const validateContractAddress = React.useCallback(
+  const validateContractAddress = useCallback(
     (value?: any) => {
       switch (false) {
         case value?.length > 0:
@@ -126,6 +131,7 @@ const ManagedKTForm: React.FC = () => {
         return;
       }
 
+      formAnalytics.trackSubmit();
       setError(null);
       try {
         const contract = await tezos.contract.at(contractAddress);
@@ -140,7 +146,11 @@ const ManagedKTForm: React.FC = () => {
 
         const chainId = await tezos.rpc.getChainId();
         await importKTManagedAccount(contractAddress, chainId, owner);
+
+        formAnalytics.trackSubmitSuccess();
       } catch (err) {
+        formAnalytics.trackSubmitFail();
+
         if (process.env.NODE_ENV === "development") {
           console.error(err);
         }
@@ -150,7 +160,7 @@ const ManagedKTForm: React.FC = () => {
         setError(err.message);
       }
     },
-    [formState, tezos, accounts, importKTManagedAccount]
+    [formState, tezos, accounts, importKTManagedAccount, formAnalytics]
   );
 
   const handleKnownContractSelect = useCallback(
@@ -203,13 +213,14 @@ const ManagedKTForm: React.FC = () => {
               />
               <div className="ml-1 mr-px font-normal">
                 <T id="contract" />
-              </div>{" "}
+              </div>
+              {" "}
               (
               <Balance asset={TEZ_ASSET} address={filledAccount.address}>
                 {(bal) => (
                   <span className={classNames("text-xs leading-none")}>
                     <Money>{bal}</Money>{" "}
-                    <span style={{ fontSize: "0.75em" }}>ꜩ</span>
+                    <span style={{ fontSize: "0.75em" }}>ф</span>
                   </span>
                 )}
               </Balance>
@@ -287,7 +298,7 @@ export const getUsersContracts = async (
 
 type ContractOptionRenderProps = OptionRenderProps<TzktRelatedContract, string>;
 
-const ContractIcon: React.FC<ContractOptionRenderProps> = (props) => {
+const ContractIcon: FC<ContractOptionRenderProps> = (props) => {
   return (
     <Identicon
       type="bottts"
@@ -298,7 +309,7 @@ const ContractIcon: React.FC<ContractOptionRenderProps> = (props) => {
   );
 };
 
-const ContractOptionContent: React.FC<ContractOptionRenderProps> = (props) => {
+const ContractOptionContent: FC<ContractOptionRenderProps> = (props) => {
   const { item } = props;
 
   return (

@@ -1123,7 +1123,7 @@
     "message": "e.g. tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "e.g. alice.tlnt or tz1a9w1S7hN5s...",
+    "message": "e.g. tz1a9w1S7hN5s...",
     "description": "alice.tlnt= domain like google.com"
   },
   "tryingToTransferToYourself": {

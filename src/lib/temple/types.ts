@@ -1,4 +1,5 @@
 import { OperationContentsAndResult } from "@taquito/rpc";
+import { Estimate } from "@taquito/taquito/dist/types/contract/estimate";
 import {
   TempleDAppMetadata,
   TempleDAppNetwork,
@@ -29,8 +30,9 @@ export interface TempleState {
 
 export enum TempleChainId {
   Mainnet = "NetXdQprcVkpaWU",
-  Delphinet = "NetXm8tYqnMWky1",
   Edo2net = "NetXSgo1ZT2DRUG",
+  Florencenet = "NetXxkAx4woPLyu",
+  Delphinet = "NetXm8tYqnMWky1",
   Carthagenet = "NetXjD3HPJJjmcd",
 }
 
@@ -50,6 +52,12 @@ export type TempleAccount =
   | TempleLedgerAccount
   | TempleManagedKTAccount
   | TempleWatchOnlyAccount;
+
+export enum DerivationType {
+  ED25519 = 0,
+  SECP256K1 = 1,
+  P256 = 2,
+}
 
 export interface TempleLedgerAccount extends TempleAccountBase {
   type: TempleAccountType.Ledger;
@@ -82,6 +90,7 @@ export interface TempleAccountBase {
   publicKeyHash: string;
   hdIndex?: number;
   derivationPath?: string;
+  derivationType?: DerivationType;
 }
 
 export enum TempleAccountType {
@@ -198,6 +207,7 @@ export interface TempleOpsConfirmationPayload
   opParams: any[];
   bytesToSign?: string;
   rawToSign?: any;
+  estimates?: Estimate[];
 }
 
 export type TempleConfirmationPayload =
@@ -226,6 +236,7 @@ export interface TempleDAppOperationsPayload extends TempleDAppPayloadBase {
   opParams: any[];
   bytesToSign?: string;
   rawToSign?: any;
+  estimates?: Estimate[];
 }
 
 export interface TempleDAppSignPayload extends TempleDAppPayloadBase {
@@ -553,6 +564,7 @@ export interface TempleCreateLedgerAccountRequest extends TempleMessageBase {
   type: TempleMessageType.CreateLedgerAccountRequest;
   name: string;
   derivationPath?: string;
+  derivationType?: DerivationType;
 }
 
 export interface TempleCreateLedgerAccountResponse extends TempleMessageBase {
@@ -620,6 +632,7 @@ export interface TempleConfirmationRequest extends TempleMessageBase {
   type: TempleMessageType.ConfirmationRequest;
   id: string;
   confirmed: boolean;
+  modifiedStorageLimit?: number;
 }
 
 export interface TempleConfirmationResponse extends TempleMessageBase {
@@ -666,6 +679,7 @@ export interface TempleDAppOpsConfirmationRequest extends TempleMessageBase {
   type: TempleMessageType.DAppOpsConfirmationRequest;
   id: string;
   confirmed: boolean;
+  modifiedStorageLimit?: number;
 }
 
 export interface TempleDAppOpsConfirmationResponse extends TempleMessageBase {
@@ -702,3 +716,12 @@ export interface TempleRemoveDAppSessionResponse extends TempleMessageBase {
 }
 
 export type OperationsPreview = any[] | { branch: string; contents: any[] };
+
+export enum ImportAccountFormType {
+  PrivateKey = "ImportAccountFormType.PrivateKey",
+  Mnemonic = "ImportAccountFormType.Mnemonic",
+  Fundraiser = "ImportAccountFormType.Fundraiser",
+  FaucetFile = "ImportAccountFormType.FaucetFile",
+  ManagedKT = "ImportAccountFormType.ManagedKT",
+  WatchOnly = "ImportAccountFormType.WatchOnly",
+}

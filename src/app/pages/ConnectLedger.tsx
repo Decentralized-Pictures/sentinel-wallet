@@ -1,26 +1,39 @@
-import * as React from "react";
+import React, {
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import classNames from "clsx";
-import { useForm } from "react-hook-form";
-import { navigate } from "lib/woozie";
-import {
-  useTempleClient,
-  useSetAccountPkh,
-  useAllAccounts,
-  TempleAccountType,
-  validateDerivationPath,
-} from "lib/temple/front";
-import { T, t } from "lib/i18n/react";
-import PageLayout from "app/layouts/PageLayout";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import FormField from "app/atoms/FormField";
+import { Controller, useForm } from "react-hook-form";
+
 import Alert from "app/atoms/Alert";
+import ConfirmLedgerOverlay from "app/atoms/ConfirmLedgerOverlay";
+import FormField from "app/atoms/FormField";
+import FormSubmitButton from "app/atoms/FormSubmitButton";
 import { ReactComponent as LinkIcon } from "app/icons/link.svg";
 import { ReactComponent as OkIcon } from "app/icons/ok.svg";
-import ConfirmLedgerOverlay from "app/atoms/ConfirmLedgerOverlay";
+import PageLayout from "app/layouts/PageLayout";
+import { useFormAnalytics } from "lib/analytics";
+import { T, t } from "lib/i18n/react";
+import {
+  DerivationType,
+  TempleAccountType,
+  useAllAccounts,
+  useSetAccountPkh,
+  useTempleClient,
+  validateDerivationPath,
+} from "lib/temple/front";
+import { navigate } from "lib/woozie";
 
 type FormData = {
   name: string;
   customDerivationPath: string;
+  derivationType?: DerivationType;
   accountNumber?: number;
 };
 
@@ -39,23 +52,39 @@ const DERIVATION_PATHS = [
   },
 ];
 
-const ConnectLedger: React.FC = () => {
+const DERIVATION_TYPES = [
+  {
+    type: DerivationType.ED25519,
+    name: "ED25519 (tz1...)",
+  },
+  {
+    type: DerivationType.SECP256K1,
+    name: "SECP256K1 (tz2...)",
+  },
+  {
+    type: DerivationType.P256,
+    name: "P256 (tz3...)",
+  },
+];
+
+const ConnectLedger: FC = () => {
   const { createLedgerAccount } = useTempleClient();
   const allAccounts = useAllAccounts();
   const setAccountPkh = useSetAccountPkh();
+  const formAnalytics = useFormAnalytics("ConnectLedger");
 
-  const allLedgers = React.useMemo(
+  const allLedgers = useMemo(
     () => allAccounts.filter((acc) => acc.type === TempleAccountType.Ledger),
     [allAccounts]
   );
 
-  const defaultName = React.useMemo(
+  const defaultName = useMemo(
     () => t("defaultLedgerName", String(allLedgers.length + 1)),
     [allLedgers.length]
   );
 
-  const prevAccLengthRef = React.useRef(allAccounts.length);
-  React.useEffect(() => {
+  const prevAccLengthRef = useRef(allAccounts.length);
+  useEffect(() => {
     const accLength = allAccounts.length;
     if (prevAccLengthRef.current < accLength) {
       setAccountPkh(allAccounts[accLength - 1].publicKeyHash);
@@ -64,32 +93,46 @@ const ConnectLedger: React.FC = () => {
     prevAccLengthRef.current = accLength;
   }, [allAccounts, setAccountPkh]);
 
-  const { register, handleSubmit, errors, formState } = useForm<FormData>({
-    defaultValues: {
-      name: defaultName,
-      customDerivationPath: "m/44'/1729'/0'/0'",
-      accountNumber: 1,
-    },
-  });
+  const { control, register, handleSubmit, errors, formState } =
+    useForm<FormData>({
+      defaultValues: {
+        name: defaultName,
+        customDerivationPath: "m/44'/1729'/0'/0'",
+        accountNumber: 1,
+        derivationType: DerivationType.ED25519,
+      },
+    });
   const submitting = formState.isSubmitting;
 
-  const [error, setError] = React.useState<React.ReactNode>(null);
-  const [derivationPath, setDerivationPath] = React.useState(
-    DERIVATION_PATHS[0]
+  const [error, setError] = useState<ReactNode>(null);
+  const [derivationPathType, setDerivationPathType] = useState(
+    DERIVATION_PATHS[0].type
   );
 
-  const onSubmit = React.useCallback(
-    async ({ name, accountNumber, customDerivationPath }: FormData) => {
+  const onSubmit = useCallback(
+    async ({
+      name,
+      accountNumber,
+      customDerivationPath,
+      derivationType,
+    }: FormData) => {
       if (submitting) return;
+
       setError(null);
 
+      formAnalytics.trackSubmit();
       try {
         await createLedgerAccount(
           name,
+          derivationType,
           customDerivationPath ??
             (accountNumber && `m/44'/1729'/${accountNumber - 1}'/0'`)
         );
+
+        formAnalytics.trackSubmitSuccess();
       } catch (err) {
+        formAnalytics.trackSubmitFail();
+
         if (process.env.NODE_ENV === "development") {
           console.error(err);
         }
@@ -99,7 +142,7 @@ const ConnectLedger: React.FC = () => {
         setError(err.message);
       }
     },
-    [submitting, createLedgerAccount, setError]
+    [submitting, createLedgerAccount, setError, formAnalytics]
   );
 
   return (
@@ -145,19 +188,39 @@ const ConnectLedger: React.FC = () => {
               containerClassName="mb-4"
             />
 
+            <div className="mb-4 flex flex-col">
+              <h2 className="mb-4 leading-tight flex flex-col">
+                <span className="text-base font-semibold text-gray-700">
+                  <T id="derivationType" />{" "}
+                  <span className="text-sm font-light text-gray-600">
+                    <T id="optionalComment" />
+                  </span>
+                </span>
+
+                <span
+                  className="mt-1 text-xs font-light text-gray-600"
+                  style={{ maxWidth: "90%" }}
+                >
+                  <T id="derivationTypeFieldDescription" />
+                </span>
+              </h2>
+              <Controller
+                as={TypeSelect}
+                control={control}
+                name="derivationType"
+                options={DERIVATION_TYPES}
+              />
+            </div>
+
             <div className={classNames("mb-4", "flex flex-col")}>
               <h2
                 className={classNames("mb-4", "leading-tight", "flex flex-col")}
               >
                 <span className="text-base font-semibold text-gray-700">
-                  <T id="derivation" />{" "}
-                  <T id="optionalComment">
-                    {(message) => (
-                      <span className="text-sm font-light text-gray-600">
-                        {message}
-                      </span>
-                    )}
-                  </T>
+                  <T id="derivationPath" />{" "}
+                  <span className="text-sm font-light text-gray-600">
+                    <T id="optionalComment" />
+                  </span>
                 </span>
 
                 <span
@@ -175,60 +238,14 @@ const ConnectLedger: React.FC = () => {
                   <T id="clickOnCustomDerivationPath" />
                 </span>
               </h2>
-              <div
-                className={classNames(
-                  "rounded-md overflow-hidden",
-                  "border-2 bg-gray-100",
-                  "flex flex-col",
-                  "text-gray-700 text-sm leading-tight"
-                )}
-              >
-                {DERIVATION_PATHS.map((dp, i, arr) => {
-                  const last = i === arr.length - 1;
-                  const selected = derivationPath.type === dp.type;
-                  const handleClick = () => {
-                    setDerivationPath(dp);
-                  };
-
-                  return (
-                    <button
-                      key={dp.type}
-                      type="button"
-                      className={classNames(
-                        "block w-full",
-                        "overflow-hidden",
-                        !last && "border-b border-gray-200",
-                        selected
-                          ? "bg-gray-300"
-                          : "hover:bg-gray-200 focus:bg-gray-200",
-                        "flex items-center",
-                        "text-gray-700",
-                        "transition ease-in-out duration-200",
-                        "focus:outline-none",
-                        "opacity-90 hover:opacity-100"
-                      )}
-                      style={{
-                        padding: "0.4rem 0.375rem 0.4rem 0.375rem",
-                      }}
-                      onClick={handleClick}
-                    >
-                      {dp.name}
-                      <div className="flex-1" />
-                      {selected && (
-                        <OkIcon
-                          className={classNames("mx-2 h-4 w-auto stroke-2")}
-                          style={{
-                            stroke: "#777",
-                          }}
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+              <TypeSelect
+                options={DERIVATION_PATHS}
+                value={derivationPathType}
+                onChange={setDerivationPathType}
+              />
             </div>
 
-            {derivationPath.type === "another" && (
+            {derivationPathType === "another" && (
               <FormField
                 ref={register({
                   min: { value: 1, message: t("positiveIntMessage") },
@@ -244,7 +261,7 @@ const ConnectLedger: React.FC = () => {
               />
             )}
 
-            {derivationPath.type === "custom" && (
+            {derivationPathType === "custom" && (
               <FormField
                 ref={register({
                   required: t("required"),
@@ -276,3 +293,88 @@ const ConnectLedger: React.FC = () => {
 };
 
 export default ConnectLedger;
+
+type TypeSelectOption<T extends string | number> = {
+  type: T;
+  name: string;
+};
+type TypeSelectProps<T extends string | number> = {
+  options: TypeSelectOption<T>[];
+  value?: T;
+  onChange: (value: T) => void;
+};
+
+const TypeSelect = <T extends string | number>(props: TypeSelectProps<T>) => {
+  const { options, value, onChange } = props;
+
+  return (
+    <div
+      className={classNames(
+        "rounded-md overflow-hidden",
+        "border-2 bg-gray-100",
+        "flex flex-col",
+        "text-gray-700 text-sm leading-tight"
+      )}
+    >
+      {options.map((option, index) => (
+        <TypeSelectItem
+          key={option.type}
+          option={option}
+          onSelect={onChange}
+          selected={option.type === value}
+          last={index === options.length - 1}
+        />
+      ))}
+    </div>
+  );
+};
+
+type TypeSelectItemProps<T extends string | number> = {
+  option: TypeSelectOption<T>;
+  onSelect: (value: T) => void;
+  selected: boolean;
+  last: boolean;
+};
+
+const TypeSelectItem = <T extends string | number>(
+  props: TypeSelectItemProps<T>
+) => {
+  const { option, onSelect, selected, last } = props;
+
+  const handleClick = useCallback(
+    () => onSelect(option.type),
+    [onSelect, option.type]
+  );
+
+  return (
+    <button
+      type="button"
+      className={classNames(
+        "block w-full",
+        "overflow-hidden",
+        !last && "border-b border-gray-200",
+        selected ? "bg-gray-300" : "hover:bg-gray-200 focus:bg-gray-200",
+        "flex items-center",
+        "text-gray-700",
+        "transition ease-in-out duration-200",
+        "focus:outline-none",
+        "opacity-90 hover:opacity-100"
+      )}
+      style={{
+        padding: "0.4rem 0.375rem 0.4rem 0.375rem",
+      }}
+      onClick={handleClick}
+    >
+      {option.name}
+      <div className="flex-1" />
+      {selected && (
+        <OkIcon
+          className={classNames("mx-2 h-4 w-auto stroke-2")}
+          style={{
+            stroke: "#777",
+          }}
+        />
+      )}
+    </button>
+  );
+};

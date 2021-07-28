@@ -1,15 +1,15 @@
-import { browser } from "webextension-polyfill-ts";
 import { TezosToolkit, WalletContract } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
-import { TempleAsset, TempleToken, TempleAssetType } from "lib/temple/types";
+import { browser } from "webextension-polyfill-ts";
+
+import assert, { AssertionError } from "lib/assert";
+import { getMessage } from "lib/i18n";
 import {
   loadContract,
   loadContractForCallLambdaView,
 } from "lib/temple/contract";
 import { mutezToTz } from "lib/temple/helpers";
-import assert, { AssertionError } from "lib/assert";
-import { getMessage } from "lib/i18n";
-
+import { TempleAsset, TempleToken, TempleAssetType } from "lib/temple/types";
 export const TEZ_ASSET: TempleAsset = {
   type: TempleAssetType.TEZ,
   name: "T4L3NT",
@@ -33,8 +33,8 @@ export const DELPHINET_TOKENS: TempleToken[] = [
   {
     type: TempleAssetType.FA1_2,
     address: "KT1TDHL9ipKL8WW3TMPvutbLh9uZBdY9BU59",
-    name: "Wrapped T4L3NT",
-    symbol: "wTLNT",
+    name: "Wrapped Tezos",
+    symbol: "wXTZ",
     decimals: 6,
     fungible: true,
     iconUrl: browser.runtime.getURL("misc/token-logos/wxtz.png"),
@@ -77,8 +77,8 @@ export const MAINNET_TOKENS: TempleToken[] = [
   {
     type: TempleAssetType.TzBTC,
     address: "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn",
-    name: "T4L3NT BTC",
-    symbol: "tlBTC",
+    name: "Tezos BTC",
+    symbol: "tzBTC",
     decimals: 8,
     fungible: true,
     iconUrl:
@@ -97,8 +97,18 @@ export const MAINNET_TOKENS: TempleToken[] = [
   },
   {
     type: TempleAssetType.FA1_2,
+    address: "KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA",
+    name: "Quipuswap Liquidating kUSD",
+    symbol: "QLkUSD",
+    decimals: 36,
+    fungible: true,
+    iconUrl: "https://kolibri-data.s3.amazonaws.com/logo.png",
+    status: "displayed",
+  },  
+  {
+    type: TempleAssetType.FA1_2,
     address: "KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH",
-    name: "Wrapped T4L3NT",
+    name: "Wrapped Tezos",
     symbol: "wXTZ",
     decimals: 6,
     fungible: true,
@@ -119,8 +129,8 @@ export const MAINNET_TOKENS: TempleToken[] = [
   {
     type: TempleAssetType.FA1_2,
     address: "KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8",
-    name: "ETH TLNT",
-    symbol: "ETHtl",
+    name: "ETH Tez",
+    symbol: "ETHtz",
     decimals: 18,
     fungible: true,
     iconUrl: browser.runtime.getURL("misc/token-logos/ethtz.png"),
@@ -129,8 +139,8 @@ export const MAINNET_TOKENS: TempleToken[] = [
   {
     type: TempleAssetType.FA1_2,
     address: "KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9",
-    name: "USD TLNT",
-    symbol: "USDtl",
+    name: "USD Tez",
+    symbol: "USDtz",
     decimals: 6,
     fungible: true,
     iconUrl: "https://usdtz.com/lightlogo10USDtz.png",
@@ -344,13 +354,13 @@ export async function toTransferParams(
   asset: TempleAsset,
   fromPkh: string,
   toPkh: string,
-  amount: number
+  amount: BigNumber.Value
 ) {
   switch (asset.type) {
     case TempleAssetType.TEZ:
       return {
         to: toPkh,
-        amount,
+        amount: amount as any,
       };
 
     case TempleAssetType.Staker:
@@ -438,7 +448,7 @@ export function getAssetKey(asset: TempleAsset) {
 }
 
 export function toPenny(asset: TempleAsset) {
-  return new BigNumber(1).div(10 ** asset.decimals).toNumber();
+  return new BigNumber(1).div(10 ** asset.decimals);
 }
 
 export class NotMatchingStandardError extends Error {}

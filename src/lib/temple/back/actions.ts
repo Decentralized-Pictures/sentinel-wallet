@@ -1,4 +1,4 @@
-import { browser, Runtime } from "webextension-polyfill-ts";
+import { DerivationType } from "@taquito/ledger-signer";
 import { TezosOperationError } from "@taquito/taquito";
 import {
   TempleDAppMessageType,
@@ -6,16 +6,19 @@ import {
   TempleDAppRequest,
   TempleDAppResponse,
 } from "@temple-wallet/dapp/dist/types";
+import { browser, Runtime } from "webextension-polyfill-ts";
+
 import {
-  TempleState,
-  TempleMessageType,
-  TempleRequest,
-  TempleSettings,
-  TempleSharedStorageKey,
-} from "lib/temple/types";
-import { loadChainId } from "lib/temple/helpers";
+  getCurrentPermission,
+  requestPermission,
+  requestOperation,
+  requestSign,
+  requestBroadcast,
+  getAllDApps,
+  removeDApp,
+} from "lib/temple/back/dapp";
 import { intercom } from "lib/temple/back/defaults";
-import { dryRunOpParams } from "lib/temple/back/dryrun";
+import { buildFinalOpParmas, dryRunOpParams } from "lib/temple/back/dryrun";
 import {
   toFront,
   store,
@@ -28,17 +31,16 @@ import {
   withUnlocked,
 } from "lib/temple/back/store";
 import { Vault } from "lib/temple/back/vault";
-import {
-  getCurrentPermission,
-  requestPermission,
-  requestOperation,
-  requestSign,
-  requestBroadcast,
-  getAllDApps,
-  removeDApp,
-} from "lib/temple/back/dapp";
-import * as PndOps from "lib/temple/back/pndops";
 import * as Beacon from "lib/temple/beacon";
+import { loadChainId } from "lib/temple/helpers";
+import * as PndOps from "lib/temple/pndops";
+import {
+  TempleState,
+  TempleMessageType,
+  TempleRequest,
+  TempleSettings,
+  TempleSharedStorageKey,
+} from "lib/temple/types";
 
 const ACCOUNT_NAME_PATTERN = /^[a-zA-Z0-9 _-]{1,16}$/;
 const AUTODECLINE_AFTER = 60_000;
@@ -208,11 +210,16 @@ export function importWatchOnlyAccount(address: string, chainId?: string) {
   });
 }
 
-export function craeteLedgerAccount(name: string, derivationPath?: string) {
+export function craeteLedgerAccount(
+  name: string,
+  derivationPath?: string,
+  derivationType?: DerivationType
+) {
   return withUnlocked(async ({ vault }) => {
     const updatedAccounts = await vault.createLedgerAccount(
       name,
-      derivationPath
+      derivationPath,
+      derivationType
     );
     accountsUpdated(updatedAccounts);
   });
@@ -221,6 +228,7 @@ export function craeteLedgerAccount(name: string, derivationPath?: string) {
 export function updateSettings(settings: Partial<TempleSettings>) {
   return withUnlocked(async ({ vault }) => {
     const updatedSettings = await vault.updateSettings(settings);
+    createCustomNetworksSnapshot(updatedSettings);
     settingsUpdated(updatedSettings);
   });
 }
@@ -297,7 +305,15 @@ export function sendOperations(
             if (req.confirmed) {
               try {
                 const op = await withUnlocked(({ vault }) =>
-                  vault.sendOperations(sourcePkh, networkRpc, opParams)
+                  vault.sendOperations(
+                    sourcePkh,
+                    networkRpc,
+                    buildFinalOpParmas(
+                      opParams,
+                      dryRunResult?.estimates,
+                      req.modifiedStorageLimit
+                    )
+                  )
                 );
 
                 try {
@@ -545,7 +561,10 @@ export async function processBeacon(
               return {
                 type: TempleDAppMessageType.SignRequest,
                 sourcePkh: req.sourceAddress,
-                payload: req.payload,
+                payload:
+                  req.signingType === Beacon.SigningType.RAW
+                    ? Buffer.from(req.payload, "utf8").toString("hex")
+                    : req.payload,
               };
 
             case Beacon.MessageType.BroadcastRequest:
@@ -652,6 +671,16 @@ export async function processBeacon(
     };
   }
   return { payload: resMsg };
+}
+
+async function createCustomNetworksSnapshot(settings: TempleSettings) {
+  try {
+    if (settings.customNetworks) {
+      await browser.storage.local.set({
+        custom_networks_snapshot: settings.customNetworks,
+      });
+    }
+  } catch {}
 }
 
 function getErrorData(err: any) {

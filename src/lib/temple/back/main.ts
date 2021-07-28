@@ -1,14 +1,15 @@
 import { Runtime } from "webextension-polyfill-ts";
+
 import { createQueue } from "lib/queue";
+import * as Actions from "lib/temple/back/actions";
+import { intercom } from "lib/temple/back/defaults";
+import { store, toFront } from "lib/temple/back/store";
+import * as PndOps from "lib/temple/pndops";
 import {
   TempleMessageType,
   TempleRequest,
   TempleResponse,
 } from "lib/temple/types";
-import { intercom } from "lib/temple/back/defaults";
-import { store, toFront } from "lib/temple/back/store";
-import * as Actions from "lib/temple/back/actions";
-import * as PndOps from "lib/temple/back/pndops";
 
 const frontStore = store.map(toFront);
 const enqueueDApp = createQueue();
@@ -124,7 +125,11 @@ async function processRequest(
       };
 
     case TempleMessageType.CreateLedgerAccountRequest:
-      await Actions.craeteLedgerAccount(req.name, req.derivationPath);
+      await Actions.craeteLedgerAccount(
+        req.name,
+        req.derivationPath,
+        req.derivationType
+      );
       return {
         type: TempleMessageType.CreateLedgerAccountResponse,
       };

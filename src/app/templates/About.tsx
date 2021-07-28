@@ -1,9 +1,10 @@
-import * as React from "react";
-import { T } from "lib/i18n/react";
+import React, { FC } from "react";
+
 import Logo from "app/atoms/Logo";
 import SubTitle from "app/atoms/SubTitle";
+import { T } from "lib/i18n/react";
 
-const About: React.FC = () => (
+const About: FC = () => (
   <div className="flex flex-col items-center my-8">
     <div className="flex items-center justify-center">
       <Logo style={{ height: 60 }} />
@@ -36,14 +37,14 @@ const About: React.FC = () => (
           ❤️
         </span>,
         <a
-          href="https://madfish.solutions"
+          href="https://tlnt.net/sentinel-wallet"
           key="link"
           target="_blank"
           rel="noopener noreferrer"
           className="font-normal hover:underline"
           style={{ color: "#98c630" }}
         >
-          Madfish.Solutions
+          decentralized.pictures/hacks
         </a>,
       ]}
     >
@@ -60,23 +61,23 @@ const About: React.FC = () => (
       {[
         {
           key: "website",
-          link: "https://templewallet.com",
+          link: "https://tlnt.net/sentinel-wallet",
         },
         {
           key: "repo",
-          link: "https://github.com/madfish-solutions/temple-wallet",
+          link: "https://github.com/Decentralized-Pictures/sentinel-wallet",
         },
         {
           key: "privacyPolicy",
-          link: "https://templewallet.com/privacy",
+          link: "https://tlnt.net/sentinel-privacy",
         },
         {
           key: "termsOfUse",
-          link: "https://templewallet.com/terms",
+          link: "https://tlnt.net/sentinel-terms-of-use",
         },
         {
           key: "contact",
-          link: "https://templewallet.com/contact",
+          link: "https://tlnt.net/contact",
         },
       ].map(({ key, link }) => (
         <T id={key} key={key}>

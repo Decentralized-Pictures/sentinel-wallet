@@ -1,20 +1,26 @@
-import * as React from "react";
+import React, { ComponentProps, FC, ReactNode, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
+
 import classNames from "clsx";
-import { HistoryAction, useLocation, goBack, navigate } from "lib/woozie";
-import { T } from "lib/i18n/react";
+
+import DocBg from "app/a11y/DocBg";
+import { Button } from "app/atoms/Button";
+import Spinner from "app/atoms/Spinner";
 import { useAppEnv } from "app/env";
 import ErrorBoundary from "app/ErrorBoundary";
-import DocBg from "app/a11y/DocBg";
-import ContentContainer from "app/layouts/ContentContainer";
-import NoLambdaViewContractAlert from "app/templates/NoLambdaViewContractAlert";
-import Spinner from "app/atoms/Spinner";
 import { ReactComponent as ChevronLeftIcon } from "app/icons/chevron-left.svg";
-import Header from "app/layouts/PageLayout/Header";
+import ContentContainer from "app/layouts/ContentContainer";
 import ConfirmationOverlay from "app/layouts/PageLayout/ConfirmationOverlay";
+import Header from "app/layouts/PageLayout/Header";
+import NoLambdaViewContractAlert from "app/templates/NoLambdaViewContractAlert";
+import { AnalyticsConfirmationOverlay } from "lib/analytics";
+import { T } from "lib/i18n/react";
+import { HistoryAction, useLocation, goBack, navigate } from "lib/woozie";
+
+import { PageLayoutSelectors } from "./PageLayout.selectors";
 
 type PageLayoutProps = ToolbarProps;
 
-const PageLayout: React.FC<PageLayoutProps> = ({
+const PageLayout: FC<PageLayoutProps> = ({
   children,
   ...toolbarProps
 }) => {
@@ -32,9 +38,9 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 
           <div className="p-4">
             <ErrorBoundary whileMessage="displaying this page">
-              <React.Suspense fallback={<SpinnerSection />}>
+              <Suspense fallback={<SpinnerSection />}>
                 {children}
-              </React.Suspense>
+              </Suspense>
             </ErrorBoundary>
           </div>
         </ContentPaper>
@@ -42,15 +48,16 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 
       <NoLambdaViewContractAlert />
       <ConfirmationOverlay />
+      <AnalyticsConfirmationOverlay/>
     </>
   );
 };
 
 export default PageLayout;
 
-type ContentPaparProps = React.ComponentProps<typeof ContentContainer>;
+type ContentPaparProps = ComponentProps<typeof ContentContainer>;
 
-const ContentPaper: React.FC<ContentPaparProps> = ({
+const ContentPaper: FC<ContentPaparProps> = ({
   className,
   style = {},
   children,
@@ -80,18 +87,18 @@ const ContentPaper: React.FC<ContentPaparProps> = ({
   );
 };
 
-const SpinnerSection: React.FC = () => (
+const SpinnerSection: FC = () => (
   <div className="flex justify-center mt-24">
     <Spinner className="w-20" />
   </div>
 );
 
 type ToolbarProps = {
-  pageTitle?: React.ReactNode;
+  pageTitle?: ReactNode;
   hasBackAction?: boolean;
 };
 
-const Toolbar: React.FC<ToolbarProps> = ({
+const Toolbar: FC<ToolbarProps> = ({
   pageTitle,
   hasBackAction = true,
 }) => {
@@ -101,7 +108,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const inHome = pathname === "/";
   const canBack = historyPosition > 0 || !inHome;
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     return registerBackHandler(() => {
       switch (true) {
         case historyPosition > 0:
@@ -115,11 +122,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
     });
   }, [registerBackHandler, historyPosition, inHome]);
 
-  const [sticked, setSticked] = React.useState(false);
+  const [sticked, setSticked] = useState(false);
 
-  const rootRef = React.useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const toolbarEl = rootRef.current;
     if ("IntersectionObserver" in window && toolbarEl) {
       const observer = new IntersectionObserver(
@@ -160,7 +167,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     >
       <div className="flex-1">
         {hasBackAction && canBack && (
-          <button
+          <Button
             className={classNames(
               "px-4 py-2",
               "rounded",
@@ -172,6 +179,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
               "opacity-90 hover:opacity-100"
             )}
             onClick={onBack}
+            testID={PageLayoutSelectors.BackButton}
           >
             <ChevronLeftIcon
               className={classNames(
@@ -182,7 +190,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
               )}
             />
             <T id="back" />
-          </button>
+          </Button>
         )}
       </div>
 

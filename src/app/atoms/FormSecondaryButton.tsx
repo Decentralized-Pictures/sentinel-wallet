@@ -1,13 +1,18 @@
-import * as React from "react";
-import classNames from "clsx";
-import Spinner from "app/atoms/Spinner";
+import React, { ButtonHTMLAttributes, FC } from "react";
 
-type FormSecondaryButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+import classNames from "clsx";
+
+import Spinner from "app/atoms/Spinner";
+import { TestIDProps } from "lib/analytics";
+
+import { Button } from "./Button";
+
+type FormSecondaryButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & TestIDProps & {
   loading?: boolean;
   small?: boolean;
 };
 
-const FormSecondaryButton: React.FC<FormSecondaryButtonProps> = ({
+const FormSecondaryButton: FC<FormSecondaryButtonProps> = ({
   loading,
   small,
   type = "button",
@@ -17,7 +22,7 @@ const FormSecondaryButton: React.FC<FormSecondaryButtonProps> = ({
   children,
   ...rest
 }) => (
-  <button
+  <Button
     type={type}
     className={classNames(
       "relative",
@@ -55,7 +60,7 @@ const FormSecondaryButton: React.FC<FormSecondaryButtonProps> = ({
         <Spinner theme="primary" style={{ width: small ? "2rem" : "3rem" }} />
       </div>
     )}
-  </button>
+  </Button>
 );
 
 export default FormSecondaryButton;

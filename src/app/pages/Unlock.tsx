@@ -1,12 +1,15 @@
-import * as React from "react";
+import React, { FC, useCallback, useRef } from "react";
+
 import classNames from "clsx";
 import { useForm } from "react-hook-form";
-import { Link } from "lib/woozie";
-import { T, t } from "lib/i18n/react";
-import { useTempleClient } from "lib/temple/front";
-import SimplePageLayout from "app/layouts/SimplePageLayout";
+
 import FormField from "app/atoms/FormField";
 import FormSubmitButton from "app/atoms/FormSubmitButton";
+import SimplePageLayout from "app/layouts/SimplePageLayout";
+import { useFormAnalytics } from "lib/analytics";
+import { T, t } from "lib/i18n/react";
+import { useTempleClient } from "lib/temple/front";
+import { Link } from "lib/woozie";
 
 interface UnlockProps {
   canImportNew?: boolean;
@@ -18,12 +21,13 @@ type FormData = {
 
 const SUBMIT_ERROR_TYPE = "submit-error";
 
-const Unlock: React.FC<UnlockProps> = ({ canImportNew = true }) => {
+const Unlock: FC<UnlockProps> = ({ canImportNew = true }) => {
   const { unlock } = useTempleClient();
+  const formAnalytics = useFormAnalytics('UnlockWallet');
 
-  const formRef = React.useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const focusPasswordField = React.useCallback(() => {
+  const focusPasswordField = useCallback(() => {
     formRef.current
       ?.querySelector<HTMLInputElement>("input[name='password']")
       ?.focus();
@@ -39,14 +43,19 @@ const Unlock: React.FC<UnlockProps> = ({ canImportNew = true }) => {
   } = useForm<FormData>();
   const submitting = formState.isSubmitting;
 
-  const onSubmit = React.useCallback(
+  const onSubmit = useCallback(
     async ({ password }) => {
       if (submitting) return;
 
       clearError("password");
+      formAnalytics.trackSubmit();
       try {
         await unlock(password);
+
+        formAnalytics.trackSubmitSuccess();
       } catch (err) {
+        formAnalytics.trackSubmitFail();
+
         if (process.env.NODE_ENV === "development") {
           console.error(err);
         }
@@ -57,7 +66,7 @@ const Unlock: React.FC<UnlockProps> = ({ canImportNew = true }) => {
         focusPasswordField();
       }
     },
-    [submitting, clearError, setError, unlock, focusPasswordField]
+    [submitting, clearError, setError, unlock, focusPasswordField, formAnalytics]
   );
 
   return (

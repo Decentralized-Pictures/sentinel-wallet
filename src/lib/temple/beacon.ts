@@ -1,6 +1,7 @@
-import { browser } from "webextension-polyfill-ts";
 import { Buffer } from "buffer";
 import * as sodium from "libsodium-wrappers";
+import { browser } from "webextension-polyfill-ts";
+
 import * as bs58check from "bs58check";
 
 export interface AppMetadata {
@@ -14,12 +15,19 @@ export type NetworkType =
   | "carthagenet"
   | "delphinet"
   | "edonet"
+  | "florencenet"
   | "custom";
 
 export interface Network {
   type: NetworkType;
   name?: string;
   rpcUrl?: string;
+}
+
+export enum SigningType {
+  RAW = "raw", // Arbitrary payload (string), which will be hashed before signing
+  OPERATION = "operation", // "03" prefix
+  MICHELINE = "micheline", // "05" prefix
 }
 
 export type Request =
@@ -103,6 +111,7 @@ export interface SignRequest extends BaseMessage {
   type: MessageType.SignPayloadRequest;
   sourceAddress: string;
   payload: string;
+  signingType?: SigningType;
 }
 
 export interface SignResponse extends BaseMessage {
@@ -178,6 +187,7 @@ export function formatOpParams(op: any) {
       amount: +amount,
       mutez: true,
       parameter: parameter ?? parameters,
+      storageLimit: storage_limit,
     };
   }
   return rest;
@@ -188,7 +198,7 @@ export function formatOpParams(op: any) {
  */
 export const PAIRING_RESPONSE_BASE: Partial<PostMessagePairingResponse> = {
   type: MessageType.HandshakeResponse,
-  name: "Sentina - T4L3NT Wallet",
+  name: "Sentinel - T4L3NT Wallet (ex. Temple/Thanos)",
   icon: process.env.TEMPLE_WALLET_LOGO_URL || undefined,
   appUrl: browser.runtime.getURL("fullpage.html"),
 };

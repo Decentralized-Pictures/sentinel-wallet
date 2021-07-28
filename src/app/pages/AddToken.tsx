@@ -1,8 +1,26 @@
+import React, {
+  FC,
+  memo,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
 import { WalletContract } from "@taquito/taquito";
-import * as React from "react";
 import classNames from "clsx";
 import { Controller, FormContextValues, useForm } from "react-hook-form";
-import { navigate } from "lib/woozie";
+
+import Alert from "app/atoms/Alert";
+import FormField from "app/atoms/FormField";
+import FormSubmitButton from "app/atoms/FormSubmitButton";
+import NoSpaceField from "app/atoms/NoSpaceField";
+import Spinner from "app/atoms/Spinner";
+import { ReactComponent as AddIcon } from "app/icons/add.svg";
+import PageLayout from "app/layouts/PageLayout";
+import { useFormAnalytics } from "lib/analytics";
+import { T, t } from "lib/i18n/react";
+import { sanitizeImgUri } from "lib/image-uri";
 import {
   TempleToken,
   TempleAssetType,
@@ -17,19 +35,11 @@ import {
   fetchTokenMetadata,
   MetadataParseError,
 } from "lib/temple/front";
-import { sanitizeImgUri } from "lib/image-uri";
-import { T, t } from "lib/i18n/react";
-import useSafeState from "lib/ui/useSafeState";
 import { withErrorHumanDelay } from "lib/ui/humanDelay";
-import PageLayout from "app/layouts/PageLayout";
-import FormField from "app/atoms/FormField";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import Alert from "app/atoms/Alert";
-import NoSpaceField from "app/atoms/NoSpaceField";
-import Spinner from "app/atoms/Spinner";
-import { ReactComponent as AddIcon } from "app/icons/add.svg";
+import useSafeState from "lib/ui/useSafeState";
+import { navigate } from "lib/woozie";
 
-const AddToken: React.FC = () => (
+const AddToken: FC = () => (
   <PageLayout
     pageTitle={
       <>
@@ -66,10 +76,11 @@ type FormData = {
   type: TempleCustomTokenType;
 };
 
-const Form: React.FC = () => {
+const Form: FC = () => {
   const { addToken } = useTokens();
   const tezos = useTezos();
   const { id: networkId } = useNetwork();
+  const formAnalytics = useFormAnalytics("AddToken");
 
   const {
     control,
@@ -86,18 +97,15 @@ const Form: React.FC = () => {
   const contractAddress = watch("address");
   const tokenType = watch("type");
   const tokenId = watch("id");
-  const [submitError, setSubmitError] = React.useState<React.ReactNode>(null);
-  const [tokenDataError, setTokenDataError] = React.useState<React.ReactNode>(
+  const [submitError, setSubmitError] = useState<ReactNode>(null);
+  const [tokenDataError, setTokenDataError] = useState<ReactNode>(null);
+  const [tokenValidationError, setTokenValidationError] = useState<ReactNode>(
     null
   );
-  const [
-    tokenValidationError,
-    setTokenValidationError,
-  ] = React.useState<React.ReactNode>(null);
   const [bottomSectionVisible, setBottomSectionVisible] = useSafeState(false);
-  const [loadingToken, setLoadingToken] = React.useState(false);
+  const [loadingToken, setLoadingToken] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTokenValidationError(null);
     setBottomSectionVisible(false);
     if (
@@ -190,12 +198,12 @@ const Form: React.FC = () => {
     tokenId,
   ]);
 
-  const cleanContractAddress = React.useCallback(() => {
+  const cleanContractAddress = useCallback(() => {
     setValue("address", "");
     triggerValidation("address");
   }, [setValue, triggerValidation]);
 
-  const onSubmit = React.useCallback(
+  const onSubmit = useCallback(
     async ({
       address,
       symbol,
@@ -208,6 +216,8 @@ const Form: React.FC = () => {
       if (formState.isSubmitting) return;
 
       setSubmitError(null);
+
+      formAnalytics.trackSubmit();
       try {
         const tokenCommonProps = {
           address,
@@ -236,11 +246,16 @@ const Form: React.FC = () => {
 
         // Wait a little bit while the tokens updated
         await new Promise((r) => setTimeout(r, 300));
+
+        formAnalytics.trackSubmitSuccess();
+
         navigate({
           pathname: `/explore/${assetKey}`,
           search: "after_token_added=true",
         });
       } catch (err) {
+        formAnalytics.trackSubmitFail();
+
         if (process.env.NODE_ENV === "development") {
           console.error(err);
         }
@@ -250,7 +265,7 @@ const Form: React.FC = () => {
         setSubmitError(err.message);
       }
     },
-    [formState.isSubmitting, addToken]
+    [formState.isSubmitting, addToken, formAnalytics]
   );
 
   const isFA12Token = tokenType === TempleAssetType.FA1_2;
@@ -356,7 +371,7 @@ type TokenTypeSelectProps = {
   onChange: (newValue: TempleCustomTokenType) => void;
 };
 
-const TokenTypeSelect = React.memo<TokenTypeSelectProps>((props) => {
+const TokenTypeSelect = memo<TokenTypeSelectProps>((props) => {
   const { value, onChange } = props;
 
   return (
@@ -388,10 +403,10 @@ type TokenTypeOptionProps = {
   onClick: (value: TempleCustomTokenType) => void;
 };
 
-const TokenTypeOption: React.FC<TokenTypeOptionProps> = (props) => {
+const TokenTypeOption: FC<TokenTypeOptionProps> = (props) => {
   const { active, last, value, onClick } = props;
 
-  const handleClick = React.useCallback(() => onClick(value), [onClick, value]);
+  const handleClick = useCallback(() => onClick(value), [onClick, value]);
 
   return (
     <button
@@ -421,10 +436,10 @@ type BottomSectionProps = Pick<
   FormContextValues,
   "register" | "errors" | "formState"
 > & {
-  submitError?: React.ReactNode;
+  submitError?: ReactNode;
 };
 
-const BottomSection: React.FC<BottomSectionProps> = (props) => {
+const BottomSection: FC<BottomSectionProps> = (props) => {
   const { register, errors, formState, submitError } = props;
 
   return (
@@ -432,9 +447,11 @@ const BottomSection: React.FC<BottomSectionProps> = (props) => {
       <FormField
         ref={register({
           required: t("required"),
-          pattern: {
-            value: /^[a-zA-Z0-9]{2,5}$/,
-            message: t("tokenSymbolPatternDescription"),
+          validate: (val: string) => {
+            if (!val || val.length < 2 || val.length > 8) {
+              return t("tokenSymbolPatternDescription");
+            }
+            return true;
           },
         })}
         name="symbol"

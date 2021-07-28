@@ -1,7 +1,8 @@
-import { browser } from "webextension-polyfill-ts";
-import * as Bip39 from "bip39";
-import * as Ed25519 from "ed25519-hd-key";
-import * as TaquitoUtils from "@taquito/utils";
+import LedgerTransport from "@ledgerhq/hw-transport";
+import LedgerWebAuthnTransport from "@ledgerhq/hw-transport-webauthn";
+import { HttpResponseError } from "@taquito/http-utils";
+import { DerivationType } from "@taquito/ledger-signer";
+import { localForger } from "@taquito/local-forging";
 import { InMemorySigner } from "@taquito/signer";
 import {
   TezosToolkit,
@@ -10,31 +11,37 @@ import {
   Signer,
   TezosOperationError,
 } from "@taquito/taquito";
-import { localForger } from "@taquito/local-forging";
-import { HttpResponseError } from "@taquito/http-utils";
-import LedgerTransport from "@ledgerhq/hw-transport";
-import LedgerWebAuthnTransport from "@ledgerhq/hw-transport-webauthn";
+import * as TaquitoUtils from "@taquito/utils";
 import { LedgerTempleBridgeTransport } from "@temple-wallet/ledger-bridge";
-import { DerivationType } from "@taquito/ledger-signer";
-import {
-  TempleAccount,
-  TempleAccountType,
-  TempleSettings,
-  TempleToken,
-} from "lib/temple/types";
-import { transformHttpResponseError, loadChainId } from "lib/temple/helpers";
-import * as Passworder from "lib/temple/passworder";
-import { NETWORKS } from "lib/temple/networks";
+import * as Bip39 from "bip39";
+import * as Ed25519 from "ed25519-hd-key";
+import { browser } from "webextension-polyfill-ts";
+
+import { getMessage } from "lib/i18n";
+import { FastRpcClient } from "lib/taquito-fast-rpc";
 import { mergeAssets } from "lib/temple/assets";
 import { PublicError } from "lib/temple/back/defaults";
+import { TempleLedgerSigner } from "lib/temple/back/ledger-signer";
 import {
   isStored,
   fetchAndDecryptOne,
   encryptAndSaveMany,
   removeMany,
 } from "lib/temple/back/safe-storage";
-import { TempleLedgerSigner } from "lib/temple/back/ledger-signer";
-import { getMessage } from "lib/i18n";
+import {
+  transformHttpResponseError,
+  loadChainId,
+  formatOpParamsBeforeSend,
+  michelEncoder,
+} from "lib/temple/helpers";
+import { NETWORKS } from "lib/temple/networks";
+import * as Passworder from "lib/temple/passworder";
+import {
+  TempleAccount,
+  TempleAccountType,
+  TempleSettings,
+  TempleToken,
+} from "lib/temple/types";
 
 const TEZOS_BIP44_COINTYPE = 1729;
 const STORAGE_KEY_PREFIX = "vault";
@@ -213,7 +220,10 @@ export class Vault {
     return saved ? { ...DEFAULT_SETTINGS, ...saved } : DEFAULT_SETTINGS;
   }
 
-  async createHDAccount(name?: string) {
+  async createHDAccount(
+    name?: string,
+    hdAccIndex?: number
+  ): Promise<TempleAccount[]> {
     return withError("Failed to create account", async () => {
       const [mnemonic, allAccounts] = await Promise.all([
         fetchAndDecryptOne<string>(mnemonicStrgKey, this.passKey),
@@ -221,18 +231,27 @@ export class Vault {
       ]);
 
       const seed = Bip39.mnemonicToSeedSync(mnemonic);
-      const allHDAccounts = allAccounts.filter(
-        (a) => a.type === TempleAccountType.HD
-      );
-      const hdAccIndex = allHDAccounts.length;
+
+      if (!hdAccIndex) {
+        const allHDAccounts = allAccounts.filter(
+          (a) => a.type === TempleAccountType.HD
+        );
+        hdAccIndex = allHDAccounts.length;
+      }
+
       const accPrivateKey = seedToHDPrivateKey(seed, hdAccIndex);
       const [accPublicKey, accPublicKeyHash] = await getPublicKeyAndHash(
         accPrivateKey
       );
+      const accName = name || getNewAccountName(allAccounts);
+
+      if (allAccounts.some((a) => a.publicKeyHash === accPublicKeyHash)) {
+        return this.createHDAccount(accName, hdAccIndex + 1);
+      }
 
       const newAccount: TempleAccount = {
         type: TempleAccountType.HD,
-        name: name || getNewAccountName(allAccounts),
+        name: accName,
         publicKeyHash: accPublicKeyHash,
         hdIndex: hdAccIndex,
       };
@@ -259,15 +278,12 @@ export class Vault {
     return withError(errMessage, async () => {
       const allAccounts = await this.fetchAccounts();
       const signer = await createMemorySigner(accPrivateKey, encPassword);
-      const [
-        realAccPrivateKey,
-        accPublicKey,
-        accPublicKeyHash,
-      ] = await Promise.all([
-        signer.secretKey(),
-        signer.publicKey(),
-        signer.publicKeyHash(),
-      ]);
+      const [realAccPrivateKey, accPublicKey, accPublicKeyHash] =
+        await Promise.all([
+          signer.secretKey(),
+          signer.publicKey(),
+          signer.publicKeyHash(),
+        ]);
 
       const newAccount: TempleAccount = {
         type: TempleAccountType.Imported,
@@ -378,11 +394,18 @@ export class Vault {
     });
   }
 
-  async createLedgerAccount(name: string, derivationPath?: string) {
+  async createLedgerAccount(
+    name: string,
+    derivationPath?: string,
+    derivationType?: DerivationType
+  ) {
     return withError("Failed to connect Ledger account", async () => {
       if (!derivationPath) derivationPath = getMainDerivationPath(0);
 
-      const { signer, cleanup } = await createLedgerSigner(derivationPath);
+      const { signer, cleanup } = await createLedgerSigner(
+        derivationPath,
+        derivationType
+      );
 
       try {
         const accPublicKey = await signer.publicKey();
@@ -393,6 +416,7 @@ export class Vault {
           name,
           publicKeyHash: accPublicKeyHash,
           derivationPath,
+          derivationType,
         };
         const allAccounts = await this.fetchAccounts();
         const newAllAcounts = concatAccount(allAccounts, newAccount);
@@ -462,12 +486,13 @@ export class Vault {
   async sendOperations(accPublicKeyHash: string, rpc: string, opParams: any[]) {
     return this.withSigner(accPublicKeyHash, async (signer) => {
       const batch = await withError("Failed to send operations", async () => {
-        const tezos = new TezosToolkit(rpc);
+        const tezos = new TezosToolkit(new FastRpcClient(rpc));
         tezos.setSignerProvider(signer);
         tezos.setForgerProvider(
           new CompositeForger([tezos.getFactory(RpcForger)(), localForger])
         );
-        return tezos.contract.batch(opParams.map(formatOpParams));
+        tezos.setPackerProvider(michelEncoder);
+        return tezos.contract.batch(opParams.map(formatOpParamsBeforeSend));
       });
 
       try {
@@ -516,6 +541,7 @@ export class Vault {
         const publicKey = await this.revealPublicKey(accPublicKeyHash);
         return createLedgerSigner(
           acc.derivationPath,
+          acc.derivationType,
           publicKey,
           accPublicKeyHash
         );
@@ -631,9 +657,8 @@ const MIGRATIONS = [
       ]);
 
       const tokensStrgKey = `tokens_${chainId}`;
-      const {
-        [tokensStrgKey]: existingTokens = [],
-      } = await browser.storage.local.get([tokensStrgKey]);
+      const { [tokensStrgKey]: existingTokens = [] } =
+        await browser.storage.local.get([tokensStrgKey]);
 
       await browser.storage.local.set({
         [tokensStrgKey]: mergeAssets(
@@ -658,17 +683,6 @@ const MIGRATIONS = [
 
 function removeMFromDerivationPath(dPath: string) {
   return dPath.startsWith("m/") ? dPath.substring(2) : dPath;
-}
-
-function formatOpParams(params: any) {
-  if (params.kind === "origination" && params.script) {
-    const newParams = { ...params, ...params.script };
-    newParams.init = newParams.storage;
-    delete newParams.script;
-    delete newParams.storage;
-    return newParams;
-  }
-  return params;
 }
 
 function concatAccount(current: TempleAccount[], newOne: TempleAccount) {
@@ -697,6 +711,7 @@ async function createMemorySigner(privateKey: string, encPassword?: string) {
 
 async function createLedgerSigner(
   derivationPath: string,
+  derivationType?: DerivationType,
   publicKey?: string,
   publicKeyHash?: string
 ) {
@@ -720,7 +735,7 @@ async function createLedgerSigner(
     transport,
     removeMFromDerivationPath(derivationPath),
     true,
-    DerivationType.ED25519,
+    derivationType,
     publicKey,
     publicKeyHash
   );

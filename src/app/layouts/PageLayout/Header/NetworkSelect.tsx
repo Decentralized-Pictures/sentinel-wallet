@@ -1,5 +1,13 @@
-import * as React from "react";
+import React, { FC, HTMLAttributes, useCallback } from "react";
+
 import classNames from "clsx";
+
+import { Button } from "app/atoms/Button";
+import DropdownWrapper from "app/atoms/DropdownWrapper";
+import Name from "app/atoms/Name";
+import { ReactComponent as ChevronDownIcon } from "app/icons/chevron-down.svg";
+import { ReactComponent as SignalAltIcon } from "app/icons/signal-alt.svg";
+import { T } from "lib/i18n/react";
 import {
   useAllNetworks,
   useNetwork,
@@ -7,20 +15,17 @@ import {
   preloadTokens,
 } from "lib/temple/front";
 import Popper from "lib/ui/Popper";
-import { T } from "lib/i18n/react";
-import DropdownWrapper from "app/atoms/DropdownWrapper";
-import Name from "app/atoms/Name";
-import { ReactComponent as ChevronDownIcon } from "app/icons/chevron-down.svg";
-import { ReactComponent as SignalAltIcon } from "app/icons/signal-alt.svg";
 
-type NetworkSelectProps = React.HTMLAttributes<HTMLDivElement>;
+import { NetworkSelectSelectors } from "./NetworkSelect.selectors";
 
-const NetworkSelect: React.FC<NetworkSelectProps> = () => {
+type NetworkSelectProps = HTMLAttributes<HTMLDivElement>;
+
+const NetworkSelect: FC<NetworkSelectProps> = () => {
   const allNetworks = useAllNetworks();
   const network = useNetwork();
   const setNetworkId = useSetNetworkId();
 
-  const handleNetworkSelect = React.useCallback(
+  const handleNetworkSelect = useCallback(
     async (
       netId: string,
       rpcUrl: string,
@@ -32,7 +37,8 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
       if (!selected) {
         try {
           await preloadTokens(rpcUrl);
-        } catch (_err) {}
+        } catch (_err) {
+        }
 
         setNetworkId(netId);
       }
@@ -66,7 +72,7 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
               const selected = id === network.id;
 
               return (
-                <button
+                <Button
                   key={id}
                   className={classNames(
                     "w-full",
@@ -74,9 +80,9 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
                     "rounded",
                     "transition easy-in-out duration-200",
                     !disabled &&
-                      (selected
-                        ? "bg-white bg-opacity-10"
-                        : "hover:bg-white hover:bg-opacity-5"),
+                    (selected
+                      ? "bg-white bg-opacity-10"
+                      : "hover:bg-white hover:bg-opacity-5"),
                     disabled ? "cursor-default" : "cursor-pointer",
                     "flex items-center",
                     disabled && "opacity-25"
@@ -91,6 +97,7 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
                       handleNetworkSelect(id, rpcBaseURL, selected, setOpened);
                     }
                   }}
+                  testID={NetworkSelectSelectors.NetworkItemButton}
                 >
                   <div
                     className={classNames(
@@ -108,14 +115,14 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
                   >
                     {(nameI18nKey && <T id={nameI18nKey} />) || name}
                   </span>
-                </button>
+                </Button>
               );
             })}
         </DropdownWrapper>
       )}
     >
       {({ ref, opened, toggleOpened }) => (
-        <button
+        <Button
           ref={ref}
           className={classNames(
             "px-2 py-1",
@@ -132,6 +139,7 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
             "select-none"
           )}
           onClick={toggleOpened}
+          testID={NetworkSelectSelectors.SelectedNetworkButton}
         >
           <div
             className={classNames(
@@ -146,14 +154,14 @@ const NetworkSelect: React.FC<NetworkSelectProps> = () => {
 
           <Name style={{ maxWidth: "7rem" }}>
             {(network.nameI18nKey && <T id={network.nameI18nKey} />) ||
-              network.name}
+            network.name}
           </Name>
 
           <ChevronDownIcon
             className="ml-1 -mr-1 stroke-current stroke-2"
             style={{ height: 16, width: "auto" }}
           />
-        </button>
+        </Button>
       )}
     </Popper>
   );

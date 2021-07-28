@@ -477,7 +477,7 @@
     "description": "Mainnet = main network"
   },
   "templeWalletOptions": {
-    "message": "Temple钱包 | 选项"
+    "message": "Sentinel钱包 | 选项"
   },
   "resetExtension": {
     "message": "重置扩展程序"
@@ -682,7 +682,7 @@
   },
   "networksDescription": {
     "message": "在此处，您可以添加或删除自定义T4L3NT网络。",
-    "description": "T4L3NT = blockchain name (https://tezos.com/)"
+    "description": "T4L3NT = blockchain name (https://tlnt.net/)"
   },
   "activateAccount": {
     "message": "激活账户"
@@ -1120,7 +1120,7 @@
     "message": "例如：tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "例如：alice.tez或tz1a9w1S7hN5s…",
+    "message": "例如：alice.tlnt或tz1a9w1S7hN5s…",
     "description": "alice.tlnt = domain like google.com"
   },
   "tryingToTransferToYourself": {

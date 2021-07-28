@@ -1,5 +1,5 @@
-import * as React from "react";
-import constate from "constate";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import {
   WalletProvider,
   createOriginationOperation,
@@ -10,10 +10,11 @@ import {
   WalletTransferParams,
 } from "@taquito/taquito";
 import { buf2hex } from "@taquito/utils";
+import constate from "constate";
 import { nanoid } from "nanoid";
-import { useRetryableSWR } from "lib/swr";
-import toBuffer from "typedarray-to-buffer";
+
 import { IntercomClient } from "lib/intercom";
+import { useRetryableSWR } from "lib/swr";
 import { useStorage } from "lib/temple/front";
 import {
   TempleConfirmationPayload,
@@ -23,7 +24,9 @@ import {
   TempleResponse,
   TempleNotification,
   TempleSettings,
+  DerivationType,
 } from "lib/temple/types";
+import toBuffer from "typedarray-to-buffer";
 
 type Confirmation = {
   id: string;
@@ -37,7 +40,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
    * State
    */
 
-  const fetchState = React.useCallback(async () => {
+  const fetchState = useCallback(async () => {
     const res = await request({ type: TempleMessageType.GetStateRequest });
     assertResponse(res.type === TempleMessageType.GetStateResponse);
     return res.state;
@@ -51,16 +54,14 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
   });
   const state = data!;
 
-  const [confirmation, setConfirmation] = React.useState<Confirmation | null>(
-    null
-  );
-  const confirmationIdRef = React.useRef<string | null>(null);
-  const resetConfirmation = React.useCallback(() => {
+  const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const confirmationIdRef = useRef<string | null>(null);
+  const resetConfirmation = useCallback(() => {
     confirmationIdRef.current = null;
     setConfirmation(null);
   }, [setConfirmation]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return intercom.subscribe((msg: TempleNotification) => {
       switch (msg?.type) {
         case TempleMessageType.StateUpdated:
@@ -91,23 +92,28 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
   const locked = status === TempleStatus.Locked;
   const ready = status === TempleStatus.Ready;
 
-  const customNetworks = React.useMemo(() => {
+  const customNetworks = useMemo(() => {
     const customNetworksWithoutLambdaContracts = settings?.customNetworks ?? [];
-    return customNetworksWithoutLambdaContracts.map((network) => {
-      return {
-        ...network,
-        lambdaContract: settings?.lambdaContracts?.[network.id],
-      };
-    });
+    return customNetworksWithoutLambdaContracts.map((network) =>
+      network.lambdaContract
+        ? network
+        : {
+            ...network,
+            lambdaContract: settings?.lambdaContracts?.[network.id],
+          }
+    );
   }, [settings]);
-  const defaultNetworksWithLambdaContracts = React.useMemo(() => {
-    return defaultNetworks.map((network) => ({
-      ...network,
-      lambdaContract:
-        network.lambdaContract || settings?.lambdaContracts?.[network.id],
-    }));
+  const defaultNetworksWithLambdaContracts = useMemo(() => {
+    return defaultNetworks.map((network) =>
+      network.lambdaContract
+        ? network
+        : {
+            ...network,
+            lambdaContract: settings?.lambdaContracts?.[network.id],
+          }
+    );
   }, [settings, defaultNetworks]);
-  const networks = React.useMemo(
+  const networks = useMemo(
     () => [...defaultNetworksWithLambdaContracts, ...customNetworks],
     [defaultNetworksWithLambdaContracts, customNetworks]
   );
@@ -121,7 +127,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
    * Actions
    */
 
-  const registerWallet = React.useCallback(
+  const registerWallet = useCallback(
     async (password: string, mnemonic?: string) => {
       const res = await request({
         type: TempleMessageType.NewWalletRequest,
@@ -133,7 +139,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const unlock = React.useCallback(async (password: string) => {
+  const unlock = useCallback(async (password: string) => {
     const res = await request({
       type: TempleMessageType.UnlockRequest,
       password,
@@ -141,14 +147,14 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     assertResponse(res.type === TempleMessageType.UnlockResponse);
   }, []);
 
-  const lock = React.useCallback(async () => {
+  const lock = useCallback(async () => {
     const res = await request({
       type: TempleMessageType.LockRequest,
     });
     assertResponse(res.type === TempleMessageType.LockResponse);
   }, []);
 
-  const createAccount = React.useCallback(async (name?: string) => {
+  const createAccount = useCallback(async (name?: string) => {
     const res = await request({
       type: TempleMessageType.CreateAccountRequest,
       name,
@@ -156,7 +162,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     assertResponse(res.type === TempleMessageType.CreateAccountResponse);
   }, []);
 
-  const revealPrivateKey = React.useCallback(
+  const revealPrivateKey = useCallback(
     async (accountPublicKeyHash: string, password: string) => {
       const res = await request({
         type: TempleMessageType.RevealPrivateKeyRequest,
@@ -169,7 +175,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const revealMnemonic = React.useCallback(async (password: string) => {
+  const revealMnemonic = useCallback(async (password: string) => {
     const res = await request({
       type: TempleMessageType.RevealMnemonicRequest,
       password,
@@ -178,7 +184,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     return res.mnemonic;
   }, []);
 
-  const removeAccount = React.useCallback(
+  const removeAccount = useCallback(
     async (accountPublicKeyHash: string, password: string) => {
       const res = await request({
         type: TempleMessageType.RemoveAccountRequest,
@@ -190,7 +196,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const editAccountName = React.useCallback(
+  const editAccountName = useCallback(
     async (accountPublicKeyHash: string, name: string) => {
       const res = await request({
         type: TempleMessageType.EditAccountRequest,
@@ -202,7 +208,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const importAccount = React.useCallback(
+  const importAccount = useCallback(
     async (privateKey: string, encPassword?: string) => {
       const res = await request({
         type: TempleMessageType.ImportAccountRequest,
@@ -214,7 +220,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const importMnemonicAccount = React.useCallback(
+  const importMnemonicAccount = useCallback(
     async (mnemonic: string, password?: string, derivationPath?: string) => {
       const res = await request({
         type: TempleMessageType.ImportMnemonicAccountRequest,
@@ -229,7 +235,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const importFundraiserAccount = React.useCallback(
+  const importFundraiserAccount = useCallback(
     async (email: string, password: string, mnemonic: string) => {
       const res = await request({
         type: TempleMessageType.ImportFundraiserAccountRequest,
@@ -244,7 +250,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const importKTManagedAccount = React.useCallback(
+  const importKTManagedAccount = useCallback(
     async (address: string, chainId: string, owner: string) => {
       const res = await request({
         type: TempleMessageType.ImportManagedKTAccountRequest,
@@ -259,7 +265,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const importWatchOnlyAccount = React.useCallback(
+  const importWatchOnlyAccount = useCallback(
     async (address: string, chainId?: string) => {
       const res = await request({
         type: TempleMessageType.ImportWatchOnlyAccountRequest,
@@ -273,12 +279,17 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const createLedgerAccount = React.useCallback(
-    async (name: string, derivationPath?: string) => {
+  const createLedgerAccount = useCallback(
+    async (
+      name: string,
+      derivationType?: DerivationType,
+      derivationPath?: string
+    ) => {
       const res = await request({
         type: TempleMessageType.CreateLedgerAccountRequest,
         name,
         derivationPath,
+        derivationType,
       });
       assertResponse(
         res.type === TempleMessageType.CreateLedgerAccountResponse
@@ -287,7 +298,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const updateSettings = React.useCallback(
+  const updateSettings = useCallback(
     async (settings: Partial<TempleSettings>) => {
       const res = await request({
         type: TempleMessageType.UpdateSettingsRequest,
@@ -298,7 +309,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const getAllPndOps = React.useCallback(
+  const getAllPndOps = useCallback(
     async (accountPublicKeyHash: string, netId: string) => {
       const res = await request({
         type: TempleMessageType.GetAllPndOpsRequest,
@@ -311,7 +322,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const removePndOps = React.useCallback(
+  const removePndOps = useCallback(
     async (accountPublicKeyHash: string, netId: string, opHashes: string[]) => {
       const res = await request({
         type: TempleMessageType.RemovePndOpsRequest,
@@ -324,19 +335,20 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const confirmInternal = React.useCallback(
-    async (id: string, confirmed: boolean) => {
+  const confirmInternal = useCallback(
+    async (id: string, confirmed: boolean, modifiedStorageLimit?: number) => {
       const res = await request({
         type: TempleMessageType.ConfirmationRequest,
         id,
         confirmed,
+        modifiedStorageLimit,
       });
       assertResponse(res.type === TempleMessageType.ConfirmationResponse);
     },
     []
   );
 
-  const getDAppPayload = React.useCallback(async (id: string) => {
+  const getDAppPayload = useCallback(async (id: string) => {
     const res = await request({
       type: TempleMessageType.DAppGetPayloadRequest,
       id,
@@ -345,7 +357,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     return res.payload;
   }, []);
 
-  const confirmDAppPermission = React.useCallback(
+  const confirmDAppPermission = useCallback(
     async (id: string, confirmed: boolean, pkh: string) => {
       const res = await request({
         type: TempleMessageType.DAppPermConfirmationRequest,
@@ -361,12 +373,13 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const confirmDAppOperation = React.useCallback(
-    async (id: string, confirmed: boolean) => {
+  const confirmDAppOperation = useCallback(
+    async (id: string, confirmed: boolean, modifiedStorageLimit?: number) => {
       const res = await request({
         type: TempleMessageType.DAppOpsConfirmationRequest,
         id,
         confirmed,
+        modifiedStorageLimit,
       });
       assertResponse(
         res.type === TempleMessageType.DAppOpsConfirmationResponse
@@ -375,7 +388,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const confirmDAppSign = React.useCallback(
+  const confirmDAppSign = useCallback(
     async (id: string, confirmed: boolean) => {
       const res = await request({
         type: TempleMessageType.DAppSignConfirmationRequest,
@@ -389,7 +402,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const createTaquitoWallet = React.useCallback(
+  const createTaquitoWallet = useCallback(
     (sourcePkh: string, networkRpc: string) =>
       new TaquitoWallet(sourcePkh, networkRpc, {
         onBeforeSend: (id) => {
@@ -399,7 +412,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const createTaquitoSigner = React.useCallback(
+  const createTaquitoSigner = useCallback(
     (sourcePkh: string) =>
       new TempleSigner(sourcePkh, (id) => {
         confirmationIdRef.current = id;
@@ -407,7 +420,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     []
   );
 
-  const getAllDAppSessions = React.useCallback(async () => {
+  const getAllDAppSessions = useCallback(async () => {
     const res = await request({
       type: TempleMessageType.DAppGetAllSessionsRequest,
     });
@@ -415,7 +428,7 @@ export const [TempleClientProvider, useTempleClient] = constate(() => {
     return res.sessions;
   }, []);
 
-  const removeDAppSession = React.useCallback(async (origin: string) => {
+  const removeDAppSession = useCallback(async (origin: string) => {
     const res = await request({
       type: TempleMessageType.DAppRemoveSessionRequest,
       origin,
@@ -490,15 +503,21 @@ class TaquitoWallet implements WalletProvider {
   }
 
   async mapTransferParamsToWalletParams(params: WalletTransferParams) {
-    return createTransferOperation(params);
+    return withoutFeesOverride(params, await createTransferOperation(params));
   }
 
   async mapOriginateParamsToWalletParams(params: WalletOriginateParams) {
-    return createOriginationOperation(params as any);
+    return withoutFeesOverride(
+      params,
+      await createOriginationOperation(params as any)
+    );
   }
 
   async mapDelegateParamsToWalletParams(params: WalletDelegateParams) {
-    return createSetDelegateOperation(params as any);
+    return withoutFeesOverride(
+      params,
+      await createSetDelegateOperation(params as any)
+    );
   }
 
   async sendOperations(opParams: any[]) {
@@ -592,5 +611,19 @@ async function request<T extends TempleRequest>(req: T) {
 function assertResponse(condition: any): asserts condition {
   if (!condition) {
     throw new Error("Invalid response recieved");
+  }
+}
+
+function withoutFeesOverride<T>(params: any, op: T): T {
+  try {
+    const { fee, gasLimit, storageLimit } = params;
+    return {
+      ...op,
+      fee,
+      gas_limit: gasLimit,
+      storage_limit: storageLimit,
+    };
+  } catch {
+    return params;
   }
 }

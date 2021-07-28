@@ -1,13 +1,18 @@
-import * as React from "react";
-import classNames from "clsx";
-import Spinner from "app/atoms/Spinner";
+import React, { ButtonHTMLAttributes, FC } from "react";
 
-type FormSubmitButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+import classNames from "clsx";
+
+import Spinner from "app/atoms/Spinner";
+import { TestIDProps } from "lib/analytics";
+
+import { Button } from "./Button";
+
+type FormSubmitButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & TestIDProps & {
   loading?: boolean;
   small?: boolean;
 };
 
-const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
+const FormSubmitButton: FC<FormSubmitButtonProps> = ({
   loading,
   small,
   disabled,
@@ -16,7 +21,7 @@ const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
   children,
   ...rest
 }) => (
-  <button
+  <Button
     className={classNames(
       "relative",
       small ? "px-6" : "px-8",
@@ -57,7 +62,7 @@ const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
         <Spinner theme="white" style={{ width: small ? "2rem" : "3rem" }} />
       </div>
     )}
-  </button>
+  </Button>
 );
 
 export default FormSubmitButton;

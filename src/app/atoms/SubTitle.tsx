@@ -1,15 +1,19 @@
-import * as React from "react";
+import React, { FC, HTMLAttributes } from "react";
+
 import classNames from "clsx";
+
 import { ReactComponent as ComponentIcon } from "app/icons/component.svg";
 
-type SubTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
+type SubTitleProps = HTMLAttributes<HTMLHeadingElement> & {
   uppercase?: boolean;
+  small?: boolean;
 };
 
-const SubTitle: React.FC<SubTitleProps> = ({
+const SubTitle: FC<SubTitleProps> = ({
   className,
   children,
   uppercase = true,
+  small = false,
   ...rest
 }) => {
   const comp = (
@@ -23,7 +27,7 @@ const SubTitle: React.FC<SubTitleProps> = ({
       className={classNames(
         "flex items-center justify-center",
         "text-gray-700",
-        "text-2xl",
+        small ? "text-xl" : "text-2xl",
         "font-light",
         uppercase && "uppercase",
         className

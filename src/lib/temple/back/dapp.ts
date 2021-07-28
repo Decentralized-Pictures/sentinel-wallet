@@ -1,11 +1,9 @@
-import { browser, Runtime } from "webextension-polyfill-ts";
-import { nanoid } from "nanoid";
-import { TezosOperationError } from "@taquito/taquito";
-import { RpcClient } from "@taquito/rpc";
 import { localForger } from "@taquito/local-forging";
-import { emitMicheline } from "@taquito/michel-codec";
 import { valueDecoder } from "@taquito/local-forging/dist/lib/michelson/codec";
 import { Uint8ArrayConsumer } from "@taquito/local-forging/dist/lib/uint8array-consumer";
+import { emitMicheline } from "@taquito/michel-codec";
+import { RpcClient } from "@taquito/rpc";
+import { TezosOperationError } from "@taquito/taquito";
 import {
   TempleDAppMessageType,
   TempleDAppErrorType,
@@ -20,27 +18,32 @@ import {
   TempleDAppBroadcastResponse,
   TempleDAppNetwork,
 } from "@temple-wallet/dapp/dist/types";
+import { nanoid } from "nanoid";
+import { browser, Runtime } from "webextension-polyfill-ts";
+
+import { intercom } from "lib/temple/back/defaults";
+import { buildFinalOpParmas, dryRunOpParams } from "lib/temple/back/dryrun";
+import { withUnlocked } from "lib/temple/back/store";
+import * as Beacon from "lib/temple/beacon";
+import { loadChainId, isAddressValid } from "lib/temple/helpers";
+import { NETWORKS } from "lib/temple/networks";
+import * as PndOps from "lib/temple/pndops";
 import {
   TempleMessageType,
   TempleRequest,
   TempleDAppPayload,
   TempleDAppSession,
   TempleDAppSessions,
+  TempleDAppOperationsPayload,
 } from "lib/temple/types";
-import { intercom } from "lib/temple/back/defaults";
-import { dryRunOpParams } from "lib/temple/back/dryrun";
-import * as PndOps from "lib/temple/back/pndops";
-import * as Beacon from "lib/temple/beacon";
-import { withUnlocked } from "lib/temple/back/store";
-import { NETWORKS } from "lib/temple/networks";
-import { loadChainId, isAddressValid } from "lib/temple/helpers";
 
 const CONFIRM_WINDOW_WIDTH = 380;
-const CONFIRM_WINDOW_HEIGHT = 600;
+const CONFIRM_WINDOW_HEIGHT = 632;
 const AUTODECLINE_AFTER = 120_000;
 const STORAGE_KEY = "dapp_sessions";
 const HEX_PATTERN = /^[0-9a-fA-F]+$/;
-const TEZ_MSG_SIGN_PATTERN = /^0501[a-f0-9]{8}54657a6f73205369676e6564204d6573736167653a20[a-f0-9]*$/;
+const TEZ_MSG_SIGN_PATTERN =
+  /^0501[a-f0-9]{8}54657a6f73205369676e6564204d6573736167653a20[a-f0-9]*$/;
 
 export async function getCurrentPermission(
   origin: string
@@ -48,7 +51,7 @@ export async function getCurrentPermission(
   const dApp = await getDApp(origin);
   const permission = dApp
     ? {
-        rpc: getNetworkRPC(dApp.network),
+        rpc: await getNetworkRPC(dApp.network),
         pkh: dApp.pkh,
         publicKey: dApp.publicKey,
       }
@@ -72,7 +75,7 @@ export async function requestPermission(
     throw new Error(TempleDAppErrorType.InvalidParams);
   }
 
-  const networkRpc = getNetworkRPC(req.network);
+  const networkRpc = await getNetworkRPC(req.network);
   const dApp = await getDApp(origin);
 
   if (
@@ -108,11 +111,8 @@ export async function requestPermission(
           confirmReq?.type === TempleMessageType.DAppPermConfirmationRequest &&
           confirmReq?.id === id
         ) {
-          const {
-            confirmed,
-            accountPublicKeyHash,
-            accountPublicKey,
-          } = confirmReq;
+          const { confirmed, accountPublicKeyHash, accountPublicKey } =
+            confirmReq;
           if (confirmed && accountPublicKeyHash && accountPublicKey) {
             await setDApp(origin, {
               network: req.network,
@@ -166,7 +166,7 @@ export async function requestOperation(
 
   return new Promise(async (resolve, reject) => {
     const id = nanoid();
-    const networkRpc = getNetworkRPC(dApp.network);
+    const networkRpc = await getNetworkRPC(dApp.network);
 
     await requestConfirm({
       id,
@@ -182,7 +182,7 @@ export async function requestOperation(
       onDecline: () => {
         reject(new Error(TempleDAppErrorType.NotGranted));
       },
-      handleIntercomRequest: async (confirmReq, decline) => {
+      handleIntercomRequest: async (confirmReq, decline, finalPayload) => {
         if (
           confirmReq?.type === TempleMessageType.DAppOpsConfirmationRequest &&
           confirmReq?.id === id
@@ -190,7 +190,15 @@ export async function requestOperation(
           if (confirmReq.confirmed) {
             try {
               const op = await withUnlocked(({ vault }) =>
-                vault.sendOperations(dApp.pkh, networkRpc, req.opParams)
+                vault.sendOperations(
+                  dApp.pkh,
+                  networkRpc,
+                  buildFinalOpParmas(
+                    req.opParams,
+                    (finalPayload as TempleDAppOperationsPayload)?.estimates,
+                    confirmReq.modifiedStorageLimit
+                  )
+                )
               );
 
               try {
@@ -253,7 +261,7 @@ export async function requestSign(
 
   return new Promise(async (resolve, reject) => {
     const id = nanoid();
-    const networkRpc = getNetworkRPC(dApp.network);
+    const networkRpc = await getNetworkRPC(dApp.network);
 
     let preview: any;
     try {
@@ -328,7 +336,7 @@ export async function requestBroadcast(
   }
 
   try {
-    const rpc = new RpcClient(getNetworkRPC(dApp.network));
+    const rpc = new RpcClient(await getNetworkRPC(dApp.network));
     const opHash = await rpc.injectOperation(req.signedOpBytes);
     return {
       type: TempleDAppMessageType.BroadcastResponse,
@@ -384,7 +392,8 @@ type RequestConfirmParams = {
   onDecline: () => void;
   handleIntercomRequest: (
     req: TempleRequest,
-    decline: () => void
+    decline: () => void,
+    finalPayload?: TempleDAppPayload
   ) => Promise<any>;
 };
 
@@ -422,6 +431,7 @@ async function requestConfirm({
   };
 
   let knownPort: Runtime.Port | undefined;
+  let finalPayload: TempleDAppPayload;
   const stopRequestListening = intercom.onRequest(
     async (req: TempleRequest, port) => {
       if (
@@ -441,6 +451,7 @@ async function requestConfirm({
             ...payload,
             ...(dryrunResult ?? {}),
           };
+          finalPayload = payload;
         }
 
         return {
@@ -450,7 +461,11 @@ async function requestConfirm({
       } else {
         if (knownPort !== port) return;
 
-        const result = await handleIntercomRequest(req, onDecline);
+        const result = await handleIntercomRequest(
+          req,
+          onDecline,
+          finalPayload
+        );
         if (result) {
           close();
           return result;
@@ -493,10 +508,43 @@ async function requestConfirm({
   const stopTimeout = () => clearTimeout(t);
 }
 
-export function getNetworkRPC(net: TempleDAppNetwork) {
-  return typeof net === "string"
-    ? NETWORKS.find((n) => n.id === net)!.rpcBaseURL
-    : net.rpc;
+export async function getNetworkRPC(net: TempleDAppNetwork) {
+  const targetRpc =
+    typeof net === "string"
+      ? NETWORKS.find((n) => n.id === net)!.rpcBaseURL
+      : removeLastSlash(net.rpc);
+
+  if (typeof net === "string") {
+    try {
+      const current = await getCurrentTempleNetwork();
+      const [currentChainId, targetChainId] = await Promise.all([
+        loadChainId(current.rpcBaseURL),
+        loadChainId(targetRpc),
+      ]);
+
+      return currentChainId === targetChainId ? current.rpcBaseURL : targetRpc;
+    } catch {
+      return targetRpc;
+    }
+  } else {
+    return targetRpc;
+  }
+}
+
+async function getCurrentTempleNetwork() {
+  const {
+    network_id: networkId,
+    custom_networks_snapshot: customNetworksSnapshot,
+  } = await browser.storage.local.get([
+    "network_id",
+    "custom_networks_snapshot",
+  ]);
+
+  return (
+    [...NETWORKS, ...(customNetworksSnapshot ?? [])].find(
+      (n) => n.id === networkId
+    ) ?? NETWORKS[0]
+  );
 }
 
 function isAllowedNetwork(net: TempleDAppNetwork) {
@@ -507,6 +555,10 @@ function isAllowedNetwork(net: TempleDAppNetwork) {
 
 function isNetworkEquals(fNet: TempleDAppNetwork, sNet: TempleDAppNetwork) {
   return typeof fNet !== "string" && typeof sNet !== "string"
-    ? fNet?.rpc === sNet?.rpc
+    ? removeLastSlash(fNet.rpc) === removeLastSlash(sNet.rpc)
     : fNet === sNet;
+}
+
+function removeLastSlash(str: string) {
+  return str.endsWith("/") ? str.slice(0, -1) : str;
 }

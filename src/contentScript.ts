@@ -1,11 +1,12 @@
-import { browser } from "webextension-polyfill-ts";
-import { IntercomClient } from "lib/intercom/client";
-import { serealizeError } from "lib/intercom/helpers";
-import { TempleMessageType, TempleResponse } from "lib/temple/types";
 import {
   TemplePageMessage,
   TemplePageMessageType,
 } from "@temple-wallet/dapp/dist/types";
+import { browser } from "webextension-polyfill-ts";
+
+import { IntercomClient } from "lib/intercom/client";
+import { serealizeError } from "lib/intercom/helpers";
+import { TempleMessageType, TempleResponse } from "lib/temple/types";
 
 enum BeaconMessageTarget {
   Page = "toPage",
@@ -40,7 +41,7 @@ type BeaconPageMessage =
 
 const SENDER = {
   id: browser.runtime.id,
-  name: "Sentinel - T4L3NT Wallet",
+  name: "Temple - Tezos Wallet (ex. Thanos)",
   iconUrl: process.env.TEMPLE_WALLET_LOGO_URL || undefined,
 };
 

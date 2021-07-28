@@ -1,12 +1,14 @@
-import * as React from "react";
+import React, { FC, useCallback, useLayoutEffect } from "react";
+
 import classNames from "clsx";
 import CSSTransition from "react-transition-group/CSSTransition";
+
+import DocBg from "app/a11y/DocBg";
+import InternalConfirmation from "app/templates/InternalConfirmation";
 import { useTempleClient } from "lib/temple/front";
 import Portal from "lib/ui/Portal";
-import DocBg from "app/a11y/DocBg";
-import InternalConfiramtion from "app/templates/InternalConfiramtion";
 
-const ConfirmationOverlay: React.FC = () => {
+const ConfirmationOverlay: FC = () => {
   const {
     confirmation,
     resetConfirmation,
@@ -14,7 +16,7 @@ const ConfirmationOverlay: React.FC = () => {
   } = useTempleClient();
   const displayed = Boolean(confirmation);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (displayed) {
       const x = window.scrollX;
       const y = window.scrollY;
@@ -28,10 +30,10 @@ const ConfirmationOverlay: React.FC = () => {
     return;
   }, [displayed]);
 
-  const handleConfirm = React.useCallback(
-    async (confirmed: boolean) => {
+  const handleConfirm = useCallback(
+    async (confirmed: boolean, modifiedStorageLimit?: number) => {
       if (confirmation) {
-        await confirmInternal(confirmation.id, confirmed);
+        await confirmInternal(confirmation.id, confirmed, modifiedStorageLimit);
       }
       resetConfirmation();
     },
@@ -58,7 +60,7 @@ const ConfirmationOverlay: React.FC = () => {
         >
           <div className="fixed inset-0 z-50 overflow-y-auto bg-primary-white">
             {confirmation && (
-              <InternalConfiramtion
+              <InternalConfirmation
                 payload={confirmation.payload}
                 onConfirm={handleConfirm}
               />

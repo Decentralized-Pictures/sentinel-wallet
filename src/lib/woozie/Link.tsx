@@ -1,35 +1,37 @@
-import * as React from "react";
+import React, { AnchorHTMLAttributes, FC, MouseEventHandler, useCallback, useMemo } from "react";
+
+import { TestIDProps, useAnalytics, AnalyticsEventCategory } from "lib/analytics";
 import { USE_LOCATION_HASH_AS_URL } from "lib/woozie/config";
 import { HistoryAction, createUrl, changeState } from "lib/woozie/history";
 import { To, createLocationUpdates, useLocation } from "lib/woozie/location";
 
 export interface LinkProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  extends AnchorHTMLAttributes<HTMLAnchorElement>, TestIDProps {
   to: To;
   replace?: boolean;
 }
 
-const Link: React.FC<LinkProps> = ({ to, replace, ...rest }) => {
+const Link: FC<LinkProps> = ({ to, replace, ...rest }) => {
   const lctn = useLocation();
 
-  const { pathname, search, hash, state } = React.useMemo(
+  const { pathname, search, hash, state } = useMemo(
     () => createLocationUpdates(to, lctn),
     [to, lctn]
   );
 
-  const url = React.useMemo(() => createUrl(pathname, search, hash), [
+  const url = useMemo(() => createUrl(pathname, search, hash), [
     pathname,
     search,
     hash,
   ]);
 
-  const href = React.useMemo(
+  const href = useMemo(
     () =>
       USE_LOCATION_HASH_AS_URL ? `${window.location.pathname}#${url}` : url,
     [url]
   );
 
-  const handleNavigate = React.useCallback(() => {
+  const handleNavigate = useCallback(() => {
     const action =
       replace || url === createUrl(lctn.pathname, lctn.search, lctn.hash)
         ? HistoryAction.Replace
@@ -43,21 +45,27 @@ const Link: React.FC<LinkProps> = ({ to, replace, ...rest }) => {
 export default Link;
 
 interface LinkAnchorProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  extends AnchorHTMLAttributes<HTMLAnchorElement>, TestIDProps {
   onNavigate: () => void;
-  onClick?: React.MouseEventHandler;
+  onClick?: MouseEventHandler;
   target?: string;
 }
 
-const LinkAnchor: React.FC<LinkAnchorProps> = ({
+const LinkAnchor: FC<LinkAnchorProps> = ({
   children,
   onNavigate,
   onClick,
   target,
+  testID,
+  testIDProperties,
   ...rest
 }) => {
-  const handleClick = React.useCallback(
+  const { trackEvent } = useAnalytics();
+
+  const handleClick = useCallback(
     (evt) => {
+      testID !== undefined && trackEvent(testID, AnalyticsEventCategory.ButtonPress, testIDProperties);
+
       try {
         if (onClick) {
           onClick(evt);
@@ -77,7 +85,7 @@ const LinkAnchor: React.FC<LinkAnchorProps> = ({
         onNavigate();
       }
     },
-    [onClick, target, onNavigate]
+    [onClick, target, onNavigate, trackEvent, testID, testIDProperties]
   );
 
   return (

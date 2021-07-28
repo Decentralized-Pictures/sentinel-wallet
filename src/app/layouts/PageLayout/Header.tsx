@@ -1,18 +1,23 @@
-import * as React from "react";
+import React, { FC } from "react";
+
 import classNames from "clsx";
-import Popper from "lib/ui/Popper";
-import { Link } from "lib/woozie";
-import { useTempleClient, useAccount } from "lib/temple/front";
+
+import { Button } from "app/atoms/Button";
+import Identicon from "app/atoms/Identicon";
+import Logo from "app/atoms/Logo";
+import Name from "app/atoms/Name";
 import { useAppEnv } from "app/env";
 import ContentContainer from "app/layouts/ContentContainer";
-import Identicon from "app/atoms/Identicon";
-import Name from "app/atoms/Name";
-import Logo from "app/atoms/Logo";
-import styles from "./Header.module.css";
-import NetworkSelect from "./Header/NetworkSelect";
-import AccountDropdown from "./Header/AccountDropdown";
+import { useTempleClient, useAccount } from "lib/temple/front";
+import Popper from "lib/ui/Popper";
+import { Link } from "lib/woozie";
 
-const Header: React.FC = () => {
+import styles from "./Header.module.css";
+import { HeaderSelectors } from "./Header.selectors";
+import AccountDropdown from "./Header/AccountDropdown";
+import NetworkSelect from "./Header/NetworkSelect";
+
+const Header: FC = () => {
   const appEnv = useAppEnv();
   const { ready } = useTempleClient();
 
@@ -27,7 +32,7 @@ const Header: React.FC = () => {
       <ContentContainer className="py-4">
         <div className={classNames(appEnv.fullPage && "px-4")}>
           <div className="flex items-stretch">
-            <Link to="/" className="flex-shrink-0 pr-4">
+            <Link to="/" className="flex-shrink-0 pr-4" testID={HeaderSelectors.TempleLogo}>
               <div className="flex items-center">
                 <Logo hasTitle={appEnv.fullPage} white />
               </div>
@@ -43,7 +48,7 @@ const Header: React.FC = () => {
 
 export default Header;
 
-const Control: React.FC = () => {
+const Control: FC = () => {
   const account = useAccount();
 
   return (
@@ -73,7 +78,7 @@ const Control: React.FC = () => {
         popup={(props) => <AccountDropdown {...props} />}
       >
         {({ ref, opened, toggleOpened }) => (
-          <button
+          <Button
             ref={ref}
             className={classNames(
               "ml-2 flex-shrink-0 flex",
@@ -89,9 +94,10 @@ const Control: React.FC = () => {
               "cursor-pointer"
             )}
             onClick={toggleOpened}
+            testID={HeaderSelectors.AccountIcon}
           >
             <Identicon type="bottts" hash={account.publicKeyHash} size={48} />
-          </button>
+          </Button>
         )}
       </Popper>
     </>
