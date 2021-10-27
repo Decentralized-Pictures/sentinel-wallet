@@ -69,13 +69,13 @@ const MainAssetBanner: FC<MainAssetBannerProps> = ({
                     <span className="text-lg opacity-90">{asset.symbol}</span>
                   </span>
 
-                  <InUSD asset={asset} volume={balance}>
+                  {/* <InUSD asset={asset} volume={balance}>
                     {(usdBalance) => (
                       <div className="mt-1 text-sm text-gray-500">
                         ${usdBalance}
                       </div>
                     )}
-                  </InUSD>
+                  </InUSD> */}
                 </div>
               )}
             </Balance>
