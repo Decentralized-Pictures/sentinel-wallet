@@ -69,11 +69,11 @@ const About: FC = () => (
         },
         {
           key: "privacyPolicy",
-          link: "https://tlnt.net/privacy",
+          link: "https://tlnt.net/sentinel-privacy",
         },
         {
           key: "termsOfUse",
-          link: "https://tlnt.net/terms",
+          link: "https://tlnt.net/sentinel-terms-of-use",
         },
         {
           key: "contact",

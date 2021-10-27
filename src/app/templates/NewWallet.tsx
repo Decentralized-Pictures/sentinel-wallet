@@ -233,7 +233,7 @@ const NewWallet: FC<NewWalletProps> = ({ ownMnemonic = false, title }) => {
                 <T id="termsOfUsage" key="termsLink">
                   {(message) => (
                     <a
-                      href="https://templewallet.com/terms"
+                      href="https://tlnt.net/sentinel-terms-of-use"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline text-secondary"
@@ -245,7 +245,7 @@ const NewWallet: FC<NewWalletProps> = ({ ownMnemonic = false, title }) => {
                 <T id="privacyPolicy" key="privacyPolicyLink">
                   {(message) => (
                     <a
-                      href="https://templewallet.com/privacy"
+                      href="https://tlnt.net/sentinel-privacy"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline text-secondary"
