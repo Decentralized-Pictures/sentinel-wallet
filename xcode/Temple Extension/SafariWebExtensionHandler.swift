@@ -1,6 +1,6 @@
 //
 //  SafariWebExtensionHandler.swift
-//  Temple Extension
+//  Sentinel Extension
 //
 //  Created by Andrii Ivaniv on 29.03.2021.
 //

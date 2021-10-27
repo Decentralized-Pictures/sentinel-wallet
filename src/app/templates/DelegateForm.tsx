@@ -79,7 +79,7 @@ const DelegateForm: FC = () => {
   const tezos = useTezos();
 
   const accountPkh = acc.publicKeyHash;
-  const assetSymbol = "ꜩ";
+  const assetSymbol = "ф";
 
   const { data: balanceData, mutate: mutateBalance } = useBalance(
     TEZ_ASSET,
@@ -593,7 +593,7 @@ const DelegateForm: FC = () => {
         ) : (
           sortedKnownBakers && (
             <div className={classNames("my-6", "flex flex-col")}>
-              <h2
+              {/* <h2
                 className={classNames("mb-4", "leading-tight", "flex flex-col")}
               >
                 <T id="delegateToRecommendedBakers">
@@ -630,9 +630,9 @@ const DelegateForm: FC = () => {
                     </span>
                   )}
                 </T>
-              </h2>
+              </h2> */}
 
-              <div className={classNames("mb-2", "flex items-center")}>
+              {/* <div className={classNames("mb-2", "flex items-center")}>
                 <T id="sortBy">
                   {(message) => (
                     <span
@@ -694,9 +694,9 @@ const DelegateForm: FC = () => {
                   />
                   <T id="highestIsBetter" />
                 </div>
-              </div>
+              </div> */}
 
-              <div
+              {/* <div
                 className={classNames(
                   "rounded-md overflow-hidden",
                   "border",
@@ -839,7 +839,7 @@ const DelegateForm: FC = () => {
                     </Button>
                   );
                 })}
-              </div>
+              </div> */}
             </div>
           )
         )}

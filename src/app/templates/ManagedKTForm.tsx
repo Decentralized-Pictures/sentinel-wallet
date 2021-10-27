@@ -230,7 +230,7 @@ const ManagedKTForm: FC = () => {
                 {(bal) => (
                   <span className={classNames("text-xs leading-none")}>
                     <Money>{bal}</Money>{" "}
-                    <span style={{ fontSize: "0.75em" }}>ꜩ</span>
+                    <span style={{ fontSize: "0.75em" }}>ф</span>
                   </span>
                 )}
               </Balance>

@@ -1,12 +1,12 @@
 {
   "appName": {
-    "message": "Temple - Portefeuille Tezos"
+    "message": "Sentinel - Portefeuille T4L3NT"
   },
   "showIncomingTransactions": {
     "message": "Afficher les transactions entrantes"
   },
   "appDesc": {
-    "message": "🔐💰Portefeuille de cryptomonnaie pour le blockchain Tezos en tant qu'extension Web pour votre navigateur."
+    "message": "🔐💰Portefeuille de cryptomonnaie pour le blockchain T4L3NT en tant qu'extension Web pour votre navigateur."
   },
   "importAccount": {
     "message": "Importer un compte"
@@ -158,7 +158,7 @@
     }
   },
   "minDelegationAmountDescription": {
-    "message": "Votre solde actuel est inférieur au montant minimum de délégation de ce baker. Cela signifie que tant que le solde est inférieur à $minAmount$, il n'y aura pas de dividendes.",
+    "message": "Votre solde actuel est inférieur au montant minimum de délégation de ce producer. Cela signifie que tant que le solde est inférieur à $minAmount$, il n'y aura pas de dividendes.",
     "placeholders": {
       "minAmount": {
         "content": "$1"
@@ -166,7 +166,7 @@
     }
   },
   "clickOnBakerPrompt": {
-    "message": "Cliquez sur le Baker auquel vous voulez déléguer des fonds. Cette liste est alimentée par $link$.",
+    "message": "Cliquez sur le producer auquel vous voulez déléguer des fonds. Cette liste est alimentée par $link$.",
     "placeholders": {
       "link": {
         "content": "$1"
@@ -205,7 +205,7 @@
     "message": "Délégué à :"
   },
   "delegatingMotivation": {
-    "message": "Déléguer vos fonds à des bakers est un excellent moyen de gagner des intérêts sur votre solde"
+    "message": "Déléguer vos fonds à des producers est un excellent moyen de gagner des intérêts sur votre solde"
   },
   "reDelegate": {
     "message": "Redéléguer"
@@ -227,10 +227,10 @@
     "description": "CoinSwitch = https://coinswitch.co/"
   },
   "tezosFaucet": {
-    "message": "Faucet Tezos"
+    "message": "Faucet T4L3NT"
   },
   "tezosFaucetAlpha": {
-    "message": "Faucet Tezos (Alpha)"
+    "message": "Faucet T4L3NT (Alpha)"
   },
   "depositToWallet": {
     "message": "Dépôt dans votre portefeuille"
@@ -473,17 +473,17 @@
     "message": "Réessayer"
   },
   "tezosMainnet": {
-    "message": "Mainnet Tezos",
+    "message": "Mainnet T4L3NT",
     "description": "Mainnet = main network"
   },
   "templeWalletOptions": {
-    "message": "Portefeuille Temple | Options"
+    "message": "Portefeuille Sentinel | Options"
   },
   "resetExtension": {
     "message": "Réinitialiser l'extension"
   },
   "resetExtensionConfirmation": {
-    "message": "Voulez-vous vraiment réinitialiser le portefeuille Temple ? Vos données seront ainsi toutes supprimées."
+    "message": "Voulez-vous vraiment réinitialiser le portefeuille Sentinel ? Vos données seront ainsi toutes supprimées."
   },
   "failedToResetExtension": {
     "message": "Échec de réinitialisation de l'extension : $errorMessage$",
@@ -532,7 +532,7 @@
     "message": "Créer un nouveau portefeuille"
   },
   "createNewWalletDescription": {
-    "message": "Faites-vous vos premiers dans le portefeuille Temple ? Configurons-le ! Cela créera un nouveau portefeuille et une phrase mnémonique"
+    "message": "Faites-vous vos premiers dans le portefeuille Sentinel ? Configurons-le ! Cela créera un nouveau portefeuille et une phrase mnémonique"
   },
   "delegate": {
     "message": "Déléguer"
@@ -678,11 +678,11 @@
     "description": "DApps = Decentralized Applications"
   },
   "dAppsDescription": {
-    "message": "Dans cette section, vous pouvez activer la possibilité d'interagir avec les applications décentralisées qui prennent en charge le portefeuille Temple."
+    "message": "Dans cette section, vous pouvez activer la possibilité d'interagir avec les applications décentralisées qui prennent en charge le portefeuille Sentinel."
   },
   "networksDescription": {
-    "message": "Dans cette section, vous pouvez ajouter ou supprimer des réseaux Tezos personnalisés.",
-    "description": "Tezos = blockchain name (https://tezos.com/)"
+    "message": "Dans cette section, vous pouvez ajouter ou supprimer des réseaux T4L3NT personnalisés.",
+    "description": "T4L3NT = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "Activer le compte"
@@ -700,7 +700,7 @@
     "message": "À propos"
   },
   "aboutDescription": {
-    "message": "Utilisez cette section pour afficher les méta-informations concernant le portefeuille Temple."
+    "message": "Utilisez cette section pour afficher les méta-informations concernant le portefeuille Sentinel."
   },
   "unlockWallet": {
     "message": "Déverrouiller le portefeuille"
@@ -728,7 +728,7 @@
     "message": "Importer un portefeuille existant"
   },
   "importExistingWalletDescription": {
-    "message": "Avez-vous déjà une phrase mnémonique ? Importez votre portefeuille existant en utilisant 12 mots mnémoniques ou plus"
+    "message": "Avez-vous déjà une phrase mnémonique ? Importlnt votre portefeuille existant en utilisant 12 mots mnémoniques ou plus"
   },
   "links": {
     "message": "Liens"
@@ -815,10 +815,10 @@
     "message": "Interaction application décentralisée",
     "description": "DApps = Decentralized Applications"
   },
-  "enabled": {
+  "dAppsInteractionEnabled": {
     "message": "Activée"
   },
-  "disabled": {
+  "dAppsInteractionDisabled": {
     "message": "Désactivée"
   },
   "enablePopup": {
@@ -846,10 +846,10 @@
     "message": "Délégation"
   },
   "baker": {
-    "message": "Baker"
+    "message": "Producer"
   },
   "bakerInputDescription": {
-    "message": "Adresse d'un baker inscrit."
+    "message": "Adresse d'un producer inscrit."
   },
   "bakerInputPlaceholder": {
     "message": "p. ex. tz1a9w1S7hN5s…"
@@ -858,20 +858,19 @@
     "message": "Montant minimum de délégation"
   },
   "unknownBakerTitle": {
-    "message": "Baker inconnu"
+    "message": "Producer inconnu"
   },
   "unknownBakerDescription": {
-    "message": "Nous ne connaissons pas l'adresse fournie en tant que baker ! Ne lui déléguez vos fonds qu'à vos risques et périls."
+    "message": "Nous ne connaissons pas l'adresse fournie en tant que Producer ! Ne lui déléguez vos fonds qu'à vos risques et périls."
   },
   "delegateToRecommendedBakers": {
-    "message": "Déléguer aux bakers recommandés"
+    "message": "Déléguer aux Producers recommandés"
   },
   "sortBy": {
     "message": "Trier par"
   },
   "cycles_one": {
     "message": "cycle $amount$",
-    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -880,7 +879,6 @@
   },
   "cycles_other": {
     "message": "cycles $amount$",
-    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -911,13 +909,13 @@
     "message": "Les frais minimaux pour cette transaction sont supérieurs à votre solde."
   },
   "alreadyDelegatedFundsToBaker": {
-    "message": "Vous avez déjà délégué des fonds à ce baker. Impossible de déléguer de nouveau."
+    "message": "Vous avez déjà délégué des fonds à ce Producer. Impossible de déléguer de nouveau."
   },
   "bakerNotRegistered": {
-    "message": "Le baker spécifié n'est pas inscrit."
+    "message": "Le Producer spécifié n'est pas inscrit."
   },
   "unableToPerformActionToBaker": {
-    "message": "Impossible de $action$ au Baker fourni.",
+    "message": "Impossible de $action$ au Producer fourni.",
     "placeholders": {
       "action": {
         "content": "$1"
@@ -931,7 +929,7 @@
     "message": "Cela pourrait se produire à cause de :"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "Les frais minimaux pour cette transaction sont supérieurs à votre solde. Des frais considérables peuvent être exigés parce que vous envoyez des fonds vers un compte de gestionnaire vide. Cela nécessite des frais de brûlure uniques de 0,257 XTZ ;"
+    "message": "Les frais minimaux pour cette transaction sont supérieurs à votre solde. Des frais considérables peuvent être exigés parce que vous envoyez des fonds vers un compte de gestionnaire vide. Cela nécessite des frais de brûlure uniques de 0,257 FILM ;"
   },
   "networkOrOtherIssue": {
     "message": "Problème réseau ou autre problème technique."
@@ -1023,7 +1021,7 @@
     "message": "en attente…"
   },
   "backtracked": {
-    "message": "rétrogradée"
+    "message": "tracé"
   },
   "operationSuccessfullyProcessed": {
     "message": "$type$ traité et confirmé avec succès !",
@@ -1105,7 +1103,7 @@
     }
   },
   "tokensRecepientInputDescriptionWithDomain": {
-    "message": "Adresse ou domaine Tezos auquel envoyer des fonds $assetSymbol$.",
+    "message": "Adresse ou domaine T4L3NT auquel envoyer des fonds $assetSymbol$.",
     "placeholders": {
       "assetSymbol": {
         "content": "$1"
@@ -1113,17 +1111,17 @@
     }
   },
   "addressInputDescription": {
-    "message": "Adresse du compte ou contrat intelligent Tezos."
+    "message": "Adresse du compte ou contrat intelligent T4L3NT."
   },
   "addressInputDescriptionWithDomain": {
-    "message": "Adresse ou domaine Tezos du compte ou contrat intelligent."
+    "message": "Adresse ou domaine T4L3NT du compte ou contrat intelligent."
   },
   "recipientInputPlaceholder": {
     "message": "p. ex. tz1a9w1S7hN5s…"
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "p. ex. alice.tez or tz1a9w1S7hN5s…",
-    "description": "alice.tez = domain like google.com"
+    "message": "p. ex. alice.tlnt or tz1a9w1S7hN5s…",
+    "description": "alice.tlnt = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "Vous essayez de transférer des fonds à vous-même. Veuillez vous assurer que c'est exactement ce que vous voulez faire."
@@ -1137,13 +1135,9 @@
   "inUSD": {
     "message": "en USD"
   },
-  "inAsset": {
-    "message": "en $assetSymbol$",
-    "placeholders": {
-      "assetSymbol": {
-        "content": "$1"
-      }
-    }
+  "inXTZ": {
+    "message": "en FILM",
+    "description": "ф = asset symbol, like USD"
   },
   "amountPlaceholder": {
     "message": "p. ex. 123.45"
@@ -1155,7 +1149,7 @@
     "message": "Cliquez sur le compte auquel vous voulez envoyer des fonds."
   },
   "mainAssetBalanceIsZero": {
-    "message": "Votre solde XTZ (actif principal) est de zéro. Des fonds XTZ sont nécessaires pour payer les frais."
+    "message": "Votre solde FILM (actif principal) est de zéro. Des fonds FILM sont nécessaires pour payer les frais."
   },
   "unableToSendTransactionAction": {
     "message": "Impossible d'envoyer la transaction au destinataire fourni."

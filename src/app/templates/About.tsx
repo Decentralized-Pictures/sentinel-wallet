@@ -44,7 +44,7 @@ const About: FC = () => (
           className="font-normal hover:underline"
           style={{ color: "#98c630" }}
         >
-          Madfish.Solutions
+          Madfish.Solutions - customized by DCP for T4L3NT
         </a>,
       ]}
     >
@@ -61,23 +61,23 @@ const About: FC = () => (
       {[
         {
           key: "website",
-          link: "https://templewallet.com",
+          link: "https://tlnt.net",
         },
         {
           key: "repo",
-          link: "https://github.com/madfish-solutions/templewallet-extension",
+          link: "https://github.com/Decentralized-Pictures/sentinel-wallet",
         },
         {
           key: "privacyPolicy",
-          link: "https://templewallet.com/privacy",
+          link: "https://tlnt.net/privacy",
         },
         {
           key: "termsOfUse",
-          link: "https://templewallet.com/terms",
+          link: "https://tlnt.net/terms",
         },
         {
           key: "contact",
-          link: "https://templewallet.com/contact",
+          link: "https://tlnt.net/contact",
         },
       ].map(({ key, link }) => (
         <T id={key} key={key}>

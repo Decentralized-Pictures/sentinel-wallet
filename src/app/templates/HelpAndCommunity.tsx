@@ -10,47 +10,47 @@ import { ReactComponent as YoutubeIcon } from "app/icons/youtube.svg";
 import { T } from "lib/i18n/react";
 
 const links = [
-  {
-    name: "Knowledge Base",
-    href: "https://madfish.crunch.help/temple-wallet",
-    background: "#2182f7",
-    Icon: HelpCrunchIcon,
-  },
+  // {
+  //   name: "Knowledge Base",
+  //   href: "https://madfish.crunch.help/temple-wallet",
+  //   background: "#2182f7",
+  //   Icon: HelpCrunchIcon,
+  // },
   {
     name: "Feature Request",
-    href: "https://madfish.canny.io/feature-requests",
+    href: "https://tlnt.net/contact",
     Icon: CannyIcon,
   },
   {
     name: "Twitter",
-    href: "https://twitter.com/madfishofficial",
+    href: "https://twitter.com/DCP_Foundation",
     background: "#1DA1F2",
     Icon: TwitterIcon,
   },
   {
     name: "Telegram",
-    href: "https://t.me/MadFishCommunity",
+    href: "https://t.me/decentralized_pictures",
     background: "#26A5E4",
     Icon: TelegramIcon,
   },
   {
     name: "Discord",
-    href: "https://www.madfish.solutions/discord",
+    href: "https://discord.gg/n4V6E4FGnD",
     background: "#7289DA",
     Icon: DiscordIcon,
   },
-  {
-    name: "Reddit",
-    href: "https://www.reddit.com/r/MadFishCommunity",
-    background: "#FF4500",
-    Icon: RedditIcon,
-  },
-  {
-    name: "Youtube",
-    href: "https://www.youtube.com/channel/UCUp80EXfJEigks3xU5hiwyA",
-    background: "#FF0000",
-    Icon: YoutubeIcon,
-  },
+  // {
+  //   name: "Reddit",
+  //   href: "https://www.reddit.com/r/MadFishCommunity",
+  //   background: "#FF4500",
+  //   Icon: RedditIcon,
+  // },
+  // {
+  //   name: "Youtube",
+  //   href: "https://www.youtube.com/channel/UCUp80EXfJEigks3xU5hiwyA",
+  //   background: "#FF0000",
+  //   Icon: YoutubeIcon,
+  // },
 ];
 
 const HelpAndCommunity: FC = () => {

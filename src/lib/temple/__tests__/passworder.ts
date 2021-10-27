@@ -1,5 +1,5 @@
 /**
- * Module used for encryption inside Temple,
+ * Module used for encryption inside Sentinel,
  * has to be definitely covered with tests
  * to ensure nothing changes in the algo of ecryption
  */

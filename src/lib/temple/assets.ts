@@ -12,8 +12,8 @@ import { mutezToTz } from "lib/temple/helpers";
 import { TempleAsset, TempleToken, TempleAssetType } from "lib/temple/types";
 export const TEZ_ASSET: TempleAsset = {
   type: TempleAssetType.TEZ,
-  name: "Tezos",
-  symbol: "tez",
+  name: "FILM",
+  symbol: "FILM",
   decimals: 6,
   fungible: true,
   status: "displayed",
@@ -28,17 +28,17 @@ export const DELPHINET_TOKENS: TempleToken[] = [
     decimals: 18,
     fungible: true,
     iconUrl: "https://kolibri-data.s3.amazonaws.com/logo.png",
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
     address: "KT1TDHL9ipKL8WW3TMPvutbLh9uZBdY9BU59",
     name: "Wrapped Tezos",
-    symbol: "wXTZ",
+    symbol: "wFILM",
     decimals: 6,
     fungible: true,
     iconUrl: browser.runtime.getURL("misc/token-logos/wxtz.png"),
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA2,
@@ -49,7 +49,7 @@ export const DELPHINET_TOKENS: TempleToken[] = [
     decimals: 6,
     fungible: true,
     iconUrl: browser.runtime.getURL("misc/token-logos/usds.svg"),
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
@@ -59,7 +59,7 @@ export const DELPHINET_TOKENS: TempleToken[] = [
     decimals: 18,
     fungible: true,
     iconUrl: "https://github.com/StakerDAO/resources/raw/main/stkr.png",
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
@@ -69,7 +69,7 @@ export const DELPHINET_TOKENS: TempleToken[] = [
     decimals: 18,
     fungible: true,
     iconUrl: "https://github.com/StakerDAO/resources/raw/main/blend.png",
-    status: "displayed",
+    status: "hidden",
   },
 ];
 
@@ -83,7 +83,7 @@ export const MAINNET_TOKENS: TempleToken[] = [
     fungible: true,
     iconUrl:
       "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg",
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
@@ -93,7 +93,7 @@ export const MAINNET_TOKENS: TempleToken[] = [
     decimals: 18,
     fungible: true,
     iconUrl: "https://kolibri-data.s3.amazonaws.com/logo.png",
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
@@ -103,7 +103,7 @@ export const MAINNET_TOKENS: TempleToken[] = [
     decimals: 36,
     fungible: true,
     iconUrl: "https://kolibri-data.s3.amazonaws.com/logo.png",
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,
@@ -112,8 +112,8 @@ export const MAINNET_TOKENS: TempleToken[] = [
     symbol: "wXTZ",
     decimals: 6,
     fungible: true,
-    iconUrl: browser.runtime.getURL("misc/token-logos/wxtz.png"),
-    status: "displayed",
+    iconUrl: browser.runtime.getURL("misc/token-logos/wFILM.png"),
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA2,
@@ -124,7 +124,7 @@ export const MAINNET_TOKENS: TempleToken[] = [
     decimals: 6,
     fungible: true,
     iconUrl: browser.runtime.getURL("misc/token-logos/usds.svg"),
-    status: "displayed",
+    status: "hidden",
   },
   {
     type: TempleAssetType.FA1_2,

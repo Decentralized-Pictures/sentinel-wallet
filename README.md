@@ -1,21 +1,21 @@
-# Temple - Tezos Wallet (ex. Thanos)
+# Sentinel - T4L3NT Wallet
 
-Cryptocurrency wallet for [Tezos blockchain](https://tezos.com) as Web Extension for your Browser.<br>
-Providing ability to manage NFT, tez tokens and interact with dApps.
+Cryptocurrency wallet for [T4L3NT blockchain](https://tlnt.net) as Web Extension for your Browser.<br>
+Providing ability to manage NFT, tlnt tokens and interact with dApps.
 
-![Temple Wallet](https://user-images.githubusercontent.com/11996139/108867944-64e7fc00-75fe-11eb-975e-87c0fda9bfbe.png)
+![Sentinel Wallet](https://github.com/Decentralized-Pictures/sentinel-wallet/blob/master/Screen%20Shot%202021-05-11%20at%204.26.09%20PM.png)
 
 <hr />
 
 ## ▶️ Install
 
-You can install Temple Wallet right now: https://templewallet.com/download.
+You can install Sentinel Wallet right now: https://www.tlnt.net/sentinel-wallet.
 
 ## Browser Support
 
-| [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](https://addons.mozilla.org/en-US/firefox/addon/temple-wallet/) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 49 & later ✔                                                                                                                                                                                     | 52 & later ✔                                                                                                                                                 | Latest ✔                                                                                                                                                                                      | 36 & later ✔                                                                                                                                                                                  | 79 & later ✔                                                                                                                                                                               |
+| [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](https://addons.mozilla.org/en-US/firefox/addon/temple-wallet/) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](https://templewallet.com/download) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](https://templewallet.com/download) | [![Yandex](https://raw.github.com/alrra/browser-logos/master/src/yandex/yandex_48x48.png)](https://templewallet.com/download) | [![vivaldi](https://raw.github.com/alrra/browser-logos/master/src/vivaldi/vivaldi_48x48.png)](https://templewallet.com/download) |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 49 & later ✔                                                                                                                                                                                     | 52 & later ✔                                                                                                                                                 | Latest ✔                                                                                                                                                                                      | 36 & later 🔜                                                                                                              | 79 & later 🔜                                                                                                           | Latest 🔜                                                                                                                     | Latest 🔜                                                                                                                        |
 
 ## 🚀 Quick Start
 
@@ -29,7 +29,7 @@ Then run the following:
 ### 1) Clone the repository
 
 ```bash
-git clone https://github.com/madfish-solutions/templewallet-extension && cd templewallet-extension
+git clone https://github.com/Decentralized-Pictures/sentinel-wallet.git && cd sentinel-wallet
 ```
 
 ### 2) Install dependencies
@@ -64,7 +64,7 @@ yarn build-all
 
 ### 4) Load extension to your Browser
 
-![TempleWallet_Load](https://user-images.githubusercontent.com/11996139/73763346-f8435a80-4779-11ea-9e9d-4c1db9560f64.gif)
+![SentinelWallet_Load](https://user-images.githubusercontent.com/11996139/73763346-f8435a80-4779-11ea-9e9d-4c1db9560f64.gif)
 
 ## 🧱 Development
 

@@ -1,12 +1,12 @@
 {
   "appName": {
-    "message": "Temple - Tezos钱包"
+    "message": "Sentinel - T4L3NT钱包"
   },
   "showIncomingTransactions": {
     "message": "显示进账交易"
   },
   "appDesc": {
-    "message": "🔐💰浏览器扩展程序，适用于Tezos区块链的数字加密货币钱包。"
+    "message": "🔐💰浏览器扩展程序，适用于T4L3NT区块链的数字加密货币钱包。"
   },
   "importAccount": {
     "message": "导入账户"
@@ -227,10 +227,10 @@
     "description": "CoinSwitch = https://coinswitch.co/"
   },
   "tezosFaucet": {
-    "message": "Tezos Faucet"
+    "message": "T4L3NT Faucet"
   },
   "tezosFaucetAlpha": {
-    "message": "Tezos Faucet (Alpha)"
+    "message": "T4L3NT Faucet (Alpha)"
   },
   "depositToWallet": {
     "message": "存入您的钱包"
@@ -473,17 +473,17 @@
     "message": "重试"
   },
   "tezosMainnet": {
-    "message": "Tezos主网",
+    "message": "T4L3NT主网",
     "description": "Mainnet = main network"
   },
   "templeWalletOptions": {
-    "message": "Temple钱包 | 选项"
+    "message": "Sentinel钱包 | 选项"
   },
   "resetExtension": {
     "message": "重置扩展程序"
   },
   "resetExtensionConfirmation": {
-    "message": "确定要重置Temple钱包吗？\n此操作的结果是您的全部数据将被删除。"
+    "message": "确定要重置Sentinel钱包吗？\n此操作的结果是您的全部数据将被删除。"
   },
   "failedToResetExtension": {
     "message": "无法重置扩展程序：$errorMessage$",
@@ -532,7 +532,7 @@
     "message": "创建新钱包"
   },
   "createNewWalletDescription": {
-    "message": "没用过Temple钱包？我们先设置一个！这样做会创建一个新钱包和助记词"
+    "message": "没用过Sentinel钱包？我们先设置一个！这样做会创建一个新钱包和助记词"
   },
   "delegate": {
     "message": "委托"
@@ -678,11 +678,11 @@
     "description": "DApps = Decentralized Applications"
   },
   "dAppsDescription": {
-    "message": "在此处，您可以获得与支持Temple钱包的去中心化应用互动的能力。"
+    "message": "在此处，您可以获得与支持Sentinel钱包的去中心化应用互动的能力。"
   },
   "networksDescription": {
-    "message": "在此处，您可以添加或删除自定义Tezos网络。",
-    "description": "Tezos = blockchain name (https://tezos.com/)"
+    "message": "在此处，您可以添加或删除自定义T4L3NT网络。",
+    "description": "T4L3NT = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "激活账户"
@@ -700,7 +700,7 @@
     "message": "关于"
   },
   "aboutDescription": {
-    "message": "使用此板块来查看关于Temple钱包的元信息。"
+    "message": "使用此板块来查看关于Sentinel钱包的元信息。"
   },
   "unlockWallet": {
     "message": "解锁钱包"
@@ -815,10 +815,10 @@
     "message": "DApp互动",
     "description": "DApps = Decentralized Applications"
   },
-  "enabled": {
+  "dAppsInteractionEnabled": {
     "message": "已启用"
   },
-  "disabled": {
+  "dAppsInteractionDisabled": {
     "message": "已禁用"
   },
   "enablePopup": {
@@ -869,9 +869,16 @@
   "sortBy": {
     "message": "排序条件"
   },
+  "cycles_one": {
+    "message": "$amount$周期",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
   "cycles_other": {
     "message": "$amount$周期",
-    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -922,7 +929,7 @@
     "message": "发生这种情况可能是因为："
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "此交易的最低费用高于您的余额。由于您向空的管理员账户转账，可能会向您高额费用。这需要收取一次性的0.06425 XTZ消耗费；"
+    "message": "此交易的最低费用高于您的余额。由于您向空的管理员账户转账，可能会向您高额费用。这需要收取一次性的0.257 XTZ消耗费；"
   },
   "networkOrOtherIssue": {
     "message": "网络或其他技术问题。"
@@ -1096,7 +1103,7 @@
     }
   },
   "tokensRecepientInputDescriptionWithDomain": {
-    "message": "要接收$assetSymbol$资金的地址或Tezos域名。",
+    "message": "要接收$assetSymbol$资金的地址或T4L3NT域名。",
     "placeholders": {
       "assetSymbol": {
         "content": "$1"
@@ -1104,17 +1111,17 @@
     }
   },
   "addressInputDescription": {
-    "message": "Tezos账户或智能合约的地址。"
+    "message": "T4L3NT账户或智能合约的地址。"
   },
   "addressInputDescriptionWithDomain": {
-    "message": "帐户或智能合约的地址或Tezos域名。"
+    "message": "帐户或智能合约的地址或T4L3NT域名。"
   },
   "recipientInputPlaceholder": {
     "message": "例如：tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
     "message": "例如：alice.tez或tz1a9w1S7hN5s…",
-    "description": "alice.tez = domain like google.com"
+    "description": "alice.tlnt = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "您正在尝试向自己转账。\n请确认您确实想这样做。"
@@ -1128,13 +1135,9 @@
   "inUSD": {
     "message": "以USD计"
   },
-  "inAsset": {
-    "message": "以$assetSymbol$计",
-    "placeholders": {
-      "assetSymbol": {
-        "content": "$1"
-      }
-    }
+  "inXTZ": {
+    "message": "以XTZ计",
+    "description": "ф = asset symbol, like USD"
   },
   "amountPlaceholder": {
     "message": "例如：123.45"

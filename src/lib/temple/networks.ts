@@ -24,10 +24,10 @@ export const NETWORKS: TempleNetwork[] = [
     id: "mainnet",
     name: getMessage("tezosMainnet"),
     nameI18nKey: "tezosMainnet",
-    description: "Tezos mainnet",
-    lambdaContract: "KT1CPuTzwC7h7uLXd5WQmpMFso1HxrLBUtpE",
+    description: "T4L3NT Betanet",
+    lambdaContract: "",
     type: "main",
-    rpcBaseURL: "https://mainnet-node.madfish.solutions",
+    rpcBaseURL: "https://rpc.decentralized.pictures",
     color: "#83b300",
     disabled: false,
   },
@@ -39,7 +39,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "main",
     rpcBaseURL: "https://mainnet-tezos.giganode.io",
     color: "#059669",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "smartpy-mainnet",
@@ -49,7 +50,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "main",
     rpcBaseURL: "https://mainnet.smartpy.io",
     color: "#34D399",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "tzbeta-mainnet",
@@ -59,7 +61,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "main",
     rpcBaseURL: "https://rpc.tzbeta.net",
     color: "#10B981",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "tezie-mainnet",
@@ -69,7 +72,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "main",
     rpcBaseURL: "https://api.tez.ie/rpc/mainnet",
     color: "#047857",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "granadanet",
@@ -79,7 +83,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "test",
     rpcBaseURL: "https://granadanet.smartpy.io",
     color: "#667eea",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "florencenet",
@@ -89,7 +94,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "test",
     rpcBaseURL: "https://florencenet.smartpy.io",
     color: "#FFD88A",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "edo2net",
@@ -99,7 +105,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "test",
     rpcBaseURL: "https://edonet.smartpy.io",
     color: "#FBBF24",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   {
     id: "sandbox",
@@ -108,7 +115,8 @@ export const NETWORKS: TempleNetwork[] = [
     type: "test",
     rpcBaseURL: "http://localhost:8732",
     color: "#e9e1cc",
-    disabled: false,
+    disabled: true,
+    hidden: true,
   },
   // Hidden
   {

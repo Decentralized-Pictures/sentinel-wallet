@@ -22,7 +22,7 @@ const SendErrorAlert: FC<SendErrorAlertProps> = ({ type, error }) => (
       switch (true) {
         case error instanceof NotEnoughFundsError:
           return error instanceof ZeroTEZBalanceError
-            ? `${t("notEnoughCurrencyFunds", "ꜩ")} 😶`
+            ? `${t("notEnoughCurrencyFunds", "ф")} 😶`
             : `${t("notEnoughFunds")} 😶`;
 
         default:

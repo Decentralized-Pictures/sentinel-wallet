@@ -7,7 +7,7 @@ import {
   useStorage,
 } from "lib/temple/front";
 
-export type BlockExplorerId = "tzkt" | "tzstats" | "bcd" | "tezblock";
+export type BlockExplorerId = "dcpkt" ;
 
 type BaseUrls = { account?: string; transaction: string };
 
@@ -19,112 +19,14 @@ export type BlockExplorer = {
 
 export const BLOCK_EXPLORERS: BlockExplorer[] = [
   {
-    id: "tzkt",
-    name: "TzKT",
+    id: "dcpkt",
+    name: "dcpKT",
     baseUrls: new Map([
       [
         TempleChainId.Mainnet,
         {
-          account: "https://tzkt.io",
-          transaction: "https://tzkt.io",
-        },
-      ],
-      [
-        TempleChainId.Granadanet,
-        {
-          account: "https://granadanet.tzkt.io",
-          transaction: "https://granadanet.tzkt.io",
-        },
-      ],
-      [
-        TempleChainId.Florencenet,
-        {
-          account: "https://florencenet.tzkt.io",
-          transaction: "https://florencenet.tzkt.io",
-        },
-      ],
-      [
-        TempleChainId.Edo2net,
-        {
-          account: "https://edo2net.tzkt.io",
-          transaction: "https://edo2net.tzkt.io",
-        },
-      ],
-      [
-        TempleChainId.Delphinet,
-        {
-          account: "https://delphinet.tzkt.io",
-          transaction: "https://delphinet.tzkt.io",
-        },
-      ],
-    ]),
-  },
-  {
-    id: "tzstats",
-    name: "TzStats",
-    baseUrls: new Map([
-      [
-        TempleChainId.Mainnet,
-        {
-          account: "https://tzstats.com",
-          transaction: "https://tzstats.com",
-        },
-      ],
-      [
-        TempleChainId.Florencenet,
-        {
-          account: "https://florence.tzstats.com",
-          transaction: "https://florence.tzstats.com",
-        },
-      ],
-      [
-        TempleChainId.Edo2net,
-        {
-          account: "https://edo.tzstats.com",
-          transaction: "https://edo.tzstats.com",
-        },
-      ],
-    ]),
-  },
-  {
-    id: "bcd",
-    name: "Better Call Dev",
-    baseUrls: new Map([
-      [
-        TempleChainId.Mainnet,
-        {
-          transaction: "https://better-call.dev/mainnet/opg",
-        },
-      ],
-      [
-        TempleChainId.Granadanet,
-        {
-          transaction: "https://better-call.dev/granadanet/opg",
-        },
-      ],
-      [
-        TempleChainId.Florencenet,
-        {
-          transaction: "https://better-call.dev/florencenet/opg",
-        },
-      ],
-      [
-        TempleChainId.Edo2net,
-        {
-          transaction: "https://better-call.dev/edo2net/opg",
-        },
-      ],
-    ]),
-  },
-  {
-    id: "tezblock",
-    name: "tezblock",
-    baseUrls: new Map([
-      [
-        TempleChainId.Mainnet,
-        {
-          account: "http://tezblock.io/account",
-          transaction: "http://tezblock.io/transaction",
+          account: "https://explorer.tlnt.net",
+          transaction: "https://explorer.tlnt.net",
         },
       ],
     ]),
@@ -136,7 +38,7 @@ const BLOCK_EXPLORER_STORAGE_KEY = "block_explorer";
 export function useBlockExplorer() {
   const [explorerId, setExplorerId] = useStorage<BlockExplorerId>(
     BLOCK_EXPLORER_STORAGE_KEY,
-    "tzkt"
+    "dcpkt"
   );
   const explorer = useMemo(
     () => BLOCK_EXPLORERS.find(({ id }) => id === explorerId)!,

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Temple
+//  Sentinel
 //
 //  Created by Andrii Ivaniv on 29.03.2021.
 //

@@ -129,7 +129,7 @@ const Welcome: FC = () => {
 
       <div className="mt-12 mb-4 text-base text-gray-600 font-light">
         <p className="mb-2 text-lg">
-          Create the Temple wallet account and you may:
+          Create the Sentinel wallet account and you may:
         </p>
 
         <p className="mb-1 flex items-center">
@@ -141,11 +141,11 @@ const Welcome: FC = () => {
           Ledger device
         </p>
         <p className="mb-1 flex items-center">
-          <span className="text-lg pr-2">•</span>send and receive any Tezos
+          <span className="text-lg pr-2">•</span>send and receive any T4L3NT
           based tokens
         </p>
         <p className="mb-1 flex items-center">
-          <span className="text-lg pr-2">•</span>connect and interact with Tezos
+          <span className="text-lg pr-2">•</span>connect and interact with T4L3NT
           dApps
         </p>
       </div>

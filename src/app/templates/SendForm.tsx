@@ -850,7 +850,7 @@ const Form: FC<FormProps> = ({
                         id="inAsset"
                         substitutions={
                           localAsset.type === TempleAssetType.TEZ
-                            ? "ꜩ"
+                            ? "ф"
                             : localAsset.symbol
                         }
                       />

@@ -682,7 +682,7 @@
   },
   "networksDescription": {
     "message": "このセクションでは、カスタムテゾスネットワークの追加や削除を行うことができます。",
-    "description": "Tezos = blockchain name (https://tezos.com/)"
+    "description": "T4L3NT = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "アカウントをアクティベート"
@@ -815,10 +815,10 @@
     "message": "DAppsインタラクション",
     "description": "DApps = Decentralized Applications"
   },
-  "enabled": {
+  "dAppsInteractionEnabled": {
     "message": "有効です"
   },
-  "disabled": {
+  "dAppsInteractionDisabled": {
     "message": "無効です"
   },
   "enablePopup": {
@@ -869,9 +869,16 @@
   "sortBy": {
     "message": "並び替え順"
   },
+  "cycles_one": {
+    "message": "$amount$サイクル",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
   "cycles_other": {
     "message": "$amount$サイクル",
-    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -922,7 +929,7 @@
     "message": "以下の理由が考えられます:"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "この取引に必要な最小の手数料は残高を上回っています。空のマネージャーアカウントに資金を送るため、多額の手数料が必要になる場合があります。そのためには、1回限りの0.06425 XTZの焼却手数料が必要となります。"
+    "message": "この取引に必要な最小の手数料は残高を上回っています。空のマネージャーアカウントに資金を送るため、多額の手数料が必要になる場合があります。そのためには、1回限りの0.257 FILMの焼却手数料が必要となります。"
   },
   "networkOrOtherIssue": {
     "message": "ネットワークまたは他の技術的な問題"
@@ -1114,7 +1121,7 @@
   },
   "recipientInputPlaceholderWithDomain": {
     "message": "例: alice.tez、または tz1a9w1S7hN5s...",
-    "description": "alice.tez = domain like google.com"
+    "description": "alice.tlnt = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "自分に送金をしようとしています。\n本当に自分に送金したいのか確認してください。"
@@ -1128,13 +1135,9 @@
   "inUSD": {
     "message": "米ドル建て"
   },
-  "inAsset": {
-    "message": "$assetSymbol$建て",
-    "placeholders": {
-      "assetSymbol": {
-        "content": "$1"
-      }
-    }
+  "inFILM": {
+    "message": "FILM建て",
+    "description": "ф = asset symbol, like USD"
   },
   "amountPlaceholder": {
     "message": "例: 123.45"
@@ -1146,7 +1149,7 @@
     "message": "資金を送りたいアカウントをクリックしてください。"
   },
   "mainAssetBalanceIsZero": {
-    "message": "XTZ（メインアセット）の残高がゼロです。手数料にはXTZ資金が必要です。"
+    "message": "FILM（メインアセット）の残高がゼロです。手数料にはFILM資金が必要です。"
   },
   "unableToSendTransactionAction": {
     "message": "提供された受取先に取引を送ることができません。"

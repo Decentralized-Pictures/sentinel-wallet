@@ -163,7 +163,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   {mutezToTz(balance).decimalPlaces(0, BigNumber.ROUND_FLOOR)}
                 </Money>
               )}{" "}
-              ꜩ
+              ф
             </>
           ),
         },
@@ -171,7 +171,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
           name: "Rewards & Luck",
           value: (
             <>
-              <Money smallFractionFont={false}>{normalizedRewards}</Money> ꜩ
+              <Money smallFractionFont={false}>{normalizedRewards}</Money> ф
             </>
           ),
           valueComment: (
@@ -186,7 +186,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
           value: `${bakerFeePart * 100}%`,
           valueComment: (
             <span className="text-gray-500">
-              (<Money smallFractionFont={false}>{normalizedBakerFee}</Money> ꜩ)
+              (<Money smallFractionFont={false}>{normalizedBakerFee}</Money> ф)
             </span>
           ),
         },
@@ -200,7 +200,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                 <Money smallFractionFont={false}>
                   {normalizedRewards.minus(normalizedBakerFee)}
                 </Money>{" "}
-                ꜩ
+                ф
               </>
             ),
         },
@@ -243,7 +243,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(ownBlockRewards)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
                 <span key={1} className="text-blue-600">
                   {ownBlocks}
@@ -254,7 +254,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(ownBlockFees)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
               ]}
             />
@@ -273,7 +273,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(endorsementRewards)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
                 <span key={1} className="text-blue-600">
                   {endorsements}
@@ -302,7 +302,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(missedOwnBlockRewards)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
                 <span key={1} className="text-blue-600">
                   {missedOwnBlocks}
@@ -313,7 +313,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(missedOwnBlockFees)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
               ]}
             />
@@ -332,7 +332,7 @@ const BakingHistoryItem: FC<BakingHistoryItemProps> = ({
                   <Money smallFractionFont={false}>
                     {mutezToTz(missedEndorsementRewards)}
                   </Money>{" "}
-                  ꜩ
+                  ф
                 </span>,
                 <span key={1} className="text-blue-600">
                   {missedEndorsements}

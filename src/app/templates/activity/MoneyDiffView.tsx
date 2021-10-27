@@ -78,7 +78,7 @@ export default MoneyDiffView;
 function getAssetSymbol(asset?: TempleAsset) {
   if (!asset) return "???";
   return asset.type === TempleAssetType.TEZ
-    ? "ꜩ"
+    ? "ф"
     : asset.symbol !== "???"
     ? asset.symbol
     : asset.name.substr(0, 5);

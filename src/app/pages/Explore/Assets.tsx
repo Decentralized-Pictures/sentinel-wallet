@@ -258,7 +258,7 @@ const ListItem = memo<ListItemProps>(
                     </span>
                   </span>
 
-                  <InUSD asset={asset} volume={balance}>
+                  {/* <InUSD asset={asset} volume={balance}>
                     {(usdBalance) => (
                       <div
                         className={classNames(
@@ -269,7 +269,7 @@ const ListItem = memo<ListItemProps>(
                         ${usdBalance}
                       </div>
                     )}
-                  </InUSD>
+                  </InUSD> */}
                 </div>
               )}
             </Balance>

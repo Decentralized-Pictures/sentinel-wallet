@@ -125,18 +125,18 @@ const Explore: FC<ExploreProps> = ({ assetSlug }) => {
             Icon={ReceiveIcon}
             href="/receive"
           />
-          <ActionButton
+          {/* <ActionButton
             label={<T id="dApps" />}
             Icon={DAppsIcon}
             href="/dApps"
-          />
+          /> 
           <ActionButton
             label={<T id="swap" />}
             Icon={SwapIcon}
             href={asset ? `/swap/${getAssetKey(asset)}` : "/swap"}
             disabled={!canSend}
             tippyProps={tippyProps}
-          />
+          />  */}
           <ActionButton
             label={<T id="send" />}
             Icon={SendIcon}

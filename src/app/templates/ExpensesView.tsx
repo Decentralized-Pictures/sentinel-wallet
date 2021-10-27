@@ -152,14 +152,14 @@ const ExpensesView: FC<ExpensesViewProps> = ({
                             "placeholder-gray-600"
                           )}
                         />
-                        ꜩ
+                        ф
                       </>
                     ) : (
                       <>
                         <span className="font-medium">
                           <Money>{value}</Money>
                         </span>{" "}
-                        ꜩ
+                        ф
                       </>
                     )}
                   </div>
@@ -478,7 +478,7 @@ const OperationVolumeDisplay = memo<OperationVolumeDisplayProps>(
           <span className="font-medium">
             <Money>{finalVolume || 0}</Money>
           </span>{" "}
-          {expense?.asset ? asset?.symbol || "???" : "ꜩ"}
+          {expense?.asset ? asset?.symbol || "???" : "ф"}
         </span>
 
         {(!expense?.asset || asset) && (

@@ -15,9 +15,9 @@ const GeneralSettings: FC = () => {
 
       <PopupSettings />
 
-      <AnalyticsSettings />
+      {/* <AnalyticsSettings /> */}
 
-      <LedgerLiveSettings />
+      {/* <LedgerLiveSettings /> */}
     </div>
   );
 };

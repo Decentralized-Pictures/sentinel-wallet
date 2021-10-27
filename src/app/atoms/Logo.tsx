@@ -23,7 +23,7 @@ const Logo = memo<LogoProps>(
 
     return (
       <Component
-        title="Temple - Tezos Wallet"
+        title="Sentinel - Tezos Wallet"
         style={{
           height: 40,
           width: "auto",

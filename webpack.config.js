@@ -430,8 +430,8 @@ module.exports = {
     ]),
 
     new WebpackBar({
-      name: "Temple Wallet",
-      color: "#ed8936",
+      name: "Sentinel Wallet",
+      color: "#000000",
     }),
 
     // plugin to enable browser reloading in development mode

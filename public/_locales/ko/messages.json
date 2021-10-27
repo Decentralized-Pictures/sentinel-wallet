@@ -473,7 +473,7 @@
     "message": "다시 시도하기"
   },
   "tezosMainnet": {
-    "message": "테조스 메인넷(Tezos Mainnet)",
+    "message": "테조스 메인넷(T4L3NT Mainnet)",
     "description": "Mainnet = main network"
   },
   "templeWalletOptions": {
@@ -682,7 +682,7 @@
   },
   "networksDescription": {
     "message": "이 섹션에서 맞춤형 테조스 네트워크를 추가하거나 삭제할 수 있습니다.",
-    "description": "Tezos = blockchain name (https://tezos.com/)"
+    "description": "T4L3NT = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "계정 활성화"
@@ -815,10 +815,10 @@
     "message": "분산 앱 상호 소통",
     "description": "DApps = Decentralized Applications"
   },
-  "enabled": {
+  "dAppsInteractionEnabled": {
     "message": "활성화됨"
   },
-  "disabled": {
+  "dAppsInteractionDisabled": {
     "message": "비활성화됨"
   },
   "enablePopup": {
@@ -869,9 +869,16 @@
   "sortBy": {
     "message": "정렬 기준"
   },
+  "cycles_one": {
+    "message": "$amount$ 순환 주기",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
   "cycles_other": {
     "message": "$amount$ 순환 주기",
-    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -922,7 +929,7 @@
     "message": "증상 발생 원인:"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "이 송금 건의 최소 비용이 잔액보다 큽니다. 자금을 공란인 관리자 계정으로 송금하려할 때에는 비용이 많이 들 수 있습니다. 한 번에  0.06425 XTZ의 연소 비용이 필요합니다."
+    "message": "이 송금 건의 최소 비용이 잔액보다 큽니다. 자금을 공란인 관리자 계정으로 송금하려할 때에는 비용이 많이 들 수 있습니다. 한 번에  0.257 XTZ의 연소 비용이 필요합니다."
   },
   "networkOrOtherIssue": {
     "message": "네트워크 혹은 기타 기술적인 문제입니다."
@@ -1113,8 +1120,8 @@
     "message": "예) tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "예) alice.tez or tz1a9w1S7hN5s...",
-    "description": "alice.tez = domain like google.com"
+    "message": "예) alice.tlnt or tz1a9w1S7hN5s...",
+    "description": "alice.tlnt = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "자신에게 자금을 송금하는 중이시군요.\n정확하게 원하는 것인지 확인해보세요."
@@ -1128,13 +1135,9 @@
   "inUSD": {
     "message": "단위 USD"
   },
-  "inAsset": {
-    "message": "단위 $assetSymbol$",
-    "placeholders": {
-      "assetSymbol": {
-        "content": "$1"
-      }
-    }
+  "inXTZ": {
+    "message": "단위 XTZ",
+    "description": "ф = asset symbol, like USD"
   },
   "amountPlaceholder": {
     "message": "예) 123.45"
