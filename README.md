@@ -3,7 +3,8 @@
 Cryptocurrency wallet for [T4L3NT blockchain](https://tlnt.net) as Web Extension for your Browser.<br>
 Providing ability to manage NFT, tlnt tokens and interact with dApps.
 
-![Sentinel Wallet](https://github.com/Decentralized-Pictures/sentinel-wallet/blob/master/Screen%20Shot%202021-05-11%20at%204.26.09%20PM.png)
+![Sentinel Wallet](![image](https://user-images.githubusercontent.com/37309460/139511344-a132016d-efb4-4506-9bf7-e12496ed2ab3.png)
+)
 
 <hr />
 
