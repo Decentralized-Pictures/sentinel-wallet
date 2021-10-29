@@ -856,22 +856,23 @@ const Form: FC<FormProps> = ({
                       />
                     </div>
                   ) : (
-                    <InUSD
-                      asset={localAsset}
-                      volume={amountValue}
-                      roundingMode={BigNumber.ROUND_FLOOR}
-                    >
-                      {(usdAmount) => (
-                        <div className="mt-1 -mb-3">
-                          ≈{" "}
-                          <span className="font-normal text-gray-700">
-                            <span className="pr-px">$</span>
-                            {usdAmount}
-                          </span>{" "}
-                          <T id="inUSD" />
-                        </div>
-                      )}
-                    </InUSD>
+                    // <InUSD
+                    //   asset={localAsset}
+                    //   volume={amountValue}
+                    //   roundingMode={BigNumber.ROUND_FLOOR}
+                    // >
+                    //   {(usdAmount) => (
+                    //     <div className="mt-1 -mb-3">
+                    //       ≈{" "}
+                    //       <span className="font-normal text-gray-700">
+                    //         <span className="pr-px">$</span>
+                    //         {usdAmount}???
+                    //       </span>{" "}
+                    //       <T id="inUSD" />
+                    //     </div>
+                    //   )}
+                    // </InUSD>
+                    <span/>
                   )}
                 </>
               ) : null}
