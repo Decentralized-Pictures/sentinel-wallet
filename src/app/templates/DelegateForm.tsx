@@ -451,13 +451,13 @@ const DelegateForm: FC = () => {
                       <span style={{ fontSize: "0.75em" }}>{assetSymbol}</span>
                     </span>
 
-                    <InUSD asset={TEZ_ASSET} volume={balance}>
+                    {/* <InUSD asset={TEZ_ASSET} volume={balance}>
                       {(usdBalance) => (
                         <div className="mt-1 text-sm text-gray-500">
                           ${usdBalance}
                         </div>
                       )}
-                    </InUSD>
+                    </InUSD> */}
                   </div>
                 </div>
               </div>
