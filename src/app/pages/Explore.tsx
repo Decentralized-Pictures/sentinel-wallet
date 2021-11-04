@@ -14,12 +14,12 @@ import { Props as TippyProps } from "tippy.js";
 import Spinner from "app/atoms/Spinner";
 import { useAppEnv } from "app/env";
 import ErrorBoundary from "app/ErrorBoundary";
-import { ReactComponent as DAppsIcon } from "app/icons/apps-alt.svg";
+// import { ReactComponent as DAppsIcon } from "app/icons/apps-alt.svg";
 import { ReactComponent as ChevronRightIcon } from "app/icons/chevron-right.svg";
 import { ReactComponent as ExploreIcon } from "app/icons/explore.svg";
 import { ReactComponent as ReceiveIcon } from "app/icons/receive.svg";
 import { ReactComponent as SendIcon } from "app/icons/send-alt.svg";
-import { ReactComponent as SwapVerticalIcon } from "app/icons/swap-vertical.svg";
+// import { ReactComponent as SwapVerticalIcon } from "app/icons/swap-vertical.svg";
 import PageLayout from "app/layouts/PageLayout";
 import Activity from "app/templates/activity/Activity";
 import AssetInfo from "app/templates/AssetInfo";
@@ -129,7 +129,7 @@ const Explore: FC<ExploreProps> = ({ assetSlug }) => {
             label={<T id="dApps" />}
             Icon={DAppsIcon}
             href="/dApps"
-          /> 
+          />
           <ActionButton
             label={<T id="swap" />}
             Icon={SwapIcon}
@@ -156,17 +156,17 @@ const Explore: FC<ExploreProps> = ({ assetSlug }) => {
 
 export default Explore;
 
-const SwapIcon: FunctionComponent<SVGProps<SVGSVGElement>> = ({
-  className,
-  ...restProps
-}) => {
-  return (
-    <SwapVerticalIcon
-      className={classNames(className, "transform rotate-90")}
-      {...restProps}
-    />
-  );
-};
+// const SwapIcon: FunctionComponent<SVGProps<SVGSVGElement>> = ({
+//   className,
+//   ...restProps
+// }) => {
+//   return (
+//     <SwapVerticalIcon
+//       className={classNames(className, "transform rotate-90")}
+//       {...restProps}
+//     />
+//   );
+// };
 
 type ActionButtonProps = {
   label: React.ReactNode;

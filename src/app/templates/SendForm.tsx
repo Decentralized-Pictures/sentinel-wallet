@@ -36,7 +36,7 @@ import { ReactComponent as ChevronUpIcon } from "app/icons/chevron-up.svg";
 import AdditionalFeeInput from "app/templates/AdditionalFeeInput";
 import AssetSelect from "app/templates/AssetSelect";
 import Balance from "app/templates/Balance";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import OperationStatus from "app/templates/OperationStatus";
 import {
   AnalyticsEventCategory,

@@ -2,11 +2,11 @@ import React, { FC, SVGProps } from "react";
 
 import { ReactComponent as CannyIcon } from "app/icons/canny.svg";
 import { ReactComponent as DiscordIcon } from "app/icons/discord.svg";
-import { ReactComponent as HelpCrunchIcon } from "app/icons/helpcrunch.svg";
-import { ReactComponent as RedditIcon } from "app/icons/reddit.svg";
+// import { ReactComponent as HelpCrunchIcon } from "app/icons/helpcrunch.svg";
+// import { ReactComponent as RedditIcon } from "app/icons/reddit.svg";
 import { ReactComponent as TelegramIcon } from "app/icons/telegram.svg";
 import { ReactComponent as TwitterIcon } from "app/icons/twitter.svg";
-import { ReactComponent as YoutubeIcon } from "app/icons/youtube.svg";
+// import { ReactComponent as YoutubeIcon } from "app/icons/youtube.svg";
 import { T } from "lib/i18n/react";
 
 const links = [

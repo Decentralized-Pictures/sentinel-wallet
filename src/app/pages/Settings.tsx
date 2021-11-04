@@ -2,7 +2,7 @@ import React, { FC, useMemo } from "react";
 
 import classNames from "clsx";
 
-import { ReactComponent as AppsIcon } from "app/icons/apps.svg";
+// import { ReactComponent as AppsIcon } from "app/icons/apps.svg";
 import { ReactComponent as ContactBookIcon } from "app/icons/contact-book.svg";
 import { ReactComponent as ExtensionIcon } from "app/icons/extension.svg";
 import { ReactComponent as HelpIcon } from "app/icons/help.svg";
@@ -17,7 +17,7 @@ import About from "app/templates/About";
 import ActivateAccount from "app/templates/ActivateAccount";
 import AddressBookSettings from "app/templates/AddressBookSettings";
 import CustomNetworksSettings from "app/templates/CustomNetworksSettings";
-import DAppSettings from "app/templates/DAppSettings";
+// import DAppSettings from "app/templates/DAppSettings";
 import GeneralSettings from "app/templates/GeneralSettings";
 import HelpAndCommunity from "app/templates/HelpAndCommunity";
 import RemoveAccount from "app/templates/RemoveAccount";
