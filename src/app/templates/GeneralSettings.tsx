@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 
-import AnalyticsSettings from "app/templates/AnalyticsSettings";
+// import AnalyticsSettings from "app/templates/AnalyticsSettings";
 import BlockExplorerSelect from "app/templates/BlockExplorerSelect";
-import LedgerLiveSettings from "app/templates/LedgerLiveSettings";
+// import LedgerLiveSettings from "app/templates/LedgerLiveSettings";
 import LocaleSelect from "app/templates/LocaleSelect";
 import PopupSettings from "app/templates/PopupSettings";
 

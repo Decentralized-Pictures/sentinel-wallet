@@ -17,7 +17,7 @@ import { ReactComponent as ChevronRightIcon } from "app/icons/chevron-right.svg"
 import { ReactComponent as SearchIcon } from "app/icons/search.svg";
 import AssetIcon from "app/templates/AssetIcon";
 import Balance from "app/templates/Balance";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import SearchAssetField from "app/templates/SearchAssetField";
 import { T } from "lib/i18n/react";
 import {

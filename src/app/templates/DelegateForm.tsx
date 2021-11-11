@@ -14,10 +14,10 @@ import { useForm, Controller } from "react-hook-form";
 import useSWR from "swr";
 
 import Alert from "app/atoms/Alert";
-import { Button } from "app/atoms/Button";
+// import { Button } from "app/atoms/Button";
 import FormSubmitButton from "app/atoms/FormSubmitButton";
 import Money from "app/atoms/Money";
-import Name from "app/atoms/Name";
+// import Name from "app/atoms/Name";
 import NoSpaceField from "app/atoms/NoSpaceField";
 import Spinner from "app/atoms/Spinner";
 import {
@@ -26,16 +26,16 @@ import {
   ZeroBalanceError,
 } from "app/defaults";
 import { useAppEnv } from "app/env";
-import { ReactComponent as ArrowUpIcon } from "app/icons/arrow-up.svg";
-import { ReactComponent as ChevronRightIcon } from "app/icons/chevron-right.svg";
+// import { ReactComponent as ArrowUpIcon } from "app/icons/arrow-up.svg";
+// import { ReactComponent as ChevronRightIcon } from "app/icons/chevron-right.svg";
 import tezImgUrl from "app/misc/tez.png";
 import AdditionalFeeInput from "app/templates/AdditionalFeeInput";
 import BakerBanner from "app/templates/BakerBanner";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import OperationStatus from "app/templates/OperationStatus";
 import { useFormAnalytics } from "lib/analytics";
-import { toLocalFormat } from "lib/i18n/numbers";
-import { T, t, getCurrentLocale } from "lib/i18n/react";
+// import { toLocalFormat } from "lib/i18n/numbers";
+import { T, t } from "lib/i18n/react";
 import { setDelegate } from "lib/michelson";
 import {
   TEZ_ASSET,
@@ -57,7 +57,7 @@ import {
   isDomainNameValid,
 } from "lib/temple/front";
 import useSafeState from "lib/ui/useSafeState";
-import { useLocation, Link } from "lib/woozie";
+import { useLocation } from "lib/woozie";
 
 import { DelegateFormSelectors } from "./DelegateForm.selectors";
 
@@ -121,10 +121,10 @@ const DelegateForm: FC = () => {
     return bakerSortTypes.find(({ key }) => key === val) ?? bakerSortTypes[0];
   }, [search, bakerSortTypes]);
 
-  const pluralRules = useMemo(
-    () => new Intl.PluralRules(getCurrentLocale().replace("_", "-")),
-    []
-  );
+  // const pluralRules = useMemo(
+  //   () => new Intl.PluralRules(getCurrentLocale().replace("_", "-")),
+  //   []
+  // );
 
   const sortedKnownBakers = useMemo(() => {
     if (!knownBakers) return null;

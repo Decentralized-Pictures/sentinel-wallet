@@ -6,7 +6,7 @@ import Money from "app/atoms/Money";
 import Name from "app/atoms/Name";
 import AssetIcon from "app/templates/AssetIcon";
 import Balance from "app/templates/Balance";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import { TempleAsset } from "lib/temple/front";
 
 type MainAssetBannerProps = {

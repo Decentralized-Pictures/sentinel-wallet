@@ -8,7 +8,7 @@ import Balance from "app/templates/Balance";
 import IconifiedSelect, {
   IconifiedSelectOptionRenderProps,
 } from "app/templates/IconifiedSelect";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import { T } from "lib/i18n/react";
 import {
   TempleAsset,
