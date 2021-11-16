@@ -67,7 +67,7 @@ import {
   useBalance,
   useTezos,
   useTezosDomainsClient,
-  useNetwork,
+  // useNetwork,
   useAssetUSDPrice,
   useContacts,
 } from "lib/temple/front";
@@ -168,7 +168,7 @@ const Form: FC<FormProps> = ({
   const assetPrice = useAssetUSDPrice(localAsset);
 
   const { allContacts } = useContacts();
-  const network = useNetwork();
+  // const network = useNetwork();
   const acc = useAccount();
   const tezos = useTezos();
   const domainsClient = useTezosDomainsClient();
@@ -192,7 +192,8 @@ const Form: FC<FormProps> = ({
 
   const [shouldUseUsd, setShouldUseUsd] = useSafeState(false);
 
-  const canToggleUsd = network.type === "main" && assetPrice !== null;
+  // const canToggleUsd = network.type === "main" && assetPrice !== null;
+  const canToggleUsd = false;
   const prevCanToggleUsd = useRef(canToggleUsd);
 
   /**
