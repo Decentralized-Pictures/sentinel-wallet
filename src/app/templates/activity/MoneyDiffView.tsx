@@ -58,7 +58,7 @@ const MoneyDiffView = memo<MoneyDiffViewProps>(
           <Money>{diffBN}</Money> {getAssetSymbol(asset)}
         </div>
 
-        {asset && (
+        {/* {asset && (
           <InUSD volume={diffBN.abs()} asset={asset}>
             {(usdVolume) => (
               <div className="text-xs text-gray-500 ml-1">
@@ -67,7 +67,7 @@ const MoneyDiffView = memo<MoneyDiffViewProps>(
               </div>
             )}
           </InUSD>
-        )}
+        )} */}
       </div>
     );
   }
