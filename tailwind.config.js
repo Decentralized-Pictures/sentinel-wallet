@@ -32,7 +32,7 @@ module.exports = {
         gray: {
           100: "#f7fafc",
           200: "#edf2f7",
-          300: "#e2e8f0",
+          300: "#ffffff",
           400: "#cbd5e0",
           500: "#a0aec0",
           600: "#718096",
@@ -145,7 +145,7 @@ module.exports = {
        * Brand colors
        */
       const brandColors = {
-        "primary-white": "#fcfaf7",
+        "primary-white": "#ffffff",
         "primary-orange": baseColors.orange[500],
         "primary-orange-light": baseColors.orange[300],
         "primary-orange-dark": baseColors.orange[700],
