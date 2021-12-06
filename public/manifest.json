@@ -20,14 +20,9 @@
     "activeTab",
     "http://localhost:8732/",
     "https://tlnt.net/sentinel-wallet",
-    "https://*.giganode.io/",
-    "https://*.tzstats.com/",
-    "https://api.tezos-nodes.com/",
-    "https://api.better-call.dev/",
-    "https://*.tzkt.io/",
-    "https://api.baking-bad.org/v2/",
-    "https://api.templewallet.com/",
-    "https://quipuswap.com/"
+    "https://*.decentralized.pictures/",
+    "https://*.templewallet.com/",
+    "https://*.quipuswap.com/"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   
@@ -37,7 +32,7 @@
   },
 
   "__firefox__applications": {
-    "gecko": { "id": "{34ac229e-1cf5-4e4c-8a77-988155c4360f}" }
+    "gecko": { "id": "{}" }
   },
 
   "__chrome__minimum_chrome_version": "49",
