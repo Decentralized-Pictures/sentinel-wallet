@@ -1661,5 +1661,8 @@
   },
   "faucetJsonDescription": {
     "message": "파일 추가 대신 여기에 JSON을 붙여넣기 할 수 있습니다"
+  },
+  "finish": {
+    "message": "Confirm"
   }
 }

@@ -1675,5 +1675,8 @@
   },
   "balanceTooLow": {
     "message": "TLNT balance to low"
+  },
+  "finish": {
+    "message": "Confirm"
   }
 }

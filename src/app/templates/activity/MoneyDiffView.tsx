@@ -5,7 +5,7 @@ import classNames from "clsx";
 
 import Money from "app/atoms/Money";
 import { useAppEnv } from "app/env";
-import InUSD from "app/templates/InUSD";
+// import InUSD from "app/templates/InUSD";
 import {
   useAssets,
   TEZ_ASSET,
