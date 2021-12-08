@@ -1661,5 +1661,8 @@
   },
   "faucetJsonDescription": {
     "message": "Vous pouvez coller du JSON ici au lieu d'ajouter un fichier"
+  },
+  "finish": {
+    "message": "Confirm"
   }
 }
