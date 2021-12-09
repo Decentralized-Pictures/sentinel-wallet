@@ -864,7 +864,7 @@
     "message": "Unknown producer"
   },
   "unknownBakerDescription": {
-    "message": "Provided address is not known to us as a produder! Only delegate funds to it at your own risk."
+    "message": "Provided address is not known to us as a producer! Only delegate funds to it at your own risk."
   },
   "delegateToRecommendedBakers": {
     "message": "Delegate to Recommended Producers"
