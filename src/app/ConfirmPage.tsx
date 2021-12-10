@@ -566,7 +566,7 @@ const AccountOptionContentHOC = (networkRpc: string) => {
               )}
             >
               <Money>{bal}</Money>{" "}
-              <span style={{ fontSize: "0.75em" }}>tez</span>
+              <span style={{ fontSize: "0.75em" }}>FILM</span>
             </div>
           )}
         </Balance>

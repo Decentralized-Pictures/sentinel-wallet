@@ -205,7 +205,7 @@ const AccountDropdown: FC<AccountDropdownProps> = ({ opened, setOpened }) => {
                           )}
                         >
                           <Money tooltip={false}>{bal}</Money>{" "}
-                          <span style={{ fontSize: "0.5rem" }}>tez</span>
+                          <span style={{ fontSize: "0.5rem" }}>FILM</span>
                         </span>
                       )}
                     </Balance>
