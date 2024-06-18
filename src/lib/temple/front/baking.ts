@@ -140,9 +140,9 @@ export function useKnownBaker(address: string | null, suspense = true) {
 }
 
 export function useKnownBakers(suspense = true) {
-  const net = useNetwork();
   const { data: bakers } = useRetryableSWR(
-    net.type === "main" ? "all-bakers" : null,
+    // null key effectively disables the fetch by SWR, fixing the crash on failure to get baker list
+    null,
     getAllBakers,
     {
       refreshInterval: 120_000,
