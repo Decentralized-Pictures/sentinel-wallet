@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import FormCheckbox from "app/atoms/FormCheckbox";
-import { useAnalyticsSettings } from "lib/analytics";
-import { t, T } from "lib/i18n/react";
+import { FormCheckbox } from 'app/atoms';
+import { useAnalyticsSettings } from 'lib/analytics';
+import { t, T } from 'lib/i18n';
 
-const AnalyticsSettings: React.FC<{}> = () => {
+const AnalyticsSettings: React.FC = () => {
   const { analyticsEnabled, setAnalyticsEnabled } = useAnalyticsSettings();
 
   const handlePopupModeChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,18 +13,12 @@ const AnalyticsSettings: React.FC<{}> = () => {
 
   return (
     <>
-      <label
-        className="mb-4 leading-tight flex flex-col"
-        htmlFor="analyticsSettings"
-      >
+      <label className="mb-4 leading-tight flex flex-col" htmlFor="analyticsSettings">
         <span className="text-base font-semibold text-gray-700">
           <T id="analyticsSettings" />
         </span>
 
-        <span
-          className="mt-1 text-xs font-light text-gray-600"
-          style={{ maxWidth: "90%" }}
-        >
+        <span className="mt-1 text-xs font-light text-gray-600" style={{ maxWidth: '90%' }}>
           <T id="analyticsSettingsDescription" />
         </span>
       </label>
@@ -33,7 +27,7 @@ const AnalyticsSettings: React.FC<{}> = () => {
         checked={analyticsEnabled}
         onChange={handlePopupModeChange}
         name="analyticsEnabled"
-        label={t(analyticsEnabled ? "enabled" : "disabled")}
+        label={t(analyticsEnabled ? 'enabled' : 'disabled')}
         containerClassName="mb-4"
       />
     </>

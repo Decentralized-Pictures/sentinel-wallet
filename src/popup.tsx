@@ -1,21 +1,18 @@
-import "./main.css";
+import './main.css';
 
-import React from "react";
+import React from 'react';
 
-import * as ReactDOM from "react-dom";
-import { browser } from "webextension-polyfill-ts";
+import { createRoot } from 'react-dom/client';
 
-import App from "app/App";
-import { WindowType, openInFullPage } from "app/env";
-import { isPopupModeEnabled } from "lib/popup-mode";
+import { App } from 'app/App';
+import { WindowType, isPopupWindow, openInFullPage } from 'app/env';
+import { isPopupModeEnabled } from 'lib/popup-mode';
 
-ReactDOM.render(
-  <App env={{ windowType: WindowType.Popup }} />,
-  document.getElementById("root")
-);
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(<App env={{ windowType: WindowType.Popup }} />);
 
-const popups = browser.extension.getViews({ type: "popup" });
-if (!popups.includes(window) || !isPopupModeEnabled()) {
+if (!isPopupWindow() || !isPopupModeEnabled()) {
   openInFullPage();
   window.close();
 }

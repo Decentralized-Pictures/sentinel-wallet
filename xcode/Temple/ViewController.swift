@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Sentinel
+//  Temple
 //
 //  Created by Andrii Ivaniv on 29.03.2021.
 //
@@ -9,8 +9,8 @@ import Cocoa
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let appName = "Sentinel"
-let extensionBundleIdentifier = "net.tlnt.Sentinel.Extension"
+let appName = "Temple"
+let extensionBundleIdentifier = "com.madfish-solutions.Temple.Extension"
 
 class ViewController: NSViewController {
 

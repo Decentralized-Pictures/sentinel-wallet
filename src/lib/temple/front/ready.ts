@@ -1,33 +1,28 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 
-import { RpcClient } from "@taquito/rpc";
-import { TezosToolkit } from "@taquito/taquito";
-import { Tzip16Module } from "@taquito/tzip16";
-import constate from "constate";
+import { RpcClientInterface } from '@taquito/rpc';
+import { TezosToolkit } from '@taquito/taquito';
+import { Tzip16Module } from '@taquito/tzip16';
+import constate from 'constate';
 
-import { useRetryableSWR } from "lib/swr";
+import { IS_DEV_ENV } from 'lib/env';
+import { useRetryableSWR } from 'lib/swr';
+import { loadChainId, michelEncoder, loadFastRpcClient } from 'lib/temple/helpers';
 import {
   ReadyTempleState,
   TempleAccountType,
   TempleStatus,
   TempleState,
-  TempleAsset,
-  usePassiveStorage,
-  useTempleClient,
-  loadChainId,
-  michelEncoder,
-  loadFastRpcClient,
-} from "lib/temple/front";
+  TempleNotification,
+  TempleMessageType
+} from 'lib/temple/types';
+
+import { intercom, useTempleClient } from './client';
+import { usePassiveStorage } from './storage';
 
 export enum ActivationStatus {
   ActivationRequestSent,
-  AlreadyActivated,
+  AlreadyActivated
 }
 
 export const [
@@ -39,17 +34,17 @@ export const [
   useSetAccountPkh,
   useAccount,
   useSettings,
-  useTezos,
+  useTezos
 ] = constate(
   useReadyTemple,
-  (v) => v.allNetworks,
-  (v) => v.setNetworkId,
-  (v) => v.network,
-  (v) => v.allAccounts,
-  (v) => v.setAccountPkh,
-  (v) => v.account,
-  (v) => v.settings,
-  (v) => v.tezos
+  v => v.allNetworks,
+  v => v.setNetworkId,
+  v => v.network,
+  v => v.allAccounts,
+  v => v.setAccountPkh,
+  v => v.account,
+  v => v.settings,
+  v => v.tezos
 );
 
 function useReadyTemple() {
@@ -61,7 +56,7 @@ function useReadyTemple() {
     accounts: allAccounts,
     settings,
     createTaquitoSigner,
-    createTaquitoWallet,
+    createTaquitoWallet
   } = templeFront;
 
   /**
@@ -69,19 +64,16 @@ function useReadyTemple() {
    */
 
   const defaultNet = allNetworks[0];
-  const [networkId, setNetworkId] = usePassiveStorage(
-    "network_id",
-    defaultNet.id
-  );
+  const [networkId, setNetworkId] = usePassiveStorage('network_id', defaultNet.id);
 
   useEffect(() => {
-    if (allNetworks.every((a) => a.id !== networkId)) {
+    if (allNetworks.every(a => a.id !== networkId)) {
       setNetworkId(defaultNet.id);
     }
   }, [allNetworks, networkId, setNetworkId, defaultNet]);
 
   const network = useMemo(
-    () => allNetworks.find((n) => n.id === networkId) ?? defaultNet,
+    () => allNetworks.find(n => n.id === networkId) ?? defaultNet,
     [allNetworks, networkId, defaultNet]
   );
 
@@ -90,19 +82,26 @@ function useReadyTemple() {
    */
 
   const defaultAcc = allAccounts[0];
-  const [accountPkh, setAccountPkh] = usePassiveStorage(
-    "account_publickeyhash",
-    defaultAcc.publicKeyHash
-  );
+  const [accountPkh, setAccountPkh] = usePassiveStorage('account_publickeyhash', defaultAcc.publicKeyHash);
 
   useEffect(() => {
-    if (allAccounts.every((a) => a.publicKeyHash !== accountPkh)) {
+    return intercom.subscribe((msg: TempleNotification) => {
+      switch (msg?.type) {
+        case TempleMessageType.SelectedAccountChanged:
+          setAccountPkh(msg.accountPublicKeyHash);
+          break;
+      }
+    });
+  }, [setAccountPkh]);
+
+  useEffect(() => {
+    if (allAccounts.every(a => a.publicKeyHash !== accountPkh)) {
       setAccountPkh(defaultAcc.publicKeyHash);
     }
   }, [allAccounts, accountPkh, setAccountPkh, defaultAcc]);
 
   const account = useMemo(
-    () => allAccounts.find((a) => a.publicKeyHash === accountPkh) ?? defaultAcc,
+    () => allAccounts.find(a => a.publicKeyHash === accountPkh) ?? defaultAcc,
     [allAccounts, accountPkh, defaultAcc]
   );
 
@@ -111,7 +110,7 @@ function useReadyTemple() {
    */
 
   useLayoutEffect(() => {
-    const evt = new CustomEvent("reseterrorboundary");
+    const evt = new CustomEvent('reseterrorboundary');
     window.dispatchEvent(evt);
   }, [networkId, accountPkh]);
 
@@ -120,18 +119,11 @@ function useReadyTemple() {
    */
 
   const tezos = useMemo(() => {
-    const checksum = [network.id, account.publicKeyHash].join("_");
+    const checksum = [network.id, account.publicKeyHash].join('_');
     const rpc = network.rpcBaseURL;
-    const pkh =
-      account.type === TempleAccountType.ManagedKT
-        ? account.owner
-        : account.publicKeyHash;
+    const pkh = account.type === TempleAccountType.ManagedKT ? account.owner : account.publicKeyHash;
 
-    const t = new ReactiveTezosToolkit(
-      loadFastRpcClient(rpc),
-      checksum,
-      network.lambdaContract
-    );
+    const t = new ReactiveTezosToolkit(loadFastRpcClient(rpc), checksum);
     t.setSignerProvider(createTaquitoSigner(pkh));
     t.setWalletProvider(createTaquitoWallet(pkh, rpc));
     t.setPackerProvider(michelEncoder);
@@ -139,7 +131,7 @@ function useReadyTemple() {
   }, [createTaquitoSigner, createTaquitoWallet, network, account]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
+    if (IS_DEV_ENV) {
       (window as any).tezos = tezos;
     }
   }, [tezos]);
@@ -156,8 +148,16 @@ function useReadyTemple() {
     setAccountPkh,
 
     settings,
-    tezos,
+    tezos
   };
+}
+
+export function useTezosRef() {
+  const tezos = useTezos();
+  const tezosRef = useRef(tezos);
+  useEffect(() => void (tezosRef.current = tezos), [tezos]);
+
+  return tezosRef;
 }
 
 export function useChainId(suspense?: boolean) {
@@ -175,11 +175,7 @@ export function useCustomChainId(rpcUrl: string, suspense?: boolean) {
     }
   }, [rpcUrl]);
 
-  const { data: chainId } = useRetryableSWR(
-    ["chain-id", rpcUrl],
-    fetchChainId,
-    { suspense, revalidateOnFocus: false }
-  );
+  const { data: chainId } = useRetryableSWR(['chain-id', rpcUrl], fetchChainId, { suspense, revalidateOnFocus: false });
   return chainId;
 }
 
@@ -191,15 +187,13 @@ export function useRelevantAccounts(withExtraTypes = true) {
 
   const relevantAccounts = useMemo(
     () =>
-      allAccounts.filter((acc) => {
+      allAccounts.filter(acc => {
         switch (acc.type) {
           case TempleAccountType.ManagedKT:
             return withExtraTypes && acc.chainId === lazyChainId;
 
           case TempleAccountType.WatchOnly:
-            return (
-              withExtraTypes && (!acc.chainId || acc.chainId === lazyChainId)
-            );
+            return withExtraTypes && (!acc.chainId || acc.chainId === lazyChainId);
 
           default:
             return true;
@@ -209,12 +203,7 @@ export function useRelevantAccounts(withExtraTypes = true) {
   );
 
   useEffect(() => {
-    if (
-      relevantAccounts.every(
-        (a) => a.publicKeyHash !== account.publicKeyHash
-      ) &&
-      lazyChainId
-    ) {
+    if (relevantAccounts.every(a => a.publicKeyHash !== account.publicKeyHash) && lazyChainId) {
       setAccountPkh(relevantAccounts[0].publicKeyHash);
     }
   }, [relevantAccounts, account, setAccountPkh, lazyChainId]);
@@ -222,26 +211,8 @@ export function useRelevantAccounts(withExtraTypes = true) {
   return useMemo(() => relevantAccounts, [relevantAccounts]);
 }
 
-export const [TempleRefsProvider, useAllAssetsRef] = constate(
-  useRefs,
-  (v) => v.allAssetsRef
-);
-
-function useRefs() {
-  /**
-   * All assets reference(cache), needed for pretty network reselect
-   */
-  const allAssetsRef = useRef<TempleAsset[]>([]);
-
-  return { allAssetsRef };
-}
-
 export class ReactiveTezosToolkit extends TezosToolkit {
-  constructor(
-    rpc: string | RpcClient,
-    public checksum: string,
-    public lambdaContract?: string
-  ) {
+  constructor(rpc: string | RpcClientInterface, public checksum: string) {
     super(rpc);
     this.addExtension(new Tzip16Module());
   }
@@ -249,6 +220,6 @@ export class ReactiveTezosToolkit extends TezosToolkit {
 
 function assertReady(state: TempleState): asserts state is ReadyTempleState {
   if (state.status !== TempleStatus.Ready) {
-    throw new Error("Temple not ready");
+    throw new Error('Temple not ready');
   }
 }

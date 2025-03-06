@@ -1,18 +1,9 @@
-import Analytics from "analytics-node";
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
 
-import { useLocalStorage } from "lib/temple/front/local-storage";
-
-import { loadChainId } from "../temple/helpers";
-import { AnalyticsEventCategory } from "./analytics-event.enum";
-
-if (!process.env.TEMPLE_WALLET_SEGMENT_WRITE_KEY) {
-  throw new Error(
-    "Require a 'TEMPLE_WALLET_SEGMENT_WRITE_KEY' environment variable to be set"
-  );
-}
-
-const client = new Analytics(process.env.TEMPLE_WALLET_SEGMENT_WRITE_KEY);
+import { AnalyticsEventCategory } from 'lib/temple/analytics-types';
+import { assertResponse, request } from 'lib/temple/front';
+import { TempleMessageType } from 'lib/temple/types';
+import { useLocalStorage } from 'lib/ui/local-storage';
 
 interface AnalyticsStateInterface {
   enabled?: boolean;
@@ -26,19 +17,15 @@ export const sendTrackEvent = async (
   category: AnalyticsEventCategory = AnalyticsEventCategory.General,
   properties?: object
 ) => {
-  const chainId = rpc && (await loadChainId(rpc));
-
-  client.track({
+  const res = await request({
+    type: TempleMessageType.SendTrackEventRequest,
     userId,
-    event: `${category} ${event}`,
-    timestamp: new Date(),
-    properties: {
-      ...properties,
-      event,
-      category,
-      chainId,
-    },
+    rpc,
+    event,
+    category,
+    properties
   });
+  assertResponse(res.type === TempleMessageType.SendTrackEventResponse);
 };
 
 export const sendPageEvent = async (
@@ -46,40 +33,27 @@ export const sendPageEvent = async (
   rpc: string | undefined,
   path: string,
   search: string,
-  tokenAddress?: string,
-  tokenId?: string
+  additionalProperties = {}
 ) => {
-  const url = `${path}${search}`;
-  const chainId = rpc && (await loadChainId(rpc));
-
-  client.page({
+  const res = await request({
+    type: TempleMessageType.SendPageEventRequest,
     userId,
-    name: url,
-    timestamp: new Date(),
-    category: AnalyticsEventCategory.PageOpened,
-    properties: {
-      url,
-      path: search,
-      referrer: path,
-      category: AnalyticsEventCategory.PageOpened,
-      chainId,
-      ...(tokenAddress !== undefined && { tokenAddress }),
-      ...(tokenId !== undefined && { tokenId })
-    },
+    rpc,
+    path,
+    search,
+    additionalProperties
   });
+  assertResponse(res.type === TempleMessageType.SendPageEventResponse);
 };
 
 export const useAnalyticsState = () => {
-  const [
-    analyticsState,
-    setAnalyticsState,
-  ] = useLocalStorage<AnalyticsStateInterface>("analytics", {
+  const [analyticsState, setAnalyticsState] = useLocalStorage<AnalyticsStateInterface>('analytics', {
     enabled: undefined,
-    userId: nanoid(),
+    userId: nanoid()
   });
 
   return {
     analyticsState,
-    setAnalyticsState,
+    setAnalyticsState
   };
 };

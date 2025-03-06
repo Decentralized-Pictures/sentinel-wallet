@@ -1,24 +1,32 @@
-import React, { ComponentProps, FC, Suspense } from "react";
+import React, { ComponentProps, FC, Suspense } from 'react';
 
-import AwaitFonts from "app/a11y/AwaitFonts";
-import AwaitI18N from "app/a11y/AwaitI18N";
-import BootAnimation from "app/a11y/BootAnimation";
-import DisableOutlinesForClick from "app/a11y/DisableOutlinesForClick";
-import RootSuspenseFallback from "app/a11y/RootSuspenseFallback";
-import ConfirmPage from "app/ConfirmPage";
-import { AppEnvProvider } from "app/env";
-import ErrorBoundary from "app/ErrorBoundary";
-import Dialogs from "app/layouts/Dialogs";
-import PageRouter from "app/PageRouter";
-import { TempleProvider } from "lib/temple/front";
-import { DialogsProvider } from "lib/ui/dialog";
-import * as Woozie from "lib/woozie";
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-type AppProps = {
+import 'lib/lock-up/run-checks';
+import 'lib/ledger/proxy/foreground';
+
+import AwaitFonts from 'app/a11y/AwaitFonts';
+import AwaitI18N from 'app/a11y/AwaitI18N';
+import BootAnimation from 'app/a11y/BootAnimation';
+import DisableOutlinesForClick from 'app/a11y/DisableOutlinesForClick';
+import RootSuspenseFallback from 'app/a11y/RootSuspenseFallback';
+import ConfirmPage from 'app/ConfirmPage';
+import { AppEnvProvider } from 'app/env';
+import ErrorBoundary from 'app/ErrorBoundary';
+import Dialogs from 'app/layouts/Dialogs';
+import { PageRouter } from 'app/PageRouter';
+import { TempleProvider, ABTestGroupProvider } from 'lib/temple/front';
+import { DialogsProvider } from 'lib/ui/dialog';
+import * as Woozie from 'lib/woozie';
+
+import { persistor, store } from './store';
+
+interface Props extends React.PropsWithChildren {
   env: ComponentProps<typeof AppEnvProvider>;
-};
+}
 
-const App: FC<AppProps> = ({ env }) => (
+export const App: FC<Props> = ({ env }) => (
   <ErrorBoundary whileMessage="booting a wallet" className="min-h-screen">
     <DialogsProvider>
       <Suspense fallback={<RootSuspenseFallback />}>
@@ -29,14 +37,8 @@ const App: FC<AppProps> = ({ env }) => (
 
           <AwaitI18N />
 
-          <AwaitFonts
-            name="Inter"
-            weights={[300, 400, 500, 600]}
-            className="antialiased font-inter"
-          >
-            <BootAnimation>
-              {env.confirmWindow ? <ConfirmPage /> : <PageRouter />}
-            </BootAnimation>
+          <AwaitFonts name="Inter" weights={[300, 400, 500, 600]} className="antialiased font-inter">
+            <BootAnimation>{env.confirmWindow ? <ConfirmPage /> : <PageRouter />}</BootAnimation>
           </AwaitFonts>
         </AppProvider>
       </Suspense>
@@ -44,12 +46,16 @@ const App: FC<AppProps> = ({ env }) => (
   </ErrorBoundary>
 );
 
-export default App;
-
-const AppProvider: FC<AppProps> = ({ children, env }) => (
+const AppProvider: FC<Props> = ({ children, env }) => (
   <AppEnvProvider {...env}>
-    <Woozie.Provider>
-      <TempleProvider>{children}</TempleProvider>
-    </Woozie.Provider>
+    <Provider store={store}>
+      <PersistGate persistor={persistor} loading={null}>
+        <ABTestGroupProvider>
+          <Woozie.Provider>
+            <TempleProvider>{children}</TempleProvider>
+          </Woozie.Provider>
+        </ABTestGroupProvider>
+      </PersistGate>
+    </Provider>
   </AppEnvProvider>
 );

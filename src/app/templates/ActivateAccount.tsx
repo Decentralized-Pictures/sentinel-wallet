@@ -1,25 +1,19 @@
-import React, { FC, ReactNode, useCallback, useMemo, useState } from "react";
+import React, { FC, KeyboardEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
-import Alert from "app/atoms/Alert";
-import FormField from "app/atoms/FormField";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import AccountBanner from "app/templates/AccountBanner";
-import { T, t } from "lib/i18n/react";
-import {
-  ActivationStatus,
-  useTezos,
-  useAccount,
-  confirmOperation,
-} from "lib/temple/front";
-import useIsMounted from "lib/ui/useIsMounted";
+import { Alert, FormField, FormSubmitButton } from 'app/atoms';
+import AccountBanner from 'app/templates/AccountBanner';
+import { T, t } from 'lib/i18n';
+import { ActivationStatus, useTezos, useAccount, activateAccount } from 'lib/temple/front';
+import { confirmOperation } from 'lib/temple/operation';
+import { useIsMounted } from 'lib/ui/hooks';
 
 type FormData = {
   secret: string;
 };
 
-const SUBMIT_ERROR_TYPE = "submit-error";
+const SUBMIT_ERROR_TYPE = 'submit-error';
 
 const ActivateAccount: FC = () => {
   const tezos = useTezos();
@@ -28,7 +22,7 @@ const ActivateAccount: FC = () => {
 
   const [success, setSuccessPure] = useState<ReactNode>(null);
   const setSuccess = useCallback<typeof setSuccessPure>(
-    (val) => {
+    val => {
       if (isMounted()) {
         setSuccessPure(val);
       }
@@ -36,92 +30,50 @@ const ActivateAccount: FC = () => {
     [setSuccessPure, isMounted]
   );
 
-  const activateAccount = useCallback(
-    async (address: string, secret: string) => {
-      let op;
-      try {
-        op = await tezos.tz.activate(address, secret);
-      } catch (err) {
-        const invalidActivationError =
-          err && err.body && /Invalid activation/.test(err.body);
-        if (invalidActivationError) {
-          return [ActivationStatus.AlreadyActivated] as [ActivationStatus];
-        }
-
-        throw err;
-      }
-
-      return [ActivationStatus.ActivationRequestSent, op] as [
-        ActivationStatus,
-        typeof op
-      ];
-    },
-    [tezos]
-  );
-
-  const {
-    register,
-    handleSubmit,
-    formState,
-    clearError,
-    setError,
-    errors,
-  } = useForm<FormData>();
+  const { register, handleSubmit, formState, clearError, setError, errors } = useForm<FormData>();
   const submitting = formState.isSubmitting;
 
   const onSubmit = useCallback(
     async (data: FormData) => {
       if (submitting) return;
 
-      clearError("secret");
+      clearError('secret');
       setSuccess(null);
 
       try {
         const [activationStatus, op] = await activateAccount(
           account.publicKeyHash,
-          data.secret.replace(/\s/g, "")
+          data.secret.replace(/\s/g, ''),
+          tezos
         );
         switch (activationStatus) {
           case ActivationStatus.AlreadyActivated:
-            setSuccess(`🏁 ${t("accountAlreadyActivated")}`);
+            setSuccess(`🏁 ${t('accountAlreadyActivated')}`);
             break;
 
           case ActivationStatus.ActivationRequestSent:
-            setSuccess(`🛫 ${t("requestSent", t("activationOperationType"))}`);
+            setSuccess(`🛫 ${t('requestSent', t('activationOperationType'))}`);
             confirmOperation(tezos, op!.hash).then(() => {
-              setSuccess(`✅ ${t("accountActivated")}`);
+              setSuccess(`✅ ${t('accountActivated')}`);
             });
             break;
         }
-      } catch (err) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(err);
-        }
+      } catch (err: any) {
+        console.error(err);
 
         // Human delay.
-        await new Promise((res) => setTimeout(res, 300));
-        const mes = t("failureSecretMayBeInvalid");
-        setError("secret", SUBMIT_ERROR_TYPE, mes);
+        await new Promise(res => setTimeout(res, 300));
+        const mes = t('failureSecretMayBeInvalid');
+        setError('secret', SUBMIT_ERROR_TYPE, mes);
       }
     },
-    [
-      clearError,
-      submitting,
-      setError,
-      setSuccess,
-      activateAccount,
-      account.publicKeyHash,
-      tezos,
-    ]
+    [clearError, submitting, setError, setSuccess, account.publicKeyHash, tezos]
   );
 
-  const submit = useMemo(() => handleSubmit(onSubmit), [
-    handleSubmit,
-    onSubmit,
-  ]);
+  const submit = useMemo(() => handleSubmit(onSubmit), [handleSubmit, onSubmit]);
 
-  const handleSecretFieldKeyPress = useCallback(
-    (evt) => {
+  const handleSecretFieldKeyPress = useCallback<KeyboardEventHandler>(
+    evt => {
       if (evt.which === 13 && !evt.shiftKey) {
         evt.preventDefault();
         submit();
@@ -144,36 +96,26 @@ const ActivateAccount: FC = () => {
         className="mb-6"
       />
 
-      {success && (
-        <Alert
-          type="success"
-          title={t("success")}
-          description={success}
-          autoFocus
-          className="mb-4"
-        />
-      )}
+      {success && <Alert type="success" title={t('success')} description={success} autoFocus className="mb-4" />}
 
       <FormField
         textarea
         rows={2}
-        ref={register({ required: t("required") })}
+        ref={register({ required: t('required') })}
         name="secret"
         id="activateaccount-secret"
-        label={t("activateAccountSecret")}
-        labelDescription={t("activateAccountSecretDescription")}
-        placeholder={t("activateAccountSecretPlaceholder")}
+        label={t('activateAccountSecret')}
+        labelDescription={t('activateAccountSecretDescription')}
+        placeholder={t('activateAccountSecretPlaceholder')}
         errorCaption={errors.secret?.message}
-        style={{ resize: "none" }}
+        style={{ resize: 'none' }}
         containerClassName="mb-4"
         onKeyPress={handleSecretFieldKeyPress}
       />
 
-      <T id="activate">
-        {(message) => (
-          <FormSubmitButton loading={submitting}>{message}</FormSubmitButton>
-        )}
-      </T>
+      <FormSubmitButton loading={submitting}>
+        <T id="activate" />
+      </FormSubmitButton>
     </form>
   );
 };

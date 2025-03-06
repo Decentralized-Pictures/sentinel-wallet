@@ -1,51 +1,59 @@
-import React, { CSSProperties, memo, useCallback, useState } from "react";
+import React, { FC, useMemo } from 'react';
 
-import classNames from "clsx";
+import classNames from 'clsx';
 
-import Identicon from "app/atoms/Identicon";
-import { getAssetIconUrl } from "app/defaults";
-import { TempleAsset } from "lib/temple/types";
-export type AssetIconProps = {
-  asset: TempleAsset;
-  className?: string;
-  style?: CSSProperties;
+import Identicon from 'app/atoms/Identicon';
+import { ReactComponent as CollectiblePlaceholder } from 'app/icons/collectible-placeholder.svg';
+import { useAssetMetadata, buildTokenIconURLs, buildCollectibleImageURLs } from 'lib/temple/front';
+import { AssetMetadata, getAssetSymbol } from 'lib/temple/metadata';
+import { Image } from 'lib/ui/Image';
+
+interface PlaceholderProps {
+  metadata: AssetMetadata | null;
   size?: number;
+}
+
+const AssetIconPlaceholder: FC<PlaceholderProps> = ({ metadata, size }) => {
+  const isCollectible = Boolean(metadata?.artifactUri);
+
+  return isCollectible ? (
+    <CollectiblePlaceholder style={{ maxWidth: `${size}px`, width: '100%', height: '100%' }} />
+  ) : (
+    <Identicon type="initials" hash={getAssetSymbol(metadata)} size={size} />
+  );
 };
 
-const AssetIcon = memo((props: AssetIconProps) => {
-  const { asset, className, style, size } = props;
-  const assetIconUrl = getAssetIconUrl(asset);
+interface Props {
+  assetSlug: string;
+  className?: string;
+  size?: number;
+}
 
-  const [imageDisplayed, setImageDisplayed] = useState(true);
-  const handleImageError = useCallback(() => {
-    setImageDisplayed(false);
-  }, [setImageDisplayed]);
+export const AssetIcon: FC<Props> = ({ assetSlug, className, size }) => {
+  const metadata = useAssetMetadata(assetSlug);
 
-  if (assetIconUrl && imageDisplayed) {
-    return (
-      <img
-        src={assetIconUrl}
-        alt={asset.name}
-        className={classNames("overflow-hidden", className)}
-        style={{
-          width: size,
-          height: size,
-          ...style,
-        }}
-        onError={handleImageError}
-      />
-    );
-  }
+  const isCollectible = Boolean(metadata?.artifactUri);
+
+  const src = useMemo(() => {
+    if (isCollectible) return buildCollectibleImageURLs(assetSlug, metadata, size == null);
+    else return buildTokenIconURLs(metadata?.thumbnailUri, size == null);
+  }, [metadata, assetSlug]);
 
   return (
-    <Identicon
-      type="initials"
-      hash={asset.symbol}
-      className={className}
-      style={style}
-      size={size}
-    />
+    <div className={classNames('flex items-center justify-center', className)}>
+      <Image
+        src={src}
+        loader={<AssetIconPlaceholder metadata={metadata} size={size} />}
+        fallback={<AssetIconPlaceholder metadata={metadata} size={size} />}
+        alt={metadata?.name}
+        style={{
+          objectFit: 'contain',
+          maxWidth: '100%',
+          maxHeight: '100%'
+        }}
+        height={size}
+        width={size}
+      />
+    </div>
   );
-});
-
-export default AssetIcon;
+};

@@ -1,13 +1,13 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect } from 'react';
 
-import useForceUpdate from "use-force-update";
+import useForceUpdate from 'use-force-update';
 
-import { USE_LOCATION_HASH_AS_URL } from "lib/woozie/config";
+import { USE_LOCATION_HASH_AS_URL } from './config';
 
 export enum HistoryAction {
-  Pop = "popstate",
-  Push = "pushstate",
-  Replace = "replacestate",
+  Pop = 'popstate',
+  Push = 'pushstate',
+  Replace = 'replacestate'
 }
 
 export interface PatchedHistory extends History {
@@ -15,11 +15,11 @@ export interface PatchedHistory extends History {
   position: number;
 }
 
-export type HistoryListener = () => void;
+type HistoryListener = () => void;
 
 const listeners = new Set<HistoryListener>();
 
-export function listen(listener: HistoryListener) {
+function listen(listener: HistoryListener) {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
@@ -31,12 +31,8 @@ export function useHistory() {
   useLayoutEffect(() => listen(forceUpdate), [forceUpdate]);
 }
 
-export function changeState(
-  action: HistoryAction.Push | HistoryAction.Replace,
-  state: any,
-  url: string
-) {
-  const title = ""; // Deprecated stuff
+export function changeState(action: HistoryAction.Push | HistoryAction.Replace, state: any, url: string) {
+  const title = ''; // Deprecated stuff
 
   if (USE_LOCATION_HASH_AS_URL) {
     const { pathname, search } = window.location;
@@ -54,7 +50,7 @@ export function changeState(
   }
 }
 
-export function go(delta: number) {
+function go(delta: number) {
   window.history.go(delta);
 }
 
@@ -62,19 +58,11 @@ export function goBack() {
   go(-1);
 }
 
-export function goForward() {
-  go(1);
-}
-
-export function createUrl(
-  pathname: string = "/",
-  search: string = "",
-  hash: string = ""
-): string {
-  if (search && !search.startsWith("?")) {
+export function createUrl(pathname: string = '/', search: string = '', hash: string = ''): string {
+  if (search && !search.startsWith('?')) {
     search = `?${search}`;
   }
-  if (hash && !hash.startsWith("#")) {
+  if (hash && !hash.startsWith('#')) {
     hash = `#${hash}`;
   }
   return `${pathname}${search}${hash}`;
@@ -85,8 +73,8 @@ export function resetHistoryPosition() {
   notifyListeners();
 }
 
-patchMethod("pushState", HistoryAction.Push);
-patchMethod("replaceState", HistoryAction.Replace);
+patchMethod('pushState', HistoryAction.Push);
+patchMethod('replaceState', HistoryAction.Replace);
 
 window.addEventListener(HistoryAction.Pop, handlePopstate);
 window.addEventListener(HistoryAction.Push, handlePushstate);
@@ -107,18 +95,17 @@ function handleReplacestate() {
 
 function patchHistory(action: HistoryAction) {
   const patchedHistory = window.history as PatchedHistory;
-  const position =
-    (patchedHistory.position ?? 0) +
-    (action === HistoryAction.Push ? 1 : action === HistoryAction.Pop ? -1 : 0);
+  const popAction = action === HistoryAction.Pop ? -1 : 0;
+  const position = (patchedHistory.position ?? 0) + (action === HistoryAction.Push ? 1 : popAction);
 
   Object.assign(patchedHistory, {
     lastAction: action,
-    position,
+    position
   });
 }
 
 function notifyListeners() {
-  listeners.forEach((listener) => listener());
+  listeners.forEach(listener => listener());
 }
 
 function patchMethod(method: string, eventType: HistoryAction) {

@@ -1,22 +1,23 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import regexparam from "regexparam";
+import regexparam from 'regexparam';
 
-export type Path = string;
-export type Route = string;
-export type Params = { [key: string]: string | null };
-export type ResolveResult<C> = (params: Params, ctx: C) => ReturnType<FC> | typeof SKIP;
-export type Pattern = RegExp;
-export type Keys = Array<string> | false;
-export type Routes<C> = Array<[Route, ResolveResult<C>]>;
-export type RouteMap<C> = Array<{
+type Path = string;
+type Route = string;
+type Params = { [key: string]: string | null };
+type Pattern = RegExp;
+type Keys = Array<string> | false;
+type Routes<C> = Array<[Route, ResolveResult<C>]>;
+type RouteMap<C> = Array<{
   route: Route;
   resolveResult: ResolveResult<C>;
   pattern: RegExp;
   keys: Array<string> | false;
 }>;
 
-export const SKIP = Symbol("Woozie.Router.Skip");
+export const SKIP = Symbol('Woozie.Router.Skip');
+
+export type ResolveResult<C> = (params: Params, ctx: C) => ReturnType<FC> | typeof SKIP;
 
 export function createMap<C>(routes: Routes<C>): RouteMap<C> {
   return routes.map(([route, resolveResult]) => {
@@ -25,7 +26,7 @@ export function createMap<C>(routes: Routes<C>): RouteMap<C> {
       route,
       resolveResult,
       pattern,
-      keys,
+      keys
     };
   });
 }

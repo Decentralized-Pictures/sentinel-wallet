@@ -1,9 +1,5 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { LocationProvider } from "lib/woozie/location";
+import { LocationProvider } from './location';
 
-const Provider: FC = ({ children }) => (
-  <LocationProvider>{children}</LocationProvider>
-);
-
-export default Provider;
+export const Provider: FC<PropsWithChildren> = ({ children }) => <LocationProvider>{children}</LocationProvider>;

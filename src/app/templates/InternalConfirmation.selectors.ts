@@ -4,5 +4,5 @@ export enum InternalConfirmationSelectors {
   BytesTab = 'InternalConfirmation/BytesTab',
   ConfirmButton = 'InternalConfirmation/ConfirmButton',
   RetryButton = 'InternalConfirmation/RetryButton',
-  DeclineButton = 'InternalConfirmation/DeclineButton',
+  DeclineButton = 'InternalConfirmation/DeclineButton'
 }

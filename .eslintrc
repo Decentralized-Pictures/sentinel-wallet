@@ -5,16 +5,23 @@
     "plugin:import/warnings",
     "plugin:import/typescript"
   ],
-  "plugins": [
-    "import"
-  ],
+  "plugins": ["import", "prettier"],
+  "parser": "@typescript-eslint/parser",
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "typescript": {},
+      "node": {
+        "extensions": [".d.ts"]
+      }
     }
   },
   "rules": {
-    "import/no-named-as-default": 0,
+    "prettier/prettier": "error",
+    "prefer-const": "error",
+    "import/no-duplicates": "error",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-self-import": "error",
     "import/order": [
       "error",
       {
@@ -26,24 +33,14 @@
           }
         ],
         "pathGroupsExcludedImportTypes": ["react"],
-        "groups": [
-          [
-            "external",
-            "builtin"
-          ],
-          "internal",
-          [
-            "parent",
-            "sibling",
-            "index"
-          ]
-        ],
+        "groups": [["external", "builtin"], "internal", ["parent", "sibling", "index"]],
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true
         },
         "newlines-between": "always"
       }
-    ]
+    ],
+    "react-hooks/exhaustive-deps": "off"
   }
 }

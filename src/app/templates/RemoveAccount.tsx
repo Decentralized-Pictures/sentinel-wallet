@@ -1,21 +1,15 @@
-import React, { FC, useCallback, useEffect, useRef } from "react";
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 
-import { useForm } from "react-hook-form";
+import { OnSubmit, useForm } from 'react-hook-form';
 
-import Alert from "app/atoms/Alert";
-import FormField from "app/atoms/FormField";
-import FormSubmitButton from "app/atoms/FormSubmitButton";
-import AccountBanner from "app/templates/AccountBanner";
-import { T, t } from "lib/i18n/react";
-import {
-  TempleAccountType,
-  useTempleClient,
-  useRelevantAccounts,
-  useAccount,
-} from "lib/temple/front";
-import { navigate } from "lib/woozie";
+import { Alert, FormField, FormSubmitButton } from 'app/atoms';
+import AccountBanner from 'app/templates/AccountBanner';
+import { T, t } from 'lib/i18n';
+import { useTempleClient, useRelevantAccounts, useAccount } from 'lib/temple/front';
+import { TempleAccountType } from 'lib/temple/types';
+import { navigate } from 'lib/woozie';
 
-const SUBMIT_ERROR_TYPE = "submit-error";
+const SUBMIT_ERROR_TYPE = 'submit-error';
 
 type FormData = {
   password: string;
@@ -30,36 +24,27 @@ const RemoveAccount: FC = () => {
   useEffect(() => {
     const accLength = allAccounts.length;
     if (prevAccLengthRef.current > accLength) {
-      navigate("/");
+      navigate('/');
     }
     prevAccLengthRef.current = accLength;
   }, [allAccounts]);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    clearError,
-    formState,
-  } = useForm<FormData>();
+  const { register, handleSubmit, errors, setError, clearError, formState } = useForm<FormData>();
   const submitting = formState.isSubmitting;
 
-  const onSubmit = useCallback(
+  const onSubmit = useCallback<OnSubmit<FormData>>(
     async ({ password }) => {
       if (submitting) return;
 
-      clearError("password");
+      clearError('password');
       try {
         await removeAccount(account.publicKeyHash, password);
-      } catch (err) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(err);
-        }
+      } catch (err: any) {
+        console.error(err);
 
         // Human delay.
-        await new Promise((res) => setTimeout(res, 300));
-        setError("password", SUBMIT_ERROR_TYPE, err.message);
+        await new Promise(res => setTimeout(res, 300));
+        setError('password', SUBMIT_ERROR_TYPE, err.message);
       }
     },
     [submitting, clearError, setError, removeAccount, account.publicKeyHash]
@@ -81,7 +66,7 @@ const RemoveAccount: FC = () => {
 
       {account.type === TempleAccountType.HD ? (
         <Alert
-          title={t("cannotBeRemoved")}
+          title={t('cannotBeRemoved')}
           description={
             <p>
               <T id="accountsToRemoveConstraint" />
@@ -92,9 +77,9 @@ const RemoveAccount: FC = () => {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormField
-            ref={register({ required: t("required") })}
-            label={t("password")}
-            labelDescription={t("enterPasswordToRemoveAccount")}
+            ref={register({ required: t('required') })}
+            label={t('password')}
+            labelDescription={t('enterPasswordToRemoveAccount')}
             id="removeacc-secret-password"
             type="password"
             name="password"
@@ -103,13 +88,9 @@ const RemoveAccount: FC = () => {
             containerClassName="mb-4"
           />
 
-          <T id="remove">
-            {(message) => (
-              <FormSubmitButton loading={submitting} disabled={submitting}>
-                {message}
-              </FormSubmitButton>
-            )}
-          </T>
+          <FormSubmitButton loading={submitting} disabled={submitting}>
+            <T id="remove" />
+          </FormSubmitButton>
         </form>
       )}
     </div>
