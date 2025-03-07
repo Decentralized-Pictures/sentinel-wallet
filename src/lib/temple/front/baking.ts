@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js';
 import {
   BakingBadBaker,
   BakingBadBakerValueHistoryItem,
-  bakingBadGetBaker,
-  getAllBakersBakingBad
+  bakingBadGetBaker
+  // getAllBakersBakingBad
 } from 'lib/apis/baking-bad';
 import type { TzktRewardsEntry } from 'lib/apis/tzkt';
 import { useRetryableSWR } from 'lib/swr';
@@ -146,15 +146,15 @@ export function useKnownBaker(address: string | null, suspense = true) {
   });
 }
 
-export function useKnownBakers(suspense = true) {
-  const net = useNetwork();
-  const { data: bakers } = useRetryableSWR(net.type === 'main' ? 'all-bakers' : null, getAllBakersBakingBad, {
-    refreshInterval: 120_000,
-    dedupingInterval: 60_000,
-    suspense
-  });
+export function useKnownBakers() {
+  // const net = useNetwork();
+  // const { data: bakers } = useRetryableSWR(net.type === 'main' ? 'all-bakers' : null, getAllBakersBakingBad, {
+  //   refreshInterval: 120_000,
+  //   dedupingInterval: 60_000,
+  //   suspense
+  // });
 
-  return useMemo(() => (bakers && bakers.length > 1 ? bakers : null), [bakers]);
+  return useMemo(() => null, []);
 }
 
 type RewardsStatsCalculationParams = {
