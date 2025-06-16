@@ -6,5 +6,5 @@ export enum ConfirmPageSelectors {
   ConfirmOperationsAction_RetryButton = 'ConfirmPage/ConfirmOperationsAction/RetryButton',
   ConfirmOperationsAction_ConfirmButton = 'ConfirmPage/ConfirmOperationsAction/ConfirmButton',
   SignAction_RejectButton = 'ConfirmPage/SignAction/RejectButton',
-  SignAction_SignButton = 'ConfirmPage/SignAction/SignButton',
+  SignAction_SignButton = 'ConfirmPage/SignAction/SignButton'
 }

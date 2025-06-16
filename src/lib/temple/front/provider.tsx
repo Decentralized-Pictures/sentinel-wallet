@@ -1,25 +1,23 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useMemo } from 'react';
 
-import { CustomRpsContext } from "lib/analytics";
-import { useAssets } from "lib/temple/front/assets";
-import { NewBlockTriggersProvider } from "lib/temple/front/chain";
-import { TempleClientProvider, useTempleClient } from "lib/temple/front/client";
-import {
-  ReadyTempleProvider,
-  TempleRefsProvider,
-  useNetwork,
-} from "lib/temple/front/ready";
-import { USDPriceProvider } from "lib/temple/front/usdprice";
+import { CustomRpcContext } from 'lib/analytics';
 
-export const TempleProvider: FC = ({ children }) => (
-  <CustomRpsContext.Provider value={undefined}>
+import { TokensMetadataProvider } from './assets';
+import { NewBlockTriggersProvider } from './chain';
+import { TempleClientProvider, useTempleClient } from './client';
+import { ReadyTempleProvider, useNetwork } from './ready';
+import { SyncBalancesProvider } from './sync-balances';
+import { SyncTokensProvider } from './sync-tokens';
+
+export const TempleProvider: FC<PropsWithChildren> = ({ children }) => (
+  <CustomRpcContext.Provider value={undefined}>
     <TempleClientProvider>
       <ConditionalReadyTemple>{children}</ConditionalReadyTemple>
     </TempleClientProvider>
-  </CustomRpsContext.Provider>
+  </CustomRpcContext.Provider>
 );
 
-const ConditionalReadyTemple: FC = ({ children }) => {
+const ConditionalReadyTemple: FC<PropsWithChildren> = ({ children }) => {
   const { ready } = useTempleClient();
 
   return useMemo(
@@ -27,13 +25,13 @@ const ConditionalReadyTemple: FC = ({ children }) => {
       ready ? (
         <ReadyTempleProvider>
           <WalletRpcProvider>
-            <TempleRefsProvider>
-              <USDPriceProvider>
-                <NewBlockTriggersProvider>
-                  <PreloadAssetsProvider>{children}</PreloadAssetsProvider>
-                </NewBlockTriggersProvider>
-              </USDPriceProvider>
-            </TempleRefsProvider>
+            <TokensMetadataProvider>
+              <SyncTokensProvider>
+                <SyncBalancesProvider>
+                  <NewBlockTriggersProvider>{children}</NewBlockTriggersProvider>
+                </SyncBalancesProvider>
+              </SyncTokensProvider>
+            </TokensMetadataProvider>
           </WalletRpcProvider>
         </ReadyTempleProvider>
       ) : (
@@ -43,17 +41,8 @@ const ConditionalReadyTemple: FC = ({ children }) => {
   );
 };
 
-const PreloadAssetsProvider: FC = ({ children }) => {
-  useAssets();
-  return <>{children}</>;
-};
-
-const WalletRpcProvider: FC = ({ children }) => {
+const WalletRpcProvider: FC<PropsWithChildren> = ({ children }) => {
   const network = useNetwork();
 
-  return (
-    <CustomRpsContext.Provider value={network.rpcBaseURL}>
-      {children}
-    </CustomRpsContext.Provider>
-  );
+  return <CustomRpcContext.Provider value={network.rpcBaseURL}>{children}</CustomRpcContext.Provider>;
 };

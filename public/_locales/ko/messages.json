@@ -12,7 +12,7 @@
     "message": "계정 불러오기"
   },
   "createAccount": {
-    "message": "계정 생성"
+    "message": "계정 생성 또는 복원"
   },
   "faucetFileTitle": {
     "message": "수도꼭지 파일"
@@ -94,8 +94,8 @@
   "accounts": {
     "message": "계정"
   },
-  "logOut": {
-    "message": "로그아웃"
+  "lock": {
+    "message": "블록"
   },
   "importedAccount": {
     "message": "불러오기 완료"
@@ -281,9 +281,6 @@
   },
   "addressOfDeployedTokenContract": {
     "message": "배치된 토큰 계약의 주소입니다."
-  },
-  "lambdaContractPlaceholder": {
-    "message": "예) KT1v9CmPy..."
   },
   "tokenContractPlaceholder": {
     "message": "예) KT1v9CmPy..."
@@ -473,7 +470,7 @@
     "message": "다시 시도하기"
   },
   "tezosMainnet": {
-    "message": "테조스 메인넷(T4L3NT Mainnet)",
+    "message": "테조스 메인넷(Tezos Mainnet)",
     "description": "Mainnet = main network"
   },
   "templeWalletOptions": {
@@ -582,23 +579,17 @@
   "isPrivateKeyEncrypted": {
     "message": "비공개 키가 암호화된 포맷으로 되어 있나요?"
   },
-  "noDerivation": {
-    "message": "도출 없음"
-  },
   "customDerivationPath": {
     "message": "맞춤형 도출 경로"
   },
   "mnemonicInputLabel": {
     "message": "비밀 문구"
   },
-  "mnemonicInputDescription": {
-    "message": "니모닉. 회원님의 12개 단어로 된 비밀 문구."
-  },
   "mnemonicInputPlaceholder": {
     "message": "예) 장소 양말 우유 업데이트..."
   },
   "passwordInputDescription": {
-    "message": "추가 니모닉 도출에 사용합니다. 이는 지갑 비밀번호가 아닙니다."
+    "message": "이는 지갑 비밀번호가 아닙니다.\n추가 니모닉 도출에 사용합니다."
   },
   "derivation": {
     "message": "도출"
@@ -646,9 +637,6 @@
   "processing": {
     "message": "처리 중..."
   },
-  "restoreWalletWithSeedPhrase": {
-    "message": "비밀 문구로 지갑을 복원하세요"
-  },
   "accountAddressLabel": {
     "message": "회원님의 현재 계정 주소입니다. 이를 공유하여 자금을 받으세요."
   },
@@ -682,7 +670,7 @@
   },
   "networksDescription": {
     "message": "이 섹션에서 맞춤형 테조스 네트워크를 추가하거나 삭제할 수 있습니다.",
-    "description": "T4L3NT = blockchain name (https://tezos.com/)"
+    "description": "Tezos = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "계정 활성화"
@@ -726,9 +714,6 @@
   },
   "importExistingWallet": {
     "message": "기존 지갑 불러오기"
-  },
-  "importExistingWalletDescription": {
-    "message": "비밀 문구가 이미 있으신가요? 12글자 이상의 니모닉 단어로 기존 지갑을 불러오세요"
   },
   "links": {
     "message": "링크"
@@ -815,10 +800,10 @@
     "message": "분산 앱 상호 소통",
     "description": "DApps = Decentralized Applications"
   },
-  "dAppsInteractionEnabled": {
+  "enabled": {
     "message": "활성화됨"
   },
-  "dAppsInteractionDisabled": {
+  "disabled": {
     "message": "비활성화됨"
   },
   "enablePopup": {
@@ -869,16 +854,9 @@
   "sortBy": {
     "message": "정렬 기준"
   },
-  "cycles_one": {
-    "message": "$amount$ 순환 주기",
-    "placeholders": {
-      "amount": {
-        "content": "$1"
-      }
-    }
-  },
   "cycles_other": {
     "message": "$amount$ 순환 주기",
+    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -929,7 +907,12 @@
     "message": "증상 발생 원인:"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "이 송금 건의 최소 비용이 잔액보다 큽니다. 자금을 공란인 관리자 계정으로 송금하려할 때에는 비용이 많이 들 수 있습니다. 한 번에  0.257 XTZ의 연소 비용이 필요합니다."
+    "message": "이 송금 건의 최소 비용이 잔액보다 큽니다. 자금을 공란인 관리자 계정으로 송금하려할 때에는 비용이 많이 들 수 있습니다. 한 번에  0.06425 $gasTokenSymbol$ 의 연소 비용이 필요합니다.",
+    "placeholders": {
+      "gasTokenSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "networkOrOtherIssue": {
     "message": "네트워크 혹은 기타 기술적인 문제입니다."
@@ -1120,8 +1103,8 @@
     "message": "예) tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "예) alice.tlnt or tz1a9w1S7hN5s...",
-    "description": "alice.tlnt = domain like google.com"
+    "message": "예) alice.tez or tz1a9w1S7hN5s...",
+    "description": "alice.tez = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "자신에게 자금을 송금하는 중이시군요.\n정확하게 원하는 것인지 확인해보세요."
@@ -1132,12 +1115,13 @@
   "availableToSend": {
     "message": "전송 가능(최대):"
   },
-  "inUSD": {
-    "message": "단위 USD"
-  },
-  "inXTZ": {
-    "message": "단위 XTZ",
-    "description": "ф = asset symbol, like USD"
+  "inAsset": {
+    "message": "단위 $assetSymbol$",
+    "placeholders": {
+      "assetSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "amountPlaceholder": {
     "message": "예) 123.45"
@@ -1304,17 +1288,6 @@
       }
     }
   },
-  "lambdaContract": {
-    "message": "Lambda View 계약"
-  },
-  "someLambda": {
-    "message": "Lambda View: $lambda$",
-    "placeholders": {
-      "lambda": {
-        "content": "$1"
-      }
-    }
-  },
   "interactionWithSomeEntrypoint": {
     "message": "$계약주소$ 계약의 진입점 '$진입점$'과 상호 소통",
     "placeholders": {
@@ -1336,15 +1309,6 @@
   },
   "approveToken": {
     "message": "토큰 승인"
-  },
-  "noLambdaWarningContent": {
-    "message": "지정된 Lambda View 계약이 없습니다. 이 계약이 없이는 일부 기능을 사용할 수 없습니다. 계속 진행하려면 '네트워크 추가' 버튼을 누르세요."
-  },
-  "noActiveNetLambdaWarningTitle": {
-    "message": "현재 네트워크에 대한 Lambda View 계약이 지정되지 않았습니다!"
-  },
-  "noActiveNetLambdaWarningContent": {
-    "message": "현재 네트워크에 대한 Lambda View 계약이 지정되지 않았습니다. 아래 양식에 이를 추가하거나 '새로 배치'를 클릭하여 새 계약을 배치하고 자동으로 추가할 수 있습니다."
   },
   "add": {
     "message": "추가"
@@ -1642,7 +1606,7 @@
     "message": "해시"
   },
   "defaultAccount": {
-    "message": "기본 계정"
+    "message": "기본 계정(첫 번째 계정)"
   },
   "loadMore": {
     "message": "더 로드 하기"
@@ -1661,8 +1625,5 @@
   },
   "faucetJsonDescription": {
     "message": "파일 추가 대신 여기에 JSON을 붙여넣기 할 수 있습니다"
-  },
-  "finish": {
-    "message": "Confirm"
   }
 }

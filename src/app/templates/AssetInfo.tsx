@@ -1,40 +1,55 @@
-import React, { ComponentProps, FC } from "react";
+import React, { ComponentProps, FC } from 'react';
 
-import classNames from "clsx";
+import BigNumber from 'bignumber.js';
+import classNames from 'clsx';
 
-import FormField from "app/atoms/FormField";
-import { ReactComponent as CopyIcon } from "app/icons/copy.svg";
-import { T } from "lib/i18n/react";
-import { TempleAsset, TempleAssetType } from "lib/temple/front";
-import useCopyToClipboard from "lib/ui/useCopyToClipboard";
+import { FormField } from 'app/atoms';
+import { useAppEnv } from 'app/env';
+import { ReactComponent as CopyIcon } from 'app/icons/copy.svg';
+import { T } from 'lib/i18n';
+import { useRetryableSWR } from 'lib/swr';
+import { fromAssetSlug, isFA2Asset, isTezAsset } from 'lib/temple/assets';
+import { useTezos, useAssetMetadata } from 'lib/temple/front';
+import { getAssetSymbol } from 'lib/temple/metadata';
+import useCopyToClipboard from 'lib/ui/useCopyToClipboard';
 
 type AssetInfoProps = {
-  asset: TempleAsset;
+  assetSlug: string;
 };
 
-const AssetInfo: FC<AssetInfoProps> = ({ asset }) => {
-  if (asset.type === TempleAssetType.TEZ) return null;
+const AssetInfo: FC<AssetInfoProps> = ({ assetSlug }) => {
+  const { popup } = useAppEnv();
+  const tezos = useTezos();
+  const asset = useRetryableSWR(['asset', assetSlug, tezos.checksum], () => fromAssetSlug(tezos, assetSlug), {
+    suspense: true
+  }).data!;
+
+  const metadata = useAssetMetadata(assetSlug);
 
   return (
-    <div className={classNames("w-full max-w-sm mx-auto")}>
-      <InfoField
-        textarea
-        rows={2}
-        id="contract-address"
-        label={<T id="contract" />}
-        labelDescription={
-          <T id="addressOfTokenContract" substitutions={[asset.symbol]} />
-        }
-        value={asset.address}
-        size={36}
-        style={{
-          resize: "none",
-        }}
-      />
+    <div className={classNames(popup && 'mx-4')}>
+      <div className={classNames('w-full max-w-sm mx-auto')}>
+        <InfoField
+          textarea
+          rows={2}
+          id="contract-address"
+          label={<T id="contract" />}
+          labelDescription={<T id="addressOfTokenContract" substitutions={[getAssetSymbol(metadata)]} />}
+          value={isTezAsset(asset) ? 'TEZ' : asset.contract}
+          size={36}
+          style={{
+            resize: 'none'
+          }}
+        />
 
-      {asset.type === TempleAssetType.FA2 && (
-        <InfoField id="token-id" label={<T id="tokenId" />} value={asset.id} />
-      )}
+        {isFA2Asset(asset) && (
+          <InfoField id="token-id" label={<T id="tokenId" />} value={new BigNumber(asset.id).toFixed()} />
+        )}
+
+        {metadata && metadata.decimals > 0 && (
+          <InfoField id="token-decimals" label={<T id="decimals" />} value={metadata.decimals} />
+        )}
+      </div>
     </div>
   );
 };
@@ -43,7 +58,7 @@ export default AssetInfo;
 
 type InfoFieldProps = ComponentProps<typeof FormField>;
 
-const InfoField: FC<InfoFieldProps> = (props) => {
+const InfoField: FC<InfoFieldProps> = props => {
   const { fieldRef, copy, copied } = useCopyToClipboard();
 
   return (
@@ -53,17 +68,17 @@ const InfoField: FC<InfoFieldProps> = (props) => {
       <button
         type="button"
         className={classNames(
-          "mx-auto mb-6",
-          "py-1 px-2 w-40",
-          "bg-primary-orange rounded",
-          "border border-primary-orange",
-          "flex items-center justify-center",
-          "text-primary-orange-lighter text-shadow-black-orange",
-          "text-sm font-semibold",
-          "transition duration-300 ease-in-out",
-          "opacity-90 hover:opacity-100 focus:opacity-100",
-          "shadow-sm",
-          "hover:shadow focus:shadow"
+          'mx-auto mb-6',
+          'py-1 px-2 w-40',
+          'bg-primary-orange rounded',
+          'border border-primary-orange',
+          'flex items-center justify-center',
+          'text-primary-orange-lighter text-shadow-black-orange',
+          'text-sm font-semibold',
+          'transition duration-300 ease-in-out',
+          'opacity-90 hover:opacity-100 focus:opacity-100',
+          'shadow-sm',
+          'hover:shadow focus:shadow'
         )}
         onClick={copy}
       >
@@ -71,13 +86,7 @@ const InfoField: FC<InfoFieldProps> = (props) => {
           <T id="copiedAddress" />
         ) : (
           <>
-            <CopyIcon
-              className={classNames(
-                "mr-1",
-                "h-4 w-auto",
-                "stroke-current stroke-2"
-              )}
-            />
+            <CopyIcon className={classNames('mr-1', 'h-4 w-auto', 'stroke-current stroke-2')} />
             <T id="copyAddressToClipboard" />
           </>
         )}

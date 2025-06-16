@@ -1,45 +1,35 @@
-import React, { FC, useCallback, useLayoutEffect } from "react";
+import React, { FC, useCallback, useLayoutEffect } from 'react';
 
-import classNames from "clsx";
-import CSSTransition from "react-transition-group/CSSTransition";
+import classNames from 'clsx';
+import CSSTransition from 'react-transition-group/CSSTransition';
 
-import DocBg from "app/a11y/DocBg";
-import InternalConfirmation from "app/templates/InternalConfirmation";
-import { useTempleClient } from "lib/temple/front";
-import Portal from "lib/ui/Portal";
+import DocBg from 'app/a11y/DocBg';
+import InternalConfirmation from 'app/templates/InternalConfirmation';
+import { useTempleClient } from 'lib/temple/front';
+import Portal from 'lib/ui/Portal';
 
 const ConfirmationOverlay: FC = () => {
-  const { confirmation, resetConfirmation, confirmInternal } =
-    useTempleClient();
+  const { confirmation, resetConfirmation, confirmInternal } = useTempleClient();
   const displayed = Boolean(confirmation);
 
   useLayoutEffect(() => {
     if (displayed) {
       const x = window.scrollX;
       const y = window.scrollY;
-      document.body.classList.add("overscroll-y-none");
+      document.body.classList.add('overscroll-y-none');
 
       return () => {
         window.scrollTo(x, y);
-        document.body.classList.remove("overscroll-y-none");
+        document.body.classList.remove('overscroll-y-none');
       };
     }
-    return;
+    return undefined;
   }, [displayed]);
 
   const handleConfirm = useCallback(
-    async (
-      confirmed: boolean,
-      modifiedTotalFee?: number,
-      modifiedStorageLimit?: number
-    ) => {
+    async (confirmed: boolean, modifiedTotalFee?: number, modifiedStorageLimit?: number) => {
       if (confirmation) {
-        await confirmInternal(
-          confirmation.id,
-          confirmed,
-          modifiedTotalFee,
-          modifiedStorageLimit
-        );
+        await confirmInternal(confirmation.id, confirmed, modifiedTotalFee, modifiedStorageLimit);
       }
       resetConfirmation();
     },
@@ -55,12 +45,9 @@ const ConfirmationOverlay: FC = () => {
           in={displayed}
           timeout={200}
           classNames={{
-            enter: "opacity-0",
-            enterActive: classNames(
-              "opacity-100",
-              "transition ease-out duration-200"
-            ),
-            exit: classNames("opacity-0", "transition ease-in duration-200"),
+            enter: 'opacity-0',
+            enterActive: classNames('opacity-100', 'transition ease-out duration-200'),
+            exit: classNames('opacity-0', 'transition ease-in duration-200')
           }}
           unmountOnExit
         >
@@ -68,6 +55,7 @@ const ConfirmationOverlay: FC = () => {
             {confirmation && (
               <InternalConfirmation
                 payload={confirmation.payload}
+                error={confirmation.error}
                 onConfirm={handleConfirm}
               />
             )}

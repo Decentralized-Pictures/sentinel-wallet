@@ -1,9 +1,9 @@
-import constate from "constate";
+import constate from 'constate';
 
-import { USE_LOCATION_HASH_AS_URL } from "lib/woozie/config";
-import { HistoryAction, PatchedHistory, useHistory } from "lib/woozie/history";
+import { USE_LOCATION_HASH_AS_URL } from './config';
+import { HistoryAction, PatchedHistory, useHistory } from './history';
 
-export interface LocationState {
+interface LocationState {
   pathname: string;
   search: string;
   hash: string;
@@ -21,14 +21,14 @@ export interface LocationState {
   protocol?: string;
 }
 
-export interface LocationUpdates {
+interface LocationUpdates {
   pathname?: string;
   search?: string;
   hash?: string;
   state?: any;
 }
 
-export type ModifyLocation = (location: LocationState) => LocationUpdates;
+type ModifyLocation = (location: LocationState) => LocationUpdates;
 export type To = string | LocationUpdates | ModifyLocation;
 
 export function createLocationState(): LocationState {
@@ -36,23 +36,14 @@ export function createLocationState(): LocationState {
     length: historyLength,
     lastAction: trigger = null,
     position: historyPosition = 0,
-    state,
+    state
   } = window.history as PatchedHistory;
 
-  let {
-    hash,
-    host,
-    hostname,
-    href,
-    origin,
-    pathname,
-    port,
-    protocol,
-    search,
-  } = window.location;
+  let { pathname, search, hash } = window.location;
+  const { host, hostname, href, origin, port, protocol } = window.location;
 
   if (USE_LOCATION_HASH_AS_URL) {
-    const url = new URL(hash.startsWith("#") ? hash.slice(1) : hash, origin);
+    const url = new URL(hash.startsWith('#') ? hash.slice(1) : hash, origin);
 
     pathname = url.pathname;
     search = url.search;
@@ -69,25 +60,22 @@ export function createLocationState(): LocationState {
     hostname,
     href,
     origin,
-    pathname: pathname || "/",
+    pathname: pathname || '/',
     port,
     protocol,
-    search,
+    search
   };
 }
 
-export function createLocationUpdates(
-  to: To,
-  lctn: LocationState
-): LocationUpdates {
+export function createLocationUpdates(to: To, lctn: LocationState): LocationUpdates {
   switch (typeof to) {
-    case "string":
+    case 'string':
       return { pathname: to };
 
-    case "function":
+    case 'function':
       return to(lctn);
 
-    case "object":
+    case 'object':
       return to;
   }
 }

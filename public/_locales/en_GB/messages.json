@@ -6,10 +6,13 @@
     "message": "Show Incoming Transactions"
   },
   "appDesc": {
-    "message": "🔐💰Cryptocurrency wallet for T4L3NT blockchain as Web Extension for your Browser."
+    "message": "🔐💰Cryptocurrency wallet for T4L3NT Net blockchain as Web Extension for your Browser."
   },
   "createAccount": {
-    "message": "Create account"
+    "message": "Create or Restore account"
+  },
+  "totalEquityValue": {
+    "message": "Total Equity Value"
   },
   "importAccount": {
     "message": "Import account"
@@ -91,11 +94,22 @@
   "copyHashToClipboard": {
     "message": "Copy to clipboard"
   },
+  "showInGasOrFiat": {
+    "message": "Show in $gasToken$/$fiatCurrency$",
+    "placeholders": {
+      "gasToken": {
+        "content": "$1"
+      },
+      "fiatCurrency": {
+        "content": "$2"
+      }
+    }
+  },
   "accounts": {
     "message": "Accounts"
   },
   "logOut": {
-    "message": "Log out"
+    "message": "Lock"
   },
   "importedAccount": {
     "message": "Imported"
@@ -158,7 +172,7 @@
     }
   },
   "minDelegationAmountDescription": {
-    "message": "Your current balance is less than a minimal delegation amount of this producer. That means while the balance is less than $minAmount$ - there will be no payouts.",
+    "message": "Your current balance is less than a minimal delegation amount of this baker. That means while the balance is less than $minAmount$ - there will be no payouts.",
     "placeholders": {
       "minAmount": {
         "content": "$1"
@@ -166,7 +180,7 @@
     }
   },
   "clickOnBakerPrompt": {
-    "message": "Click on the producer you want to delegate funds to. This list is powered by $link$.",
+    "message": "Click on the Baker you want to delegate funds to. This list is powered by $link$.",
     "placeholders": {
       "link": {
         "content": "$1"
@@ -205,7 +219,7 @@
     "message": "Delegated to:"
   },
   "delegatingMotivation": {
-    "message": "Delegating your funds to producers is a great way of earning interest on your balance"
+    "message": "Delegating your funds to bakers is a great way of earning interest on your balance"
   },
   "reDelegate": {
     "message": "Re-delegate"
@@ -227,10 +241,10 @@
     "description": "CoinSwitch = https://coinswitch.co/"
   },
   "tezosFaucet": {
-    "message": "T4L3NT Faucet"
+    "message": "Tezos Faucet"
   },
   "tezosFaucetAlpha": {
-    "message": "T4L3NT Faucet (Alpha)"
+    "message": "Tezos Faucet (Alpha)"
   },
   "depositToWallet": {
     "message": "Deposit to your wallet"
@@ -239,7 +253,7 @@
     "message": "Click on deposit method to get money on your wallet. Use faucet to get free coins!"
   },
   "addToken": {
-    "message": "Add Token"
+    "message": "Add Asset"
   },
   "contractNotAvailable": {
     "message": "The contract at this address is not available. Does it exist on this network?"
@@ -248,7 +262,7 @@
     "message": "No transfer method"
   },
   "tokenDoesNotMatchStandard": {
-    "message": "Provided token contract doesn't match $standard$ standard",
+    "message": "Provided asset contract doesn't match $standard$ standard",
     "placeholders": {
       "standard": {
         "content": "$1"
@@ -265,7 +279,7 @@
     "message": "Token ID"
   },
   "tokenIdInputDescription": {
-    "message": "A non-negative integer number that identifies the token inside FA2 contract"
+    "message": "A non-negative integer number that identifies the asset inside FA2 contract"
   },
   "comingSoonComment": {
     "message": "(coming soon)"
@@ -280,12 +294,9 @@
     "message": "Address"
   },
   "addressOfDeployedTokenContract": {
-    "message": "Address of a deployed token contract."
+    "message": "Address of a deployed asset contract."
   },
   "tokenContractPlaceholder": {
-    "message": "e.g. KT1v9CmPy..."
-  },
-  "lambdaContractPlaceholder": {
     "message": "e.g. KT1v9CmPy..."
   },
   "tokenSymbolPatternDescription": {
@@ -295,7 +306,7 @@
     "message": "Symbol"
   },
   "tokenSymbolInputDescription": {
-    "message": "Token symbol, like 'USD' for United States Dollar."
+    "message": "Asset symbol, like 'USD' for United States Dollar."
   },
   "tokenSymbolInputPlaceholder": {
     "message": "e.g. WEW, BOW, LAL etc."
@@ -307,7 +318,7 @@
     "message": "Name"
   },
   "tokenNameInputDescription": {
-    "message": "Token name, like 'Bitcoin' for BTC asset."
+    "message": "Asset name, like 'Bitcoin' for BTC asset."
   },
   "tokenNameInputPlaceholder": {
     "message": "e.g. MySuperToken"
@@ -340,7 +351,7 @@
     "message": "(optional)"
   },
   "iconURLInputDescription": {
-    "message": "Image URL for token logo."
+    "message": "Image URL for asset logo."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -473,17 +484,17 @@
     "message": "Try again"
   },
   "tezosMainnet": {
-    "message": "T4L3NT Mainnet",
+    "message": "Tezos Mainnet",
     "description": "Mainnet = main network"
   },
-  "SentinelWalletOptions": {
-    "message": "Sentinel Wallet | Options"
+  "templeWalletOptions": {
+    "message": "Temple Wallet | Options"
   },
   "resetExtension": {
     "message": "Reset Extension"
   },
   "resetExtensionConfirmation": {
-    "message": "Are you sure you want to reset the Sentinel Wallet?\nAs a result, all your data will be deleted."
+    "message": "Are you sure you want to reset the Temple Wallet?\nAs a result, all your data will be deleted."
   },
   "failedToResetExtension": {
     "message": "Failed to reset extension: $errorMessage$",
@@ -532,7 +543,7 @@
     "message": "Create a new Wallet"
   },
   "createNewWalletDescription": {
-    "message": "New to Sentinel Wallet? Let's set it up! This will create a new wallet and seed phrase"
+    "message": "New to Temple Wallet? Let's set it up! This will create a new wallet and seed phrase"
   },
   "delegate": {
     "message": "Delegate"
@@ -582,9 +593,6 @@
   "isPrivateKeyEncrypted": {
     "message": "Is your private key in encrypted format?"
   },
-  "noDerivation": {
-    "message": "No derivation"
-  },
   "customDerivationPath": {
     "message": "Custom derivation path"
   },
@@ -592,13 +600,13 @@
     "message": "Seed phrase"
   },
   "mnemonicInputDescription": {
-    "message": "Mnemonic. Your secret twelve word phrase."
+    "message": "Mnemonic. Your secret 12 - 24 words phrase."
   },
   "mnemonicInputPlaceholder": {
     "message": "e.g. venue sock milk update..."
   },
   "passwordInputDescription": {
-    "message": "Used for additional mnemonic derivation. That is NOT a wallet password."
+    "message": "That is NOT a wallet password.\nUsed for additional mnemonic derivation."
   },
   "derivation": {
     "message": "Derivation"
@@ -646,9 +654,6 @@
   "processing": {
     "message": "Processing..."
   },
-  "restoreWalletWithSeedPhrase": {
-    "message": "Restore your Wallet with Seed Phrase"
-  },
   "accountAddressLabel": {
     "message": "Your current account address. Share it to receive funds."
   },
@@ -678,11 +683,11 @@
     "description": "DApps = Decentralized Applications"
   },
   "dAppsDescription": {
-    "message": "In this section you can enable ability to interact with decentralized applications that support Sentinel Wallet."
+    "message": "In this section you can enable ability to interact with decentralized applications that support Temple Wallet."
   },
   "networksDescription": {
-    "message": "In this section you can add or delete custom T4L3NT networks.",
-    "description": "T4L3NT = blockchain name (https://tezos.com/)"
+    "message": "In this section you can add or delete custom Tezos networks.",
+    "description": "Tezos = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "Activate Account"
@@ -700,7 +705,7 @@
     "message": "About"
   },
   "aboutDescription": {
-    "message": "Use this section to view meta info about Sentinel Wallet."
+    "message": "Use this section to view meta info about Temple Wallet."
   },
   "unlockWallet": {
     "message": "Unlock the Wallet"
@@ -710,6 +715,9 @@
   },
   "unlockPasswordInputDescription": {
     "message": "A password is used to protect the wallet."
+  },
+  "unlockPasswordErrorDelay": {
+    "message": "You have entered the wrong password three times. Your wallet is being blocked for"
   },
   "unlock": {
     "message": "Unlock"
@@ -728,7 +736,7 @@
     "message": "Import existing Wallet"
   },
   "importExistingWalletDescription": {
-    "message": "Already have a seed phrase? Import your existing wallet using a 12 or more mnemonic words"
+    "message": "Already have a wallet? Import it using your seed phrase or encrypted keystore file"
   },
   "links": {
     "message": "Links"
@@ -815,10 +823,10 @@
     "message": "DApps interaction",
     "description": "DApps = Decentralized Applications"
   },
-  "dAppsInteractionEnabled": {
+  "enabled": {
     "message": "Enabled"
   },
-  "dAppsInteractionDisabled": {
+  "disabled": {
     "message": "Disabled"
   },
   "enablePopup": {
@@ -846,10 +854,10 @@
     "message": "Delegation"
   },
   "baker": {
-    "message": "Producer"
+    "message": "Baker"
   },
   "bakerInputDescription": {
-    "message": "Address of a registered producer."
+    "message": "Address of a registered baker."
   },
   "bakerInputPlaceholder": {
     "message": "e.g. tz1a9w1S7hN5s..."
@@ -858,19 +866,20 @@
     "message": "Minimal delegation amount"
   },
   "unknownBakerTitle": {
-    "message": "Unknown producer"
+    "message": "Unknown baker"
   },
   "unknownBakerDescription": {
-    "message": "Provided address is not known to us as a producer! Only delegate funds to it at your own risk."
+    "message": "Provided address is not known to us as a baker! Only delegate funds to it at your own risk."
   },
   "delegateToRecommendedBakers": {
-    "message": "Delegate to Recommended Producers"
+    "message": "Delegate to Recommended Bakers"
   },
   "sortBy": {
     "message": "Sort by"
   },
   "cycles_one": {
     "message": "$amount$ cycle",
+    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -879,6 +888,7 @@
   },
   "cycles_other": {
     "message": "$amount$ cycles",
+    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -909,13 +919,13 @@
     "message": "Minimal fee for this transaction is greater than your balance."
   },
   "alreadyDelegatedFundsToBaker": {
-    "message": "Already delegated funds to this procuer. Re-delegation is not possible."
+    "message": "Already delegated funds to this baker. Re-delegation is not possible."
   },
   "bakerNotRegistered": {
-    "message": "Specified producer is not registered."
+    "message": "Specified baker is not registered."
   },
   "unableToPerformActionToBaker": {
-    "message": "Unable to $action$ to the provided producer.",
+    "message": "Unable to $action$ to the provided Baker.",
     "placeholders": {
       "action": {
         "content": "$1"
@@ -929,7 +939,12 @@
     "message": "This may happen because:"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "Minimal fee for this transaction is greater than your balance. A large fee may be required because of you sending funds to an empty Manager account. That requires a one-time 0.257 ф burn fee;"
+    "message": "Minimal fee for this transaction is greater than your balance. A large fee may be required because of you sending funds to an empty Manager account. That requires a one-time 0.06425 $gasTokenSymbol$ burn fee;",
+    "placeholders": {
+      "gasTokenSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "networkOrOtherIssue": {
     "message": "Network or other technical issue."
@@ -1103,7 +1118,7 @@
     }
   },
   "tokensRecepientInputDescriptionWithDomain": {
-    "message": "Address or T4L3NT domain to send $assetSymbol$ funds to.",
+    "message": "Address or Tezos domain to send $assetSymbol$ funds to.",
     "placeholders": {
       "assetSymbol": {
         "content": "$1"
@@ -1111,17 +1126,17 @@
     }
   },
   "addressInputDescription": {
-    "message": "Address of T4L3NT account or smart contract."
+    "message": "Address of Tezos account or smart contract."
   },
   "addressInputDescriptionWithDomain": {
-    "message": "Address or T4L3NT domain of the account or smart contract."
+    "message": "Address or Tezos domain of the account or smart contract."
   },
   "recipientInputPlaceholder": {
     "message": "e.g. tz1a9w1S7hN5s..."
   },
   "recipientInputPlaceholderWithDomain": {
-    "message": "e.g. alice.tlnt or tz1a9w1S7hN5s...",
-    "description": "alice.tlnt = domain like google.com"
+    "message": "e.g. alice.tez or tz1a9w1S7hN5s...",
+    "description": "alice.tez = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "You're trying to transfer funds to yourself.\nPlease, ensure that it's exactly what you want."
@@ -1132,12 +1147,13 @@
   "availableToSend": {
     "message": "Available to send(max):"
   },
-  "inUSD": {
-    "message": "in USD"
-  },
-  "inXTZ": {
-    "message": "in ф",
-    "description": "ф = asset symbol, like USD"
+  "inAsset": {
+    "message": "in $assetSymbol$",
+    "placeholders": {
+      "assetSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "amountPlaceholder": {
     "message": "e.g. 123.45"
@@ -1149,7 +1165,7 @@
     "message": "Click on Account you want to send funds to."
   },
   "mainAssetBalanceIsZero": {
-    "message": "Your tez(main asset) balance is zero. ф funds are required for the fee."
+    "message": "Your tez(main asset) balance is zero. ꜩ funds are required for the fee."
   },
   "unableToSendTransactionAction": {
     "message": "Unable to send transaction to provided Recipient."
@@ -1304,17 +1320,6 @@
       }
     }
   },
-  "lambdaContract": {
-    "message": "Lambda View contract"
-  },
-  "someLambda": {
-    "message": "Lambda View: $lambda$",
-    "placeholders": {
-      "lambda": {
-        "content": "$1"
-      }
-    }
-  },
   "interactionWithSomeEntrypoint": {
     "message": "Interaction with entrypoint '$entrypoint$' of contract $contractAddress$",
     "placeholders": {
@@ -1337,15 +1342,6 @@
   "approveToken": {
     "message": "Approve Token"
   },
-  "noLambdaWarningContent": {
-    "message": "No Lambda View contract was specified. Some functionality may not work without it. Press 'Add network' button if you want to proceed."
-  },
-  "noActiveNetLambdaWarningTitle": {
-    "message": "No Lambda View contract for the current network was specified!"
-  },
-  "noActiveNetLambdaWarningContent": {
-    "message": "No Lambda View contract for the current network was specified. You can add it in the form below or click 'Deploy new' to deploy a new one and add automatically."
-  },
   "add": {
     "message": "Add"
   },
@@ -1358,8 +1354,8 @@
   "manage": {
     "message": "Manage"
   },
-  "manageAssets": {
-    "message": "Manage Assets"
+  "manageTokens": {
+    "message": "Manage Tokens"
   },
   "noAssetsFound": {
     "message": "No assets found"
@@ -1509,7 +1505,7 @@
     "message": "Failed to load chain ID for this network"
   },
   "makeSureTokenIdIsCorrect": {
-    "message": "Please make sure that token ID is correct."
+    "message": "Please make sure that asset ID is correct."
   },
   "unknownErrorCheckingSomeEntrypoint": {
     "message": "An unknown error while checking '$name$' entrypoint occurred.",
@@ -1520,7 +1516,7 @@
     }
   },
   "incorrectTokenIdErrorMessage": {
-    "message": "Failed while processing token with provided data. Please make sure that token ID is correct."
+    "message": "Failed while processing asset with provided data. Please make sure that asset ID is correct."
   },
   "transfer": {
     "message": "Transfer"
@@ -1642,7 +1638,7 @@
     "message": "Hash"
   },
   "defaultAccount": {
-    "message": "Default account"
+    "message": "Default account (the first one)"
   },
   "loadMore": {
     "message": "Load more"
@@ -1671,12 +1667,79 @@
     }
   },
   "emptyImplicitContract": {
-    "message": "Your account is empty. Deposit any tlnt amount on this account to activate it"
+    "message": "Your account is empty. Deposit any tez amount on this account to activate it"
   },
   "balanceTooLow": {
-    "message": "TLNT balance to low"
+    "message": "Gas token balance is too low"
   },
-  "finish": {
-    "message": "Confirm"
+  "rewardsForBlocks": {
+    "message": "$reward$ for $blocksAmount$ $blocks$ $feesAmount$ fees",
+    "placeholders": {
+      "reward": {
+        "content": "$1"
+      },
+      "blocksAmount": {
+        "content": "$2"
+      },
+      "blocks": {
+        "content": "$3"
+      },
+      "feesAmount": {
+        "content": "$4"
+      }
+    }
+  },
+  "blocks_one": {
+    "message": "$amount$ block",
+    "description": "For plural forms",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
+  "blocks_other": {
+    "message": "$amount$ blocks",
+    "description": "For plural forms",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
+  "rewardsForSlots": {
+    "message": "$reward$ for $slotsAmount$ $slots$",
+    "placeholders": {
+      "reward": {
+        "content": "$1"
+      },
+      "slotsAmount": {
+        "content": "$2"
+      },
+      "slots": {
+        "content": "$3"
+      }
+    }
+  },
+  "slots_one": {
+    "message": "$amount$ slot",
+    "description": "For plural forms",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
+  "slots_other": {
+    "message": "$amount$ slots",
+    "description": "For plural forms",
+    "placeholders": {
+      "amount": {
+        "content": "$1"
+      }
+    }
+  },
+  "swapTokenSearchInputPlaceholder": {
+    "message": "Enter name or address"
   }
 }

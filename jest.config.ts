@@ -3,16 +3,19 @@
  * https://jestjs.io/docs/en/configuration.html
  */
 
-export default {
-  coverageProvider: "v8",
+const config = {
+  coverageProvider: 'v8',
   moduleNameMapper: {
-    "^lib/(.*)$": "<rootDir>/src/lib/$1",
+    '^lib/(.*)$': '<rootDir>/src/lib/$1'
   },
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
   transform: {
-    ".+\\.ts$": "ts-jest",
+    '.+\\.ts$': 'ts-jest',
+    '.+\\.tsx$': 'ts-jest'
   },
-  moduleFileExtensions: ["ts", "js"],
-  setupFiles: ["dotenv/config", "@serh11p/jest-webextension-mock"],
-  setupFilesAfterEnv: ["./jest.setup.js"],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  setupFiles: ['dotenv/config', '@serh11p/jest-webextension-mock'],
+  setupFilesAfterEnv: ['./jest.setup.js']
 };
+
+export default config;

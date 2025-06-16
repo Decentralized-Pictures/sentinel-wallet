@@ -1,40 +1,31 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from 'react';
 
-import { Subscription } from "@taquito/taquito";
-import constate from "constate";
-import { trigger } from "swr";
+import { Subscription } from '@taquito/taquito';
+import constate from 'constate';
+import { useSWRConfig } from 'swr';
 
-import {
-  useTezos,
-  useRelevantAccounts,
-  useAllAssetsRef,
-  getBalanceSWRKey,
-  confirmOperation,
-} from "lib/temple/front";
+import { confirmOperation } from 'lib/temple/operation';
 
-export const [NewBlockTriggersProvider, useBlockTriggers] = constate(
-  useNewBlockTriggers
-);
+import { getBalanceSWRKey } from './balance';
+import { useTezos, useRelevantAccounts } from './ready';
+
+export const [NewBlockTriggersProvider, useBlockTriggers] = constate(useNewBlockTriggers);
 
 function useNewBlockTriggers() {
+  const { mutate } = useSWRConfig();
   const tezos = useTezos();
   const allAccounts = useRelevantAccounts();
-  const allAssetsRef = useAllAssetsRef();
 
   const triggerNewBlock = useCallback(() => {
     for (const acc of allAccounts) {
-      for (const asset of allAssetsRef.current) {
-        trigger(getBalanceSWRKey(tezos, asset, acc.publicKeyHash), true);
-      }
-      trigger(["delegate", tezos.checksum, acc.publicKeyHash], true);
+      mutate(getBalanceSWRKey(tezos, 'tez', acc.publicKeyHash));
+      mutate(['delegate', tezos.checksum, acc.publicKeyHash]);
     }
-  }, [allAccounts, allAssetsRef, tezos]);
+  }, [allAccounts, mutate, tezos]);
 
   useOnBlock(triggerNewBlock);
 
-  const confirmOperationAndTriggerNewBlock = useCallback<
-    typeof confirmOperation
-  >(
+  const confirmOperationAndTriggerNewBlock = useCallback<typeof confirmOperation>(
     async (...args) => {
       const result = await confirmOperation(...args);
       triggerNewBlock();
@@ -45,7 +36,7 @@ function useNewBlockTriggers() {
 
   return {
     triggerNewBlock,
-    confirmOperationAndTriggerNewBlock,
+    confirmOperationAndTriggerNewBlock
   };
 }
 
@@ -59,18 +50,16 @@ export function useOnBlock(callback: (blockHash: string) => void) {
     return () => sub.close();
 
     function spawnSub() {
-      sub = tezos.stream.subscribe("head");
+      sub = tezos.stream.subscribe('head');
 
-      sub.on("data", (hash) => {
+      sub.on('data', hash => {
         if (blockHashRef.current && blockHashRef.current !== hash) {
           callback(hash);
         }
         blockHashRef.current = hash;
       });
-      sub.on("error", (err) => {
-        if (process.env.NODE_ENV === "development") {
-          console.error(err);
-        }
+      sub.on('error', err => {
+        console.error(err);
         sub.close();
         spawnSub();
       });

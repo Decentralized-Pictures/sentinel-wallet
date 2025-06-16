@@ -1,3 +1,2 @@
-export * from "./types";
-export { IntercomClient } from "./client";
-export { IntercomServer } from "./server";
+export { IntercomClient } from './client';
+export { IntercomServer } from './server';

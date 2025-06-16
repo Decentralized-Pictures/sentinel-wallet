@@ -1,189 +1,78 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useLayoutEffect,
-} from "react";
+import React from 'react';
 
-import { ACTIVITY_PAGE_SIZE } from "app/defaults";
-import { useRetryableSWR } from "lib/swr";
-import {
-  useChainId,
-  fetchOperations,
-  syncOperations,
-  isSyncSupported,
-} from "lib/temple/front";
-import { IOperation } from "lib/temple/repo";
-import useSafeState from "lib/ui/useSafeState";
+import classNames from 'clsx';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import ActivityView from "./ActivityView";
+import { ActivitySpinner } from 'app/atoms';
+import { useAppEnv } from 'app/env';
+import { ReactComponent as LayersIcon } from 'app/icons/layers.svg';
+import { T } from 'lib/i18n/react';
+import useActivities from 'lib/temple/activity-new/hook';
+import { useAccount } from 'lib/temple/front';
 
-type ActivityProps = {
-  address: string;
-  assetId?: string;
-  className?: string;
-};
+import { ActivityItem } from './ActivityItem';
 
-const Activity = memo<ActivityProps>(({ address, assetId, className }) => {
-  const chainId = useChainId(true)!;
-  const syncSupported = useMemo(() => isSyncSupported(chainId), [chainId]);
+const INITIAL_NUMBER = 30;
+const LOAD_STEP = 30;
 
-  const safeStateKey = useMemo(() => [chainId, address, assetId].join("_"), [
-    chainId,
-    address,
-    assetId,
-  ]);
+interface Props {
+  assetSlug?: string;
+}
 
-  const [restOperations, setRestOperations] = useSafeState<IOperation[]>(
-    [],
-    safeStateKey
-  );
-  const [syncing, setSyncing] = useSafeState(false, safeStateKey);
-  const [loadingMore, setLoadingMore] = useSafeState(false, safeStateKey);
-  const [, setSyncError] = useSafeState<Error | null>(null, safeStateKey);
+export const ActivityComponent: React.FC<Props> = ({ assetSlug }) => {
+  const { loading, reachedTheEnd, list: activities, loadMore } = useActivities(INITIAL_NUMBER, assetSlug);
 
-  const {
-    data: latestOperations,
-    isValidating: fetching,
-    revalidate: refetchLatest,
-  } = useRetryableSWR(
-    ["latest-operations", chainId, address, assetId],
-    () =>
-      fetchOperations({
-        chainId,
-        address,
-        assetIds: assetId ? [assetId] : undefined,
-        limit: ACTIVITY_PAGE_SIZE,
-      }),
-    {
-      revalidateOnMount: true,
-      refreshInterval: 10_000,
-      dedupingInterval: 3_000,
-    }
-  );
+  const { popup } = useAppEnv();
 
-  const operations = useMemo(
-    () => mergeOperations(latestOperations, restOperations),
-    [latestOperations, restOperations]
-  );
+  const { publicKeyHash: accountAddress } = useAccount();
 
-  /**
-   * Load more / Pagination
-   */
+  if (activities.length === 0 && !loading && reachedTheEnd) {
+    return (
+      <div className={classNames('mt-4 mb-12', 'flex flex-col items-center justify-center', 'text-gray-500')}>
+        <LayersIcon className="w-16 h-auto mb-2 stroke-current" />
 
-  const hasMoreRef = useRef(true);
-  useLayoutEffect(() => {
-    hasMoreRef.current = true;
-  }, [safeStateKey]);
+        <h3 className="text-sm font-light text-center" style={{ maxWidth: '20rem' }}>
+          <T id="noOperationsFound" />
+        </h3>
+      </div>
+    );
+  }
 
-  const handleLoadMore = useCallback(async () => {
-    setLoadingMore(true);
+  const retryInitialLoad = () => loadMore(INITIAL_NUMBER);
+  const loadMoreActivities = () => loadMore(LOAD_STEP);
 
-    try {
-      await syncOperations("old", chainId, address);
-    } catch (err) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-      setSyncError(err);
-    }
+  const loadNext = activities.length === 0 ? retryInitialLoad : loadMoreActivities;
 
-    try {
-      const oldOperations = await fetchOperations({
-        chainId,
-        address,
-        assetIds: assetId ? [assetId] : undefined,
-        limit: ACTIVITY_PAGE_SIZE,
-        offset: operations?.length ?? 0,
-      });
-      if (oldOperations.length === 0) {
-        hasMoreRef.current = false;
-      }
-
-      setRestOperations((ops) => [...ops, ...oldOperations]);
-    } catch (err) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-    }
-
-    setLoadingMore(false);
-  }, [
-    setLoadingMore,
-    setSyncError,
-    setRestOperations,
-    chainId,
-    address,
-    assetId,
-    operations,
-  ]);
-
-  /**
-   * New operations syncing
-   */
-
-  const syncNewOperations = useCallback(async () => {
-    setSyncing(true);
-    try {
-      const newCount = await syncOperations("new", chainId, address);
-      if (newCount > 0) {
-        refetchLatest();
-      }
-    } catch (err) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
-      setSyncError(err);
-    }
-    setSyncing(false);
-  }, [setSyncing, setSyncError, chainId, address, refetchLatest]);
-
-  const timeoutRef = useRef<any>();
-
-  const syncAndDefer = useCallback(async () => {
-    await syncNewOperations();
-    timeoutRef.current = setTimeout(syncAndDefer, 10_000);
-  }, [syncNewOperations]);
-
-  useEffect(() => {
-    if (syncSupported) {
-      syncAndDefer();
-    }
-
-    return () => clearTimeout(timeoutRef.current);
-  }, [syncSupported, syncAndDefer]);
+  const onScroll = loading || reachedTheEnd ? undefined : buildOnScroll(loadNext);
 
   return (
-    <ActivityView
-      address={address}
-      syncSupported={syncSupported}
-      operations={operations ?? []}
-      initialLoading={
-        fetching || (!operations || operations.length === 0 ? syncing : false)
-      }
-      loadingMore={loadingMore}
-      syncing={syncing}
-      loadMoreDisplayed={hasMoreRef.current}
-      loadMore={handleLoadMore}
-      className={className}
-    />
+    <div className="w-full max-w-sm mx-auto">
+      <div className={classNames('mt-3 flex flex-col', popup && 'mx-4')}>
+        <InfiniteScroll
+          dataLength={activities.length}
+          hasMore={reachedTheEnd === false}
+          next={loadNext}
+          loader={loading && <ActivitySpinner height="2.5rem" />}
+          onScroll={onScroll}
+        >
+          {activities.map(activity => (
+            <ActivityItem key={activity.hash} address={accountAddress} activity={activity} />
+          ))}
+        </InfiniteScroll>
+      </div>
+    </div>
   );
-});
+};
 
-export default Activity;
-
-function mergeOperations(base?: IOperation[], toAppend: IOperation[] = []) {
-  if (!base) return undefined;
-
-  const uniqueHashes = new Set<string>();
-  const uniques: IOperation[] = [];
-  for (const op of [...base, ...toAppend]) {
-    if (!uniqueHashes.has(op.hash)) {
-      uniqueHashes.add(op.hash);
-      uniques.push(op);
-    }
-  }
-  return uniques;
-}
+/**
+ * Build onscroll listener to trigger next loading, when fetching data resulted in error.
+ * `InfiniteScroll.props.next` won't be triggered in this case.
+ */
+const buildOnScroll =
+  (next: EmptyFn) =>
+  ({ target }: { target: EventTarget | null }) => {
+    const elem: HTMLElement =
+      target instanceof Document ? (target.scrollingElement! as HTMLElement) : (target as HTMLElement);
+    const atBottom = 0 === elem.offsetHeight - elem.clientHeight - elem.scrollTop;
+    if (atBottom) next();
+  };

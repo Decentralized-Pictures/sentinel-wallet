@@ -12,7 +12,7 @@
     "message": "アカウントをインポート"
   },
   "createAccount": {
-    "message": "アカウントを作成"
+    "message": "アカウントを作成または復元する"
   },
   "faucetFileTitle": {
     "message": "フォーセットファイル"
@@ -94,8 +94,8 @@
   "accounts": {
     "message": "アカウント"
   },
-  "logOut": {
-    "message": "ログアウト"
+  "lock": {
+    "message": "ブロック"
   },
   "importedAccount": {
     "message": "インポート済み"
@@ -281,9 +281,6 @@
   },
   "addressOfDeployedTokenContract": {
     "message": "デプロイされたトークンコントラクトのアドレス"
-  },
-  "lambdaContractPlaceholder": {
-    "message": "例: KT1v9CmPy..."
   },
   "tokenContractPlaceholder": {
     "message": "例: KT1v9CmPy..."
@@ -582,23 +579,17 @@
   "isPrivateKeyEncrypted": {
     "message": "秘密鍵は暗号化されていますか？"
   },
-  "noDerivation": {
-    "message": "導出なし"
-  },
   "customDerivationPath": {
     "message": "カスタム導出パス"
   },
   "mnemonicInputLabel": {
     "message": "シードフレーズ"
   },
-  "mnemonicInputDescription": {
-    "message": "ニーモニック。秘密の12語のフレーズ。"
-  },
   "mnemonicInputPlaceholder": {
     "message": "例: venue sock milk update..."
   },
   "passwordInputDescription": {
-    "message": "追加的なニーモニックの導出に使用されます。ウォレットパスワードではありません。"
+    "message": "ウォレットパスワードではありません。\n追加的なニーモニックの導出に使用されます。"
   },
   "derivation": {
     "message": "導出"
@@ -646,9 +637,6 @@
   "processing": {
     "message": "処理中..."
   },
-  "restoreWalletWithSeedPhrase": {
-    "message": "シードフレーズでウォレットを復元"
-  },
   "accountAddressLabel": {
     "message": "現在のアカウントのアドレスです。共有して資金を受け取ることができます。"
   },
@@ -682,7 +670,7 @@
   },
   "networksDescription": {
     "message": "このセクションでは、カスタムテゾスネットワークの追加や削除を行うことができます。",
-    "description": "T4L3NT = blockchain name (https://tezos.com/)"
+    "description": "Tezos = blockchain name (https://tezos.com/)"
   },
   "activateAccount": {
     "message": "アカウントをアクティベート"
@@ -726,9 +714,6 @@
   },
   "importExistingWallet": {
     "message": "既存のウォレットをインポート"
-  },
-  "importExistingWalletDescription": {
-    "message": "すでにシードフレーズがありますか？12以上のニーモニックワードを使用して既存のウォレットをインポートしてください"
   },
   "links": {
     "message": "リンク"
@@ -815,10 +800,10 @@
     "message": "DAppsインタラクション",
     "description": "DApps = Decentralized Applications"
   },
-  "dAppsInteractionEnabled": {
+  "enabled": {
     "message": "有効です"
   },
-  "dAppsInteractionDisabled": {
+  "disabled": {
     "message": "無効です"
   },
   "enablePopup": {
@@ -869,16 +854,9 @@
   "sortBy": {
     "message": "並び替え順"
   },
-  "cycles_one": {
-    "message": "$amount$サイクル",
-    "placeholders": {
-      "amount": {
-        "content": "$1"
-      }
-    }
-  },
   "cycles_other": {
     "message": "$amount$サイクル",
+    "description": "For plural forms",
     "placeholders": {
       "amount": {
         "content": "$1"
@@ -929,7 +907,12 @@
     "message": "以下の理由が考えられます:"
   },
   "minimalFeeGreaterThanBalanceVerbose": {
-    "message": "この取引に必要な最小の手数料は残高を上回っています。空のマネージャーアカウントに資金を送るため、多額の手数料が必要になる場合があります。そのためには、1回限りの0.257 FILMの焼却手数料が必要となります。"
+    "message": "この取引に必要な最小の手数料は残高を上回っています。空のマネージャーアカウントに資金を送るため、多額の手数料が必要になる場合があります。そのためには、1回限りの0.06425 $gasTokenSymbol$ の焼却手数料が必要となります。",
+    "placeholders": {
+      "gasTokenSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "networkOrOtherIssue": {
     "message": "ネットワークまたは他の技術的な問題"
@@ -1121,7 +1104,7 @@
   },
   "recipientInputPlaceholderWithDomain": {
     "message": "例: alice.tez、または tz1a9w1S7hN5s...",
-    "description": "alice.tlnt = domain like google.com"
+    "description": "alice.tez = domain like google.com"
   },
   "tryingToTransferToYourself": {
     "message": "自分に送金をしようとしています。\n本当に自分に送金したいのか確認してください。"
@@ -1132,12 +1115,13 @@
   "availableToSend": {
     "message": "送ることができる額（最大）:"
   },
-  "inUSD": {
-    "message": "米ドル建て"
-  },
-  "inFILM": {
-    "message": "FILM建て",
-    "description": "ф = asset symbol, like USD"
+  "inAsset": {
+    "message": "$assetSymbol$建て",
+    "placeholders": {
+      "assetSymbol": {
+        "content": "$1"
+      }
+    }
   },
   "amountPlaceholder": {
     "message": "例: 123.45"
@@ -1149,7 +1133,7 @@
     "message": "資金を送りたいアカウントをクリックしてください。"
   },
   "mainAssetBalanceIsZero": {
-    "message": "FILM（メインアセット）の残高がゼロです。手数料にはFILM資金が必要です。"
+    "message": "XTZ（メインアセット）の残高がゼロです。手数料にはXTZ資金が必要です。"
   },
   "unableToSendTransactionAction": {
     "message": "提供された受取先に取引を送ることができません。"
@@ -1304,17 +1288,6 @@
       }
     }
   },
-  "lambdaContract": {
-    "message": "Lambda Viewコントラクト"
-  },
-  "someLambda": {
-    "message": "Lambda View: $lambda$",
-    "placeholders": {
-      "lambda": {
-        "content": "$1"
-      }
-    }
-  },
   "interactionWithSomeEntrypoint": {
     "message": "コントラクト「$contractAddress$」のエントリポイント 「$entrypoint$」とのインタラクション",
     "placeholders": {
@@ -1336,15 +1309,6 @@
   },
   "approveToken": {
     "message": "トークンを承認"
-  },
-  "noLambdaWarningContent": {
-    "message": "Lambda Viewの契約が指定されていません。これがないと一部の機能が動作しない場合があります。続行する場合は、「ネットワークを追加」ボタンを押してください。"
-  },
-  "noActiveNetLambdaWarningTitle": {
-    "message": "現行ネットワークのLambda Viewコントラクトが指定されていませんでした！"
-  },
-  "noActiveNetLambdaWarningContent": {
-    "message": "現行ネットワークのLambda Viewコントラクトが指定されていませんでした。下のフォームで追加するか、「今すぐデプロイ」をクリックして新規にデプロイして自動的に追加してください。"
   },
   "add": {
     "message": "追加"
@@ -1642,7 +1606,7 @@
     "message": "ハッシュ"
   },
   "defaultAccount": {
-    "message": "デフォルトのアカウント"
+    "message": "デフォルトのアカウント (最初のアカウント)"
   },
   "loadMore": {
     "message": "さらに読み込む"
@@ -1661,8 +1625,5 @@
   },
   "faucetJsonDescription": {
     "message": "ファイルを追加する代わりに、ここにJSONを貼り付けることができます。"
-  },
-  "finish": {
-    "message": "Confirm"
   }
 }
